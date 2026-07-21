@@ -38,12 +38,12 @@ def pick(ds, uid=None, rank=None, seed=None):
     return j
 
 
-def _uv_tri(ax, item, face_vals, title, cmap="viridis", sym=False):
+def _uv_tri(ax, item, face_vals, title, cmap="viridis", sym=False, vmax=None):
     uv = item["inputs"]["source_uv"].reshape(-1, 2)
     tris = np.arange(len(uv)).reshape(-1, 3)
     kw = {}
     if sym:
-        v = max(float(np.abs(face_vals).max()), 1e-3)
+        v = vmax if vmax is not None else max(float(np.abs(face_vals).max()), 1e-3)
         kw = dict(vmin=-v, vmax=v)
     tp = ax.tripcolor(uv[:, 0], uv[:, 1], tris, facecolors=face_vals,
                       cmap=cmap, **kw)

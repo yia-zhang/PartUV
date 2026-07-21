@@ -16,8 +16,10 @@ def _wire():
             sys.path.insert(0, p)
 
 
-def compare_uniform_td(root, item, R=724):
-    """item: CleanDataset 样本. 返回 dict(status, draw{...}, metrics_text)."""
+def compare_methods(root, item, R=724, student_fraction=None):
+    """Uniform/Teacher(/Student) 相同 raw atlas budget 下 packing+rebake,
+    对 source reference 表面采样报告 MSE/PSNR/HF error。
+    student_fraction: Student 预测的 chart_target_area_fraction(可选)。"""
     _wire()
     from tdlib.budget import rasterize_masks
     from tdlib.layout import xatlas_pack, PackingFailedError
@@ -44,11 +46,15 @@ def compare_uniform_td(root, item, R=724):
     s_uni = np.sqrt(np.maximum(A3, 1e-12) / a2)
     frac = tt["chart_target_area_fraction"].astype(float)
     s_td = np.sqrt(np.maximum(frac, 1e-12) / a2)
+    methods = [("uniform", s_uni), ("teacher", s_td)]
+    if student_fraction is not None:
+        sf = np.maximum(np.asarray(student_fraction, float), 1e-12)
+        methods.append(("student", np.sqrt(sf / a2)))
     tex_src = np.asarray(Image.open(item["basecolor"]), float)[:, :, :3] / 255
     pu_like = dict(charts=charts, F=z["faces"], area=z["face_area"].astype(float))
     ch_masks = [dict(F=np.asarray(c["F"]), gidx=c["gidx"]) for c in charts]
     out = {}
-    for name, sc in (("uniform", s_uni), ("td", s_td)):
+    for name, sc in methods:
         try:
             uvs = xatlas_pack(charts, sc, resolution=R, padding_px=4)
         except PackingFailedError as e:
@@ -61,14 +67,30 @@ def compare_uniform_td(root, item, R=724):
             nuv[c["gidx"]] = uvs[ci][np.asarray(c["F"])]
         out[name] = dict(uvs=uvs, tex=tex, nuv=nuv,
                          occ=float((owner >= 0).sum()) / R / R, ov=int(ov))
+    # 表面采样 vs source reference(线性域 MSE/PSNR/HF)
+    from tdlib.rd import surface_samples, ref_gradient_at_samples, bilinear
+    smp = surface_samples(pu_like, z["source_uv"].astype(float),
+                          z["source_uv_valid"], tex_src, 120_000, seed=2)
+    g = ref_gradient_at_samples(tex_src, z["source_uv"].astype(float), smp)
+    hi = g >= np.quantile(g, 0.9)
+
+    def s2l(x):
+        x = np.clip(x, 0, 1)
+        return np.where(x <= 0.04045, x / 12.92, ((x + 0.055) / 1.055) ** 2.4)
+
+    ref_lin = s2l(np.asarray(smp["ref_color"]))
+    for name in out:
+        uvq = np.einsum("nk,nkd->nd", smp["bary"], out[name]["nuv"][smp["fid"]])
+        d = ((s2l(bilinear(out[name]["tex"], uvq)) - ref_lin) ** 2).mean(1)
+        out[name]["mse"] = float(d.mean())
+        out[name]["psnr"] = round(10 * np.log10(1 / max(d.mean(), 1e-12)), 2)
+        out[name]["hf_mse"] = float(d[hi].mean())
     ok = np.ones(len(z["faces"]), bool)
-    r_u = tdgpu.textured_render(z["vertices"].astype(float), z["faces"],
-                                out["uniform"]["nuv"], ok,
-                                out["uniform"]["tex"], view=(18, 40))
-    r_t = tdgpu.textured_render(z["vertices"].astype(float), z["faces"],
-                                out["td"]["nuv"], ok, out["td"]["tex"],
-                                view=(18, 40))
-    dif = np.abs(r_u.astype(float) - r_t.astype(float)).mean(-1)
+    renders = {n: tdgpu.textured_render(
+        z["vertices"].astype(float), z["faces"], out[n]["nuv"], ok,
+        out[n]["tex"], view=(18, 40)) for n in out}
+    dif = np.abs(renders["uniform"].astype(float)
+                 - renders[list(out)[-1]].astype(float)).mean(-1)
 
     def draw_uv(which):
         def f(ax):
@@ -93,12 +115,20 @@ def compare_uniform_td(root, item, R=724):
         ax.set_axis_off(); ax.set_title("render |uniform-TD|", fontsize=9)
         plt.colorbar(im, ax=ax, fraction=0.04)
 
-    txt = (f"same raw atlas budget R={R} ({R*R:,} px)\n"
-           f"occupancy: uniform {out['uniform']['occ']*100:.1f}% / "
-           f"td {out['td']['occ']*100:.1f}%\n"
-           f"charts={nC}  coverage={item['manifest']['coverage_area']*100:.2f}%\n"
-           f"overlap: {out['uniform']['ov']}/{out['td']['ov']}")
-    return dict(status="OK", metrics_text=txt,
-                draw=dict(uniform_uv=draw_uv("uniform"), td_uv=draw_uv("td"),
-                          uniform_tex=draw_tex("uniform"),
-                          td_tex=draw_tex("td"), diff=draw_diff))
+    lines = [f"same raw atlas budget R={R} ({R*R:,} px)"]
+    for n in out:
+        lines.append(f"{n:8s} PSNR={out[n]['psnr']:6.2f}dB "
+                     f"hf_mse={out[n]['hf_mse']:.2e} occ={out[n]['occ']*100:.0f}%")
+    lines.append(f"charts={nC} coverage={item['manifest']['coverage_area']*100:.1f}%")
+    draw = dict(diff=draw_diff)
+    for n in out:
+        draw[f"{n}_uv"] = draw_uv(n)
+        draw[f"{n}_tex"] = draw_tex(n)
+    # 兼容旧 notebook 键名
+    draw["td_uv"] = draw.get("teacher_uv", draw.get("td_uv"))
+    draw["td_tex"] = draw.get("teacher_tex", draw.get("td_tex"))
+    return dict(status="OK", metrics_text="\n".join(lines), metrics=out,
+                renders=renders, draw=draw)
+
+
+compare_uniform_td = compare_methods   # 兼容别名
