@@ -98,6 +98,14 @@ def show_target(item, ax):
             cmap="coolwarm", sym=True)
 
 
+def show_geometry_groups(item, ax=None):
+    fs = item["inputs"].get("face_source")
+    if fs is None or (hasattr(fs, "max") and fs.max() < 0):
+        return _notice(ax, "face_source 缺失(v1 样本)")
+    _uv_tri(ax, item, (fs % 10).astype(float),
+            f"geometry groups ({int(fs.max()) + 1})", cmap="tab10")
+
+
 def show_prediction(item, pred_chart, ax):
     p = pred_chart[np.maximum(item["inputs"]["face_to_chart"], 0)]
     p = np.where(item["inputs"]["face_to_chart"] >= 0, p, 0)
