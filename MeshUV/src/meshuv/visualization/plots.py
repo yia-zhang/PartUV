@@ -159,6 +159,28 @@ def show_density_heatmap(item, ax=None):
                   sym=True)
 
 
+def show_uv_over_texture(item, ax=None, max_edges=60000):
+    """UV map 实际效果: basecolor 纹理 + UV 三角网 wireframe 叠加."""
+    ax = ax or plt.gca()
+    p = item.get("reference_texture", "")
+    if not os.path.exists(p):
+        return _notice(ax, "无 reference 纹理")
+    img = np.asarray(Image.open(p))
+    ax.imshow(img, extent=[0, 1, 0, 1], origin="upper")
+    uv = item["model_inputs"]["source_uv"]          # (F,3,2)
+    F = len(uv)
+    step = max(1, F * 3 // max_edges)
+    segs = np.concatenate([uv[::step, [0, 1]], uv[::step, [1, 2]],
+                           uv[::step, [2, 0]]])
+    from matplotlib.collections import LineCollection
+    ax.add_collection(LineCollection(segs, colors="#00e5ff", linewidths=0.25,
+                                     alpha=0.6))
+    ax.set_xlim(0, 1); ax.set_ylim(0, 1)
+    ax.set_aspect("equal"); ax.set_axis_off()
+    ax.set_title(_t("UV map(纹理+网格线)", "UV map (texture + wireframe)"),
+                 fontsize=10)
+
+
 def show_packed_atlas(item, ax=None):
     ax = ax or plt.gca()
     _notice(ax, "packed UV/atlas 不在 MVP 样本内\n"
