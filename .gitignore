@@ -1,0 +1,14 @@
+datasets/cache/
+datasets/processed/
+datasets/rejected/
+runs/
+**/*.ckpt
+**/*.pth
+**/*.glb
+**/*.png
+**/*.jpg
+**/*.npz
+__pycache__/
+*.pyc
+*.egg-info/
+*.log

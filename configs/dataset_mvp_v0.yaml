@@ -1,0 +1,19 @@
+# MeshUV-TD-PseudoGT-MVP-v0 数据集构建配置(路径相对项目根)
+dataset_root: datasets/processed/MeshUV-TD-PseudoGT-MVP-v0
+candidate_manifest: datasets/manifests/candidates_mvp_v0.json
+teacher_frozen_config: configs/teacher_frozen_v0.yaml
+
+candidate_max: 500
+target_accepted: 256
+workers: 8
+timeout_s: 1500
+seed_sample: 23
+
+# 采集
+objaverse_cache: ~/.objaverse/hf-objaverse-v1/glbs
+object_paths: ~/.objaverse/hf-objaverse-v1/object-paths.json.gz
+calibration_manifest: /root/youjiaZhang/PartUV/code/notebook/outputs/calibration_v1/calibration_manifest_v2.json
+exclusion_uid_files: []          # dev 帧 uid 在下方列表内联
+# 质量检查
+medium_frac: 0.5
+r_cap: 2048
