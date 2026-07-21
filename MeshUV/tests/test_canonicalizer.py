@@ -151,6 +151,22 @@ with tempfile.TemporaryDirectory() as td:
     c4 = canonicalize(p4)
     check("整套整数 tile 平移可接受", len(c4["F"]) == 2)
 
+    # 不连通面分居多个 tile(每面各自在 tile 内) -> 仍须拒绝
+    m5 = trimesh.Trimesh(
+        vertices=[[0, 0, 0], [1, 0, 0], [0, 1, 0],
+                  [2, 0, 0], [3, 0, 0], [2, 1, 0]],
+        faces=[[0, 1, 2], [3, 4, 5]], process=False)
+    uv5 = np.array([[0.1, 0.1], [0.4, 0.1], [0.1, 0.4],
+                    [1.1, 0.1], [1.4, 0.1], [1.1, 0.4]], float)
+    m5.visual = trimesh.visual.TextureVisuals(uv=uv5, image=imgA)
+    s5 = trimesh.Scene(); s5.add_geometry(m5)
+    p5 = f"{td}/multitile.glb"; s5.export(p5)
+    try:
+        canonicalize(p5)
+        check("不连通面分居多 tile -> 拒绝(不折叠)", False, "未拒绝")
+    except ValueError as e:
+        check("不连通面分居多 tile -> 拒绝(不折叠)", "TILED" in str(e))
+
 n_fail = RESULTS.count(False)
 print(f"==== {len(RESULTS) - n_fail}/{len(RESULTS)} PASS ====")
 sys.exit(1 if n_fail else 0)

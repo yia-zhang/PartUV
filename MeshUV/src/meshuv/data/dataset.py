@@ -15,8 +15,19 @@ class CleanDataset:
         self.expose = expose_diagnostics
         ids = object_ids
         if ids is None:
-            ids = sorted(os.path.basename(os.path.dirname(f)) for f in
-                         glob.glob(f"{self.root}/objects/*/manifest.json"))
+            ids = []
+            for f in sorted(glob.glob(f"{self.root}/objects/*/manifest.json")):
+                d = os.path.dirname(f)
+                try:
+                    st = json.load(open(f"{d}/status.json"))
+                    if st.get("status") != "ACCEPTED":
+                        continue
+                    with np.load(f"{d}/arrays.npz") as z:
+                        if set(CORE + TARGETS) - set(z.files):
+                            continue          # schema 不完整不加载
+                    ids.append(os.path.basename(d))
+                except Exception:
+                    continue
         self.ids = list(ids)
 
     def __len__(self):
@@ -39,12 +50,33 @@ class CleanDataset:
 
 
 def object_splits(root, sizes=(0.75, 0.125, 0.125), seed=11):
-    """按 geometry_hash 分组的 object 级拆分(禁止按 chart 切)."""
+    """object 级拆分: geometry_hash 与 content_hash 双重隔离(并查集),
+    同组不跨集; 禁止按 chart 切。返回 splits(附 _dup_audit)."""
     ds = CleanDataset(root)
+    mans = [json.load(open(f"{root}/objects/{o}/manifest.json"))
+            for o in ds.ids]
+    parent = list(range(len(ds.ids)))
+
+    def find(a):
+        while parent[a] != a:
+            parent[a] = parent[parent[a]]
+            a = parent[a]
+        return a
+
+    for key in ("geometry_hash", "content_hash"):
+        by = {}
+        for i, man in enumerate(mans):
+            by.setdefault(man.get(key, f"_{i}"), []).append(i)
+        for idxs in by.values():
+            for j in idxs[1:]:
+                ra, rb = find(idxs[0]), find(j)
+                if ra != rb:
+                    parent[ra] = rb
     groups = {}
-    for oid in ds.ids:
-        man = json.load(open(f"{root}/objects/{oid}/manifest.json"))
-        groups.setdefault(man["geometry_hash"], []).append(oid)
+    for i, oid in enumerate(ds.ids):
+        groups.setdefault(find(i), []).append(oid)
+    dup_groups = {k: v for k, v in groups.items() if len(v) > 1}
+    groups = {k: v for k, v in groups.items()}
     keys = sorted(groups)
     rng = np.random.RandomState(seed)
     rng.shuffle(keys)
@@ -56,4 +88,7 @@ def object_splits(root, sizes=(0.75, 0.125, 0.125), seed=11):
         tgt = max(quota, key=lambda s: quota[s])
         out[tgt].extend(g)
         quota[tgt] -= len(g)
+    out["_dup_audit"] = dict(n_dup_groups=len(dup_groups),
+                             dup_examples={str(k): v for k, v in
+                                           list(dup_groups.items())[:5]})
     return out

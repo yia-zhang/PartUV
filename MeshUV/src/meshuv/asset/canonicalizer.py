@@ -109,14 +109,13 @@ def canonicalize(path):
         if len(used):
             shift = np.floor(uv[used].min(0) + 1e-9)   # 整套统一整数平移
             uv = uv - shift
-        crosses = (np.floor(uv[g["F"]].max(1) - 1e-9)
-                   != np.floor(uv[g["F"]].min(1) + 1e-9)).any(1)
-        if crosses.any():
+        # 同一 geometry 必须整体只占一个 tile: 统一整数平移后全部 used UV
+        # 落在 [0,1](eps 容差)。跨 tile 面或分散多 tile 均拒绝, 不 fract 折叠。
+        if len(used) and ((uv[used] < -1e-6).any()
+                          or (uv[used] > 1 + 1e-6).any()):
             raise ValueError(
-                f"TILED_UV_UNSUPPORTED: {int(crosses.sum())} 面跨 UV tile")
-        w = uv - np.floor(uv)
-        w[(w == 0) & (uv != 0)] = 1.0
-        uv = np.clip(w, 0, 1)
+                "TILED_UV_UNSUPPORTED: geometry UV 跨多个 tile(统一平移后仍越界)")
+        uv = np.clip(uv, 0, 1)
         cx, cy, w, h = cells[img_of[gi]]
         u = (cx + uv[:, 0] * w) / W_tot
         v = 1 - (cy + (1 - uv[:, 1]) * h) / H_tot    # 顶行 v=1 约定

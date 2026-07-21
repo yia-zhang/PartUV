@@ -44,7 +44,9 @@ def fake_obj(root, oid, nC, geo_hash):
     z["chart_log_density_ratio"] -= z["chart_log_density_ratio"].mean()
     np.savez(f"{d}/arrays.npz", **z)
     Image.fromarray(np.zeros((16, 16, 3), np.uint8)).save(f"{d}/basecolor.png")
-    json.dump(dict(geometry_hash=geo_hash, n_charts=nC), open(f"{d}/manifest.json", "w"))
+    json.dump(dict(geometry_hash=geo_hash, content_hash=f"c_{oid}",
+                   n_charts=nC), open(f"{d}/manifest.json", "w"))
+    json.dump(dict(status="ACCEPTED"), open(f"{d}/status.json", "w"))
 
 
 with tempfile.TemporaryDirectory() as td:
@@ -57,11 +59,14 @@ with tempfile.TemporaryDirectory() as td:
           b["features"].shape == (3 + 7 + 5 + 4 + 6 + 2 + 9 + 3, 17)
           and len(b["object_ranges"]) == 8)
     sp = object_splits(td)
-    loc = {o: s for s, os_ in sp.items() for o in os_}
+    loc = {o: s for s, os_ in sp.items() if not s.startswith("_")
+           for o in os_}
     check("split: 同 geometry_hash 不跨集(o1/o2 同组)", loc["o1"] == loc["o2"])
+    lists = [v for k, v in sp.items() if not k.startswith("_")]
     check("split: object 级无重复",
-          sum(len(v) for v in sp.values()) == 8
-          and len(set(sum(sp.values(), []))) == 8)
+          sum(len(v) for v in lists) == 8
+          and len(set(sum(lists, []))) == 8
+          and "_dup_audit" in sp)
 
     import torch
     from meshuv.model.student_v0 import StudentV0

@@ -21,9 +21,11 @@ def _chart_max(vals, f2c, m, nC):
 
 
 def chart_features(item, tex_cache={}):
-    z, tt = item["inputs"], item["targets"]
+    """特征只读 inputs(face_area/face_to_chart/train_face_mask/...),
+    禁止读取 targets —— 推理时无标签可用。"""
+    z = item["inputs"]
     f2c, fa = z["face_to_chart"], z["face_area"].astype(float)
-    nC = len(tt["chart_surface_area"])
+    nC = int(f2c.max()) + 1
     m = f2c >= 0
     V, F = z["vertices"].astype(float), z["faces"]
     ctr = V[F].mean(1)
@@ -61,7 +63,8 @@ def chart_features(item, tex_cache={}):
         np.add.at(wsum, f2c[m], w[m])
         return (out.T / np.maximum(wsum, 1e-12)).T
 
-    A3 = tt["chart_surface_area"].astype(float)
+    A3 = np.zeros(nC)
+    np.add.at(A3, f2c[m], fa[m])
     a2c = np.zeros(nC)
     np.add.at(a2c, f2c[m], a2f[m])
     nfc = np.bincount(f2c[m], minlength=nC).astype(float)
@@ -87,7 +90,13 @@ def collate(items):
         f = chart_features(it)
         X.append(f)
         y.append(it["targets"]["chart_log_density_ratio"])
-        valid.append(it["targets"]["chart_valid_mask"])
+        # valid 由 inputs 重算(chart 内含有效训练面即 valid)
+        f2c = it["inputs"]["face_to_chart"]
+        nC = int(f2c.max()) + 1
+        v = np.zeros(nC, bool)
+        mm = (f2c >= 0) & it["inputs"]["train_face_mask"]
+        v[np.unique(f2c[mm])] = True
+        valid.append(v)
         obj_ix.append(np.full(len(f), oi))
         obj_ranges.append((p, p + len(f)))
         p += len(f)
