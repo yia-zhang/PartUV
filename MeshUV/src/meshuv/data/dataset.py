@@ -13,12 +13,13 @@ class MeshUVTDDataset:
     """索引自 dataset_index.jsonl; 路径均相对 dataset root(可迁移)."""
 
     def __init__(self, root, split=None, splits_file="splits.json",
-                 expose_diagnostics=False):
+                 expose_diagnostics=False, index=None):
         self.root = os.path.abspath(root)
         self.expose_diagnostics = expose_diagnostics
-        idx = [json.loads(l) for l in
-               open(os.path.join(self.root, "dataset_index.jsonl"))
-               if l.strip()]
+        idx = (list(index) if index is not None else
+               [json.loads(l) for l in
+                open(os.path.join(self.root, "dataset_index.jsonl"))
+                if l.strip()])
         if split is not None:
             sp = json.load(open(os.path.join(self.root, splits_file)))
             keep = set(sp[split])

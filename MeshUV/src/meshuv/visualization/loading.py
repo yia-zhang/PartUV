@@ -31,23 +31,54 @@ def _jload(p, label):
         return None
 
 
+def _scan_statuses(root):
+    """构建中(汇总未写盘)时: 实时扫描 objects/*/status.json 合成统计."""
+    import glob
+    sts = []
+    for f in glob.glob(f"{root}/objects/*/status.json"):
+        try:
+            sts.append(json.load(open(f)))
+        except Exception:
+            pass
+    return sts
+
+
 def load_reports(root):
-    """yield/rejection/splits/run_manifest/summary(存在哪个读哪个)."""
-    return dict(
-        yield_=_jload(f"{root}/processing_yield.json", "processing_yield")
-        or _jload(f"{root}/pilot_summary.json", "pilot_summary"),
-        rejections=_jload(f"{root}/rejection_summary.json", "rejection_summary")
-        or _jload(f"{root}/rejection_report.json", "rejection_report"),
-        splits=_jload(f"{root}/splits.json", "splits"),
-        run_manifest=_jload(f"{root}/run_manifest.json", "run_manifest"))
+    """yield/rejection/splits/run_manifest(缺汇总时实时合成, 支持构建中查看)."""
+    y = (_jload(f"{root}/processing_yield.json", "processing_yield")
+         or _jload(f"{root}/pilot_summary.json", "pilot_summary"))
+    rej = (_jload(f"{root}/rejection_summary.json", "rejection_summary")
+           or _jload(f"{root}/rejection_report.json", "rejection_report"))
+    if y is None or rej is None:
+        sts = _scan_statuses(root)
+        if sts:
+            print(f"[构建中] 汇总未写盘, 实时合成自 {len(sts)} 个 status.json")
+            cnt = {}
+            for st in sts:
+                k = st.get("status", "?")
+                cnt[k] = cnt.get(k, 0) + 1
+            y = y or dict(attempted=len(sts),
+                          accepted=cnt.get("ACCEPTED", 0),
+                          yield_counts=cnt, live=True)
+            rej = rej or [st for st in sts if st.get("status") != "ACCEPTED"]
+    return dict(yield_=y, rejections=rej,
+                splits=_jload(f"{root}/splits.json", "splits"),
+                run_manifest=_jload(f"{root}/run_manifest.json", "run_manifest"))
 
 
 def load_index(root):
     p = f"{root}/dataset_index.jsonl"
-    if not os.path.exists(p):
-        print(f"[缺失] dataset_index.jsonl: {p}")
-        return []
-    return [json.loads(l) for l in open(p) if l.strip()]
+    if os.path.exists(p):
+        return [json.loads(l) for l in open(p) if l.strip()]
+    sts = [st for st in _scan_statuses(root) if st.get("status") == "ACCEPTED"]
+    if sts:
+        print(f"[构建中] index 未写盘, 实时合成 {len(sts)} 个 accepted")
+        return [dict(object_id=st["object_id"], uid=st.get("uid", ""),
+                     sample_dir=f"objects/{st['object_id']}",
+                     quality_status=st.get("quality_status", ""))
+                for st in sts]
+    print(f"[缺失] dataset_index.jsonl: {p}")
+    return []
 
 
 def pick_object(index, uid=None, rank=None, seed=None):
@@ -71,15 +102,18 @@ def pick_object(index, uid=None, rank=None, seed=None):
 
 
 def open_sample(root, rec, diagnostics=True):
-    """读取单个 accepted 样本(loader 语义, 含 teacher diagnostics 供 QA 查看)."""
+    """读取单个 accepted 样本(loader 语义, 含 teacher diagnostics 供 QA 查看).
+    构建中无 dataset_index.jsonl 时用合成 index 直读。"""
+    if rec is None:
+        print("[缺失] 未选中对象")
+        return None
     import sys
     sys.path.insert(0, os.path.join(MESHUV_ROOT, "src"))
     from meshuv.data.dataset import MeshUVTDDataset
     try:
-        ds = MeshUVTDDataset(root, expose_diagnostics=diagnostics)
-        i = next(k for k, r in enumerate(ds.index)
-                 if r["object_id"] == rec["object_id"])
-        return ds[i]
+        ds = MeshUVTDDataset(root, expose_diagnostics=diagnostics,
+                             index=[rec])
+        return ds[0]
     except Exception as e:
         print(f"[读取失败] {rec.get('object_id')}: {type(e).__name__}: {e}")
         return None
