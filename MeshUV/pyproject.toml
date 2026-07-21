@@ -1,9 +1,0 @@
-[project]
-name = "meshuv"
-version = "0.0.1"
-description = "MeshUV TD-allocation student (MVP-v0 dataset stage)"
-requires-python = ">=3.10"
-dependencies = ["numpy", "trimesh", "pillow", "pyyaml"]
-
-[tool.setuptools.packages.find]
-where = ["src"]
