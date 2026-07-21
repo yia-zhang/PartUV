@@ -1,0 +1,1100 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{82}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{}, \showDOI{}, and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showDOI}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showDOI #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showDOI      \undefined \def \showDOI       #1{#1}\fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[\protect\citeauthoryear{Alexa, Cohen-Or, and Levin}{Alexa
+  et~al\mbox{.}}{2023}]%
+        {alexa2023rigid}
+\bibfield{author}{\bibinfo{person}{Marc Alexa}, \bibinfo{person}{Daniel
+  Cohen-Or}, {and} \bibinfo{person}{David Levin}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{As-rigid-as-possible shape interpolation}.
+\newblock In \bibinfo{booktitle}{\emph{Seminal Graphics Papers: Pushing the
+  Boundaries, Volume 2}}. \bibinfo{pages}{165--172}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Belkin and Niyogi}{Belkin and Niyogi}{2003}]%
+        {belkin2003laplacian}
+\bibfield{author}{\bibinfo{person}{Mikhail Belkin} {and}
+  \bibinfo{person}{Partha Niyogi}.} \bibinfo{year}{2003}\natexlab{}.
+\newblock \showarticletitle{Laplacian eigenmaps for dimensionality reduction
+  and data representation}.
+\newblock \bibinfo{journal}{\emph{Neural computation}} \bibinfo{volume}{15},
+  \bibinfo{number}{6} (\bibinfo{year}{2003}), \bibinfo{pages}{1373--1396}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Ben-Chen, Gotsman, and Bunin}{Ben-Chen
+  et~al\mbox{.}}{2008}]%
+        {ben2008conformal}
+\bibfield{author}{\bibinfo{person}{Mirela Ben-Chen}, \bibinfo{person}{Craig
+  Gotsman}, {and} \bibinfo{person}{Guy Bunin}.}
+  \bibinfo{year}{2008}\natexlab{}.
+\newblock \showarticletitle{Conformal flattening by curvature prescription and
+  metric scaling}. In \bibinfo{booktitle}{\emph{Computer Graphics Forum}},
+  Vol.~\bibinfo{volume}{27}. Wiley Online Library, \bibinfo{pages}{449--458}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Bhargava, Schreck, Freire, Hugron, Lefebvre,
+  Sell{\'a}n, and Bickel}{Bhargava et~al\mbox{.}}{2025}]%
+        {bhargava2025mesh}
+\bibfield{author}{\bibinfo{person}{Manas Bhargava}, \bibinfo{person}{Camille
+  Schreck}, \bibinfo{person}{Marco Freire}, \bibinfo{person}{Pierre-Alexandre
+  Hugron}, \bibinfo{person}{Sylvain Lefebvre}, \bibinfo{person}{Silvia
+  Sell{\'a}n}, {and} \bibinfo{person}{Bernd Bickel}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Mesh Simplification for Unfolding}. In
+  \bibinfo{booktitle}{\emph{Computer Graphics Forum}},
+  Vol.~\bibinfo{volume}{44}. Wiley Online Library, \bibinfo{pages}{e15269}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Carr, Hoberock, Crane, and Hart}{Carr
+  et~al\mbox{.}}{2006}]%
+        {carr2006rectangular}
+\bibfield{author}{\bibinfo{person}{Nathan~A Carr}, \bibinfo{person}{Jared
+  Hoberock}, \bibinfo{person}{Keenan Crane}, {and} \bibinfo{person}{John~C
+  Hart}.} \bibinfo{year}{2006}\natexlab{}.
+\newblock \showarticletitle{Rectangular multi-chart geometry images}. In
+  \bibinfo{booktitle}{\emph{Symposium on geometry processing}}.
+  \bibinfo{pages}{181--190}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Chen, Yin, and Fidler}{Chen
+  et~al\mbox{.}}{2022}]%
+        {chen2022auv}
+\bibfield{author}{\bibinfo{person}{Zhiqin Chen}, \bibinfo{person}{Kangxue Yin},
+  {and} \bibinfo{person}{Sanja Fidler}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Auv-net: Learning aligned uv maps for texture
+  transfer and synthesis}. In \bibinfo{booktitle}{\emph{Proceedings of the
+  IEEE/CVF conference on computer vision and pattern recognition}}.
+  \bibinfo{pages}{1465--1474}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Community}{Community}{[n.d.]}]%
+        {blender}
+\bibfield{author}{\bibinfo{person}{Blender~Online Community}.}
+  \bibinfo{year}{[n.d.]}\natexlab{}.
+\newblock \bibinfo{title}{Blender - a {3D} modelling and rendering package}.
+\newblock
+\newblock
+\newblock
+\shownote{\url{http://www.blender.org}.}
+
+
+\bibitem[\protect\citeauthoryear{Corporation}{Corporation}{2023}]%
+        {UVAtlas}
+\bibfield{author}{\bibinfo{person}{Microsoft Corporation}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{{UVAtlas}: Chart-based UV Atlas Generation Library}.
+\newblock \bibinfo{howpublished}{\url{https://github.com/microsoft/UVAtlas}}.
+\newblock
+\newblock
+\shownote{Accessed: 2025-05-21.}
+
+
+\bibitem[\protect\citeauthoryear{Das, Ma, Shu, and Samaras}{Das
+  et~al\mbox{.}}{2022}]%
+        {LearninganIsometric}
+\bibfield{author}{\bibinfo{person}{Sagnik Das}, \bibinfo{person}{Ke Ma},
+  \bibinfo{person}{Zhixin Shu}, {and} \bibinfo{person}{Dimitris Samaras}.}
+  \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Learning an Isometric Surface Parameterization
+  for Texture Unwrapping}.
+\newblock \bibinfo{journal}{\emph{European Conference on Computer Vision}}
+  (\bibinfo{year}{2022}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Deitke, Schwenk, Salvador, Weihs, Michel,
+  VanderBilt, Schmidt, Ehsani, Kembhavi, and Farhadi}{Deitke
+  et~al\mbox{.}}{2022}]%
+        {objaverse}
+\bibfield{author}{\bibinfo{person}{Matt Deitke}, \bibinfo{person}{Dustin
+  Schwenk}, \bibinfo{person}{Jordi Salvador}, \bibinfo{person}{Luca Weihs},
+  \bibinfo{person}{Oscar Michel}, \bibinfo{person}{Eli VanderBilt},
+  \bibinfo{person}{Ludwig Schmidt}, \bibinfo{person}{Kiana Ehsani},
+  \bibinfo{person}{Aniruddha Kembhavi}, {and} \bibinfo{person}{Ali Farhadi}.}
+  \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Objaverse: A Universe of Annotated 3D Objects}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2212.08051}}
+  (\bibinfo{year}{2022}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Desbrun, Meyer, and Alliez}{Desbrun
+  et~al\mbox{.}}{2002}]%
+        {desbrun2002intrinsic}
+\bibfield{author}{\bibinfo{person}{Mathieu Desbrun}, \bibinfo{person}{Mark
+  Meyer}, {and} \bibinfo{person}{Pierre Alliez}.}
+  \bibinfo{year}{2002}\natexlab{}.
+\newblock \showarticletitle{Intrinsic parameterizations of surface meshes}. In
+  \bibinfo{booktitle}{\emph{Computer graphics forum}},
+  Vol.~\bibinfo{volume}{21}. Wiley Online Library, \bibinfo{pages}{209--218}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Gu, Gortler, and Hoppe}{Gu
+  et~al\mbox{.}}{2002}]%
+        {gu2002geometry}
+\bibfield{author}{\bibinfo{person}{Xianfeng Gu}, \bibinfo{person}{Steven~J
+  Gortler}, {and} \bibinfo{person}{Hugues Hoppe}.}
+  \bibinfo{year}{2002}\natexlab{}.
+\newblock \showarticletitle{Geometry images}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 29th annual conference on
+  Computer graphics and interactive techniques}}. \bibinfo{pages}{355--361}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Guo, Zhu, Peng, Wang, Shen, Hu, and Zhou}{Guo
+  et~al\mbox{.}}{2024}]%
+        {guo2024sam}
+\bibfield{author}{\bibinfo{person}{Haoyu Guo}, \bibinfo{person}{He Zhu},
+  \bibinfo{person}{Sida Peng}, \bibinfo{person}{Yuang Wang},
+  \bibinfo{person}{Yujun Shen}, \bibinfo{person}{Ruizhen Hu}, {and}
+  \bibinfo{person}{Xiaowei Zhou}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Sam-guided graph cut for 3d instance segmentation}.
+  In \bibinfo{booktitle}{\emph{European Conference on Computer Vision}}.
+  Springer, \bibinfo{pages}{234--251}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{He, Peng, Jiang, Hu, Zhang, Nie, Wang, and
+  Wang}{He et~al\mbox{.}}{2024}]%
+        {he2024pointseg}
+\bibfield{author}{\bibinfo{person}{Qingdong He}, \bibinfo{person}{Jinlong
+  Peng}, \bibinfo{person}{Zhengkai Jiang}, \bibinfo{person}{Xiaobin Hu},
+  \bibinfo{person}{Jiangning Zhang}, \bibinfo{person}{Qiang Nie},
+  \bibinfo{person}{Yabiao Wang}, {and} \bibinfo{person}{Chengjie Wang}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{PointSeg: A Training-Free Paradigm for 3D Scene
+  Segmentation via Foundation Models}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2403.06403}}
+  (\bibinfo{year}{2024}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Hormann and Greiner}{Hormann and
+  Greiner}{2000}]%
+        {hormann2000mips}
+\bibfield{author}{\bibinfo{person}{Kai Hormann} {and}
+  \bibinfo{person}{G{\"u}nther Greiner}.} \bibinfo{year}{2000}\natexlab{}.
+\newblock \showarticletitle{MIPS: An efficient global parametrization method}.
+\newblock \bibinfo{journal}{\emph{Curve and Surface Design: Saint-Malo 1999}}
+  (\bibinfo{year}{2000}), \bibinfo{pages}{153--162}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Jacobson}{Jacobson}{2013}]%
+        {jacobsonCommon3DTestModels}
+\bibfield{author}{\bibinfo{person}{Alec Jacobson}.}
+  \bibinfo{year}{2013}\natexlab{}.
+\newblock \bibinfo{title}{common-3d-test-models}.
+\newblock
+  \bibinfo{howpublished}{\url{https://github.com/alecjacobson/common-3d-test-models}}.
+\newblock
+\newblock
+\shownote{Accessed: 2025-05-21.}
+
+
+\bibitem[\protect\citeauthoryear{Jacobson and contributors}{Jacobson and
+  contributors}{2023}]%
+        {jacobson_common3d_2023}
+\bibfield{author}{\bibinfo{person}{Alec Jacobson} {and}
+  \bibinfo{person}{contributors}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{{common-3d-test-models: Repository of common 3D test
+  meshes}}.
+\newblock
+  \bibinfo{howpublished}{\url{https://github.com/alecjacobson/common-3d-test-models}}.
+\newblock
+\newblock
+\shownote{Git commit 8a4f864, accessed 2025-05-15.}
+
+
+\bibitem[\protect\citeauthoryear{Jiang, Zhao, Shi, Liu, Fu, and Jia}{Jiang
+  et~al\mbox{.}}{2020}]%
+        {jiang2020pointgroup}
+\bibfield{author}{\bibinfo{person}{Li Jiang}, \bibinfo{person}{Hengshuang
+  Zhao}, \bibinfo{person}{Shaoshuai Shi}, \bibinfo{person}{Shu Liu},
+  \bibinfo{person}{Chi-Wing Fu}, {and} \bibinfo{person}{Jiaya Jia}.}
+  \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{Pointgroup: Dual-set point grouping for 3d instance
+  segmentation}. In \bibinfo{booktitle}{\emph{Proceedings of the IEEE/CVF
+  conference on computer vision and Pattern recognition}}.
+  \bibinfo{pages}{4867--4876}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Johnson}{Johnson}{1967}]%
+        {johnson1967hierarchical}
+\bibfield{author}{\bibinfo{person}{Stephen~C Johnson}.}
+  \bibinfo{year}{1967}\natexlab{}.
+\newblock \showarticletitle{Hierarchical clustering schemes}.
+\newblock \bibinfo{journal}{\emph{Psychometrika}} \bibinfo{volume}{32},
+  \bibinfo{number}{3} (\bibinfo{year}{1967}), \bibinfo{pages}{241--254}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Julius, Kraevoy, and Sheffer}{Julius
+  et~al\mbox{.}}{2005}]%
+        {julius2005d}
+\bibfield{author}{\bibinfo{person}{Dan Julius}, \bibinfo{person}{Vladislav
+  Kraevoy}, {and} \bibinfo{person}{Alla Sheffer}.}
+  \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{D-charts: Quasi-developable mesh segmentation}. In
+  \bibinfo{booktitle}{\emph{Computer Graphics Forum}},
+  Vol.~\bibinfo{volume}{24}. Citeseer, \bibinfo{pages}{581--590}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Kalvin and Taylor}{Kalvin and Taylor}{1996}]%
+        {kalvin1996superfaces}
+\bibfield{author}{\bibinfo{person}{Alan~D Kalvin} {and}
+  \bibinfo{person}{Russell~H Taylor}.} \bibinfo{year}{1996}\natexlab{}.
+\newblock \showarticletitle{Superfaces: Polygonal mesh simplification with
+  bounded error}.
+\newblock \bibinfo{journal}{\emph{IEEE Computer Graphics and Applications}}
+  \bibinfo{volume}{16}, \bibinfo{number}{3} (\bibinfo{year}{1996}),
+  \bibinfo{pages}{64--77}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Katz and Tal}{Katz and Tal}{2003}]%
+        {katz2003hierarchical}
+\bibfield{author}{\bibinfo{person}{Sagi Katz} {and} \bibinfo{person}{Ayellet
+  Tal}.} \bibinfo{year}{2003}\natexlab{}.
+\newblock \showarticletitle{Hierarchical mesh decomposition using fuzzy
+  clustering and cuts}.
+\newblock \bibinfo{journal}{\emph{ACM transactions on graphics (TOG)}}
+  \bibinfo{volume}{22}, \bibinfo{number}{3} (\bibinfo{year}{2003}),
+  \bibinfo{pages}{954--961}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Kirillov, Mintun, Ravi, Mao, Rolland,
+  Gustafson, Xiao, Whitehead, Berg, Lo, et~al\mbox{.}}{Kirillov
+  et~al\mbox{.}}{2023}]%
+        {kirillov2023segment}
+\bibfield{author}{\bibinfo{person}{Alexander Kirillov}, \bibinfo{person}{Eric
+  Mintun}, \bibinfo{person}{Nikhila Ravi}, \bibinfo{person}{Hanzi Mao},
+  \bibinfo{person}{Chloe Rolland}, \bibinfo{person}{Laura Gustafson},
+  \bibinfo{person}{Tete Xiao}, \bibinfo{person}{Spencer Whitehead},
+  \bibinfo{person}{Alexander~C Berg}, \bibinfo{person}{Wan-Yen Lo},
+  {et~al\mbox{.}}} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Segment anything}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the IEEE/CVF international
+  conference on computer vision}}. \bibinfo{pages}{4015--4026}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Koch, Matveev, Jiang, Williams, Artemov,
+  Burnaev, Alexa, Zorin, and Panozzo}{Koch et~al\mbox{.}}{2019}]%
+        {koch2019abc}
+\bibfield{author}{\bibinfo{person}{Sebastian Koch}, \bibinfo{person}{Albert
+  Matveev}, \bibinfo{person}{Zhongshi Jiang}, \bibinfo{person}{Francis
+  Williams}, \bibinfo{person}{Alexey Artemov}, \bibinfo{person}{Evgeny
+  Burnaev}, \bibinfo{person}{Marc Alexa}, \bibinfo{person}{Denis Zorin}, {and}
+  \bibinfo{person}{Daniele Panozzo}.} \bibinfo{year}{2019}\natexlab{}.
+\newblock \showarticletitle{Abc: A big cad model dataset for geometric deep
+  learning}. In \bibinfo{booktitle}{\emph{Proceedings of the IEEE/CVF
+  conference on computer vision and pattern recognition}}.
+  \bibinfo{pages}{9601--9611}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Lavou{\'e}, Dupont, and Baskurt}{Lavou{\'e}
+  et~al\mbox{.}}{2005}]%
+        {lavoue2005new}
+\bibfield{author}{\bibinfo{person}{Guillaume Lavou{\'e}},
+  \bibinfo{person}{Florent Dupont}, {and} \bibinfo{person}{Atilla Baskurt}.}
+  \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{A new CAD mesh segmentation method, based on
+  curvature tensor analysis}.
+\newblock \bibinfo{journal}{\emph{Computer-Aided Design}} \bibinfo{volume}{37},
+  \bibinfo{number}{10} (\bibinfo{year}{2005}), \bibinfo{pages}{975--987}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{L\'{e}vy, Petitjean, Ray, and
+  Maillot}{L\'{e}vy et~al\mbox{.}}{2002}]%
+        {lscm}
+\bibfield{author}{\bibinfo{person}{Bruno L\'{e}vy}, \bibinfo{person}{Sylvain
+  Petitjean}, \bibinfo{person}{Nicolas Ray}, {and} \bibinfo{person}{J\'{e}rome
+  Maillot}.} \bibinfo{year}{2002}\natexlab{}.
+\newblock \showarticletitle{Least squares conformal maps for automatic texture
+  atlas generation}.
+\newblock \bibinfo{journal}{\emph{ACM Trans. Graph.}} \bibinfo{volume}{21},
+  \bibinfo{number}{3} (\bibinfo{date}{July} \bibinfo{year}{2002}),
+  \bibinfo{pages}{362–371}.
+\newblock
+\showISSN{0730-0301}
+\urldef\tempurl%
+\url{https://doi.org/10.1145/566654.566590}
+\showDOI{\tempurl}
+
+
+\bibitem[\protect\citeauthoryear{Li, Zhang, Zhang, Yang, Li, Zhong, Wang, Yuan,
+  Zhang, Hwang, et~al\mbox{.}}{Li et~al\mbox{.}}{2022}]%
+        {li2022grounded}
+\bibfield{author}{\bibinfo{person}{Liunian~Harold Li},
+  \bibinfo{person}{Pengchuan Zhang}, \bibinfo{person}{Haotian Zhang},
+  \bibinfo{person}{Jianwei Yang}, \bibinfo{person}{Chunyuan Li},
+  \bibinfo{person}{Yiwu Zhong}, \bibinfo{person}{Lijuan Wang},
+  \bibinfo{person}{Lu Yuan}, \bibinfo{person}{Lei Zhang},
+  \bibinfo{person}{Jenq-Neng Hwang}, {et~al\mbox{.}}}
+  \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Grounded language-image pre-training}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the IEEE/CVF conference on computer
+  vision and pattern recognition}}. \bibinfo{pages}{10965--10975}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Li, Kaufman, Kim, Solomon, and Sheffer}{Li
+  et~al\mbox{.}}{2018}]%
+        {li2018optcuts}
+\bibfield{author}{\bibinfo{person}{Minchen Li}, \bibinfo{person}{Danny~M
+  Kaufman}, \bibinfo{person}{Vladimir~G Kim}, \bibinfo{person}{Justin Solomon},
+  {and} \bibinfo{person}{Alla Sheffer}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Optcuts: Joint optimization of surface cuts and
+  parameterization}.
+\newblock \bibinfo{journal}{\emph{ACM transactions on graphics (TOG)}}
+  \bibinfo{volume}{37}, \bibinfo{number}{6} (\bibinfo{year}{2018}),
+  \bibinfo{pages}{1--13}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Liu, Zhang, Xu, Gotsman, and Gortler}{Liu
+  et~al\mbox{.}}{2008}]%
+        {liu2008local}
+\bibfield{author}{\bibinfo{person}{Ligang Liu}, \bibinfo{person}{Lei Zhang},
+  \bibinfo{person}{Yin Xu}, \bibinfo{person}{Craig Gotsman}, {and}
+  \bibinfo{person}{Steven~J Gortler}.} \bibinfo{year}{2008}\natexlab{}.
+\newblock \showarticletitle{A local/global approach to mesh parameterization}.
+  In \bibinfo{booktitle}{\emph{Computer graphics forum}},
+  Vol.~\bibinfo{volume}{27}. Wiley Online Library, \bibinfo{pages}{1495--1504}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Liu, Uy, Xiang, Su, Fidler, Sharp, and
+  Gao}{Liu et~al\mbox{.}}{2025}]%
+        {liu2025partfield}
+\bibfield{author}{\bibinfo{person}{Minghua Liu},
+  \bibinfo{person}{Mikaela~Angelina Uy}, \bibinfo{person}{Donglai Xiang},
+  \bibinfo{person}{Hao Su}, \bibinfo{person}{Sanja Fidler},
+  \bibinfo{person}{Nicholas Sharp}, {and} \bibinfo{person}{Jun Gao}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{PARTFIELD: Learning 3D Feature Fields for Part
+  Segmentation and Beyond}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2504.11451}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Liu, Aigerman, Kim, and Hanocka}{Liu
+  et~al\mbox{.}}{2023}]%
+        {liu2023wand}
+\bibfield{author}{\bibinfo{person}{Richard Liu}, \bibinfo{person}{Noam
+  Aigerman}, \bibinfo{person}{Vladimir~G Kim}, {and} \bibinfo{person}{Rana
+  Hanocka}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Da wand: Distortion-aware selection using neural
+  mesh parameterization}. In \bibinfo{booktitle}{\emph{Proceedings of the
+  IEEE/CVF Conference on Computer Vision and Pattern Recognition}}.
+  \bibinfo{pages}{16739--16749}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Liu and Zhang}{Liu and Zhang}{2007a}]%
+        {liu2007mesh}
+\bibfield{author}{\bibinfo{person}{Rong Liu} {and} \bibinfo{person}{Hao
+  Zhang}.} \bibinfo{year}{2007}\natexlab{a}.
+\newblock \showarticletitle{Mesh segmentation via spectral embedding and
+  contour analysis}. In \bibinfo{booktitle}{\emph{Computer Graphics Forum}},
+  Vol.~\bibinfo{volume}{26}. Wiley Online Library, \bibinfo{pages}{385--394}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Liu and Zhang}{Liu and Zhang}{2007b}]%
+        {Liu2007MeshSegmentation}
+\bibfield{author}{\bibinfo{person}{Rong Liu} {and} \bibinfo{person}{Hao
+  Zhang}.} \bibinfo{year}{2007}\natexlab{b}.
+\newblock \showarticletitle{Mesh Segmentation via Spectral Embedding and
+  Contour Analysis}.
+\newblock \bibinfo{journal}{\emph{Computer Graphics Forum (Proc. Eurographics
+  2007)}} \bibinfo{volume}{26}, \bibinfo{number}{3} (\bibinfo{year}{2007}),
+  \bibinfo{pages}{385--394}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.1111/j.1467-8659.2007.01061.x}
+\showDOI{\tempurl}
+
+
+\bibitem[\protect\citeauthoryear{Lorensen and Cline}{Lorensen and
+  Cline}{1998}]%
+        {lorensen1998marching}
+\bibfield{author}{\bibinfo{person}{William~E Lorensen} {and}
+  \bibinfo{person}{Harvey~E Cline}.} \bibinfo{year}{1998}\natexlab{}.
+\newblock \showarticletitle{Marching cubes: A high resolution 3D surface
+  construction algorithm}.
+\newblock In \bibinfo{booktitle}{\emph{Seminal graphics: pioneering efforts
+  that shaped the field}}. \bibinfo{pages}{347--353}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Mo, Zhu, Chang, Yi, Tripathi, Guibas, and
+  Su}{Mo et~al\mbox{.}}{2019}]%
+        {mo2019partnet}
+\bibfield{author}{\bibinfo{person}{Kaichun Mo}, \bibinfo{person}{Shilin Zhu},
+  \bibinfo{person}{Angel~X Chang}, \bibinfo{person}{Li Yi},
+  \bibinfo{person}{Subarna Tripathi}, \bibinfo{person}{Leonidas~J Guibas},
+  {and} \bibinfo{person}{Hao Su}.} \bibinfo{year}{2019}\natexlab{}.
+\newblock \showarticletitle{Partnet: A large-scale benchmark for fine-grained
+  and hierarchical part-level 3d object understanding}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the IEEE/CVF conference on computer
+  vision and pattern recognition}}. \bibinfo{pages}{909--918}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Morreale, Aigerman, Kim, and Mitra}{Morreale
+  et~al\mbox{.}}{2021}]%
+        {morreale2021neural}
+\bibfield{author}{\bibinfo{person}{Luca Morreale}, \bibinfo{person}{Noam
+  Aigerman}, \bibinfo{person}{Vladimir~G. Kim}, {and} \bibinfo{person}{Niloy~J.
+  Mitra}.} \bibinfo{year}{2021}\natexlab{}.
+\newblock \showarticletitle{Neural Surface Maps}. In
+  \bibinfo{booktitle}{\emph{Conference on Computer Vision and Pattern
+  Recognition}}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Mullen, Tong, Alliez, and Desbrun}{Mullen
+  et~al\mbox{.}}{2008}]%
+        {mullen2008spectral}
+\bibfield{author}{\bibinfo{person}{Patrick Mullen}, \bibinfo{person}{Yiying
+  Tong}, \bibinfo{person}{Pierre Alliez}, {and} \bibinfo{person}{Mathieu
+  Desbrun}.} \bibinfo{year}{2008}\natexlab{}.
+\newblock \showarticletitle{Spectral conformal parameterization}. In
+  \bibinfo{booktitle}{\emph{Computer Graphics Forum}},
+  Vol.~\bibinfo{volume}{27}. Wiley Online Library, \bibinfo{pages}{1487--1494}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Oh, Yuan, Wei, Shi, Xiang, Liu, and Su}{Oh
+  et~al\mbox{.}}{2025}]%
+        {oh2025pamo}
+\bibfield{author}{\bibinfo{person}{Seonghun Oh}, \bibinfo{person}{Xiaodi Yuan},
+  \bibinfo{person}{Xinyue Wei}, \bibinfo{person}{Ruoxi Shi},
+  \bibinfo{person}{Fanbo Xiang}, \bibinfo{person}{Minghua Liu}, {and}
+  \bibinfo{person}{Hao Su}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{PaMO: Parallel Mesh Optimization for
+  Intersection-Free Low-Poly Modeling on the GPU}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2509.05595}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Pietroni, Tarini, and Cignoni}{Pietroni
+  et~al\mbox{.}}{2009}]%
+        {pietroni2009almost}
+\bibfield{author}{\bibinfo{person}{Nico Pietroni}, \bibinfo{person}{Marco
+  Tarini}, {and} \bibinfo{person}{Paolo Cignoni}.}
+  \bibinfo{year}{2009}\natexlab{}.
+\newblock \showarticletitle{Almost isometric mesh parameterization through
+  abstract domains}.
+\newblock \bibinfo{journal}{\emph{IEEE Transactions on Visualization and
+  Computer Graphics}} \bibinfo{volume}{16}, \bibinfo{number}{4}
+  (\bibinfo{year}{2009}), \bibinfo{pages}{621--635}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Poranne, Tarini, Huber, Panozzo, and
+  Sorkine-Hornung}{Poranne et~al\mbox{.}}{2017}]%
+        {autoCuts}
+\bibfield{author}{\bibinfo{person}{Roi Poranne}, \bibinfo{person}{Marco
+  Tarini}, \bibinfo{person}{Sandro Huber}, \bibinfo{person}{Daniele Panozzo},
+  {and} \bibinfo{person}{Olga Sorkine-Hornung}.}
+  \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{{AutoCuts: Simultaneous Distortion and Cut
+  Optimization for UV Mapping}}.
+\newblock \bibinfo{journal}{\emph{ACM Transactions on Graphics}}
+  (\bibinfo{year}{2017}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Pothen, Simon, and Liou}{Pothen
+  et~al\mbox{.}}{1990}]%
+        {pothen1990partitioning}
+\bibfield{author}{\bibinfo{person}{Alex Pothen}, \bibinfo{person}{Horst~D
+  Simon}, {and} \bibinfo{person}{Kang-Pu Liou}.}
+  \bibinfo{year}{1990}\natexlab{}.
+\newblock \showarticletitle{Partitioning sparse matrices with eigenvectors of
+  graphs}.
+\newblock \bibinfo{journal}{\emph{SIAM journal on matrix analysis and
+  applications}} \bibinfo{volume}{11}, \bibinfo{number}{3}
+  (\bibinfo{year}{1990}), \bibinfo{pages}{430--452}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Pulla, Razdan, and Farin}{Pulla
+  et~al\mbox{.}}{2001}]%
+        {pulla2001improved}
+\bibfield{author}{\bibinfo{person}{Sandeep Pulla}, \bibinfo{person}{Anshuman
+  Razdan}, {and} \bibinfo{person}{Gerald Farin}.}
+  \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{Improved curvature estimation for watershed
+  segmentation of 3-dimensional meshes}.
+\newblock \bibinfo{journal}{\emph{IEEE Transactions on Visualization and
+  Computer Graphics}} \bibinfo{volume}{5}, \bibinfo{number}{4}
+  (\bibinfo{year}{2001}), \bibinfo{pages}{308--321}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Qian, Li, Peng, Mai, Hammoud, Elhoseiny, and
+  Ghanem}{Qian et~al\mbox{.}}{2022}]%
+        {qian2022pointnext}
+\bibfield{author}{\bibinfo{person}{Guocheng Qian}, \bibinfo{person}{Yuchen Li},
+  \bibinfo{person}{Houwen Peng}, \bibinfo{person}{Jinjie Mai},
+  \bibinfo{person}{Hasan Hammoud}, \bibinfo{person}{Mohamed Elhoseiny}, {and}
+  \bibinfo{person}{Bernard Ghanem}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Pointnext: Revisiting pointnet++ with improved
+  training and scaling strategies}.
+\newblock \bibinfo{journal}{\emph{Advances in neural information processing
+  systems}}  \bibinfo{volume}{35} (\bibinfo{year}{2022}),
+  \bibinfo{pages}{23192--23204}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Rabinovich, Poranne, Panozzo, and
+  Sorkine-Hornung}{Rabinovich et~al\mbox{.}}{2017}]%
+        {rabinovich2017scalable}
+\bibfield{author}{\bibinfo{person}{Michael Rabinovich}, \bibinfo{person}{Roi
+  Poranne}, \bibinfo{person}{Daniele Panozzo}, {and} \bibinfo{person}{Olga
+  Sorkine-Hornung}.} \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Scalable locally injective mappings}.
+\newblock \bibinfo{journal}{\emph{ACM Transactions on Graphics (TOG)}}
+  \bibinfo{volume}{36}, \bibinfo{number}{4} (\bibinfo{year}{2017}),
+  \bibinfo{pages}{1}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Ray and L{\'e}vy}{Ray and L{\'e}vy}{2003}]%
+        {Ray2003HierarchicalLS}
+\bibfield{author}{\bibinfo{person}{Nicolas Ray} {and} \bibinfo{person}{Bruno
+  L{\'e}vy}.} \bibinfo{year}{2003}\natexlab{}.
+\newblock \showarticletitle{Hierarchical least squares conformal map}.
+\newblock \bibinfo{journal}{\emph{11th Pacific Conference onComputer Graphics
+  and Applications, 2003. Proceedings.}} (\bibinfo{year}{2003}),
+  \bibinfo{pages}{263--270}.
+\newblock
+\urldef\tempurl%
+\url{https://api.semanticscholar.org/CorpusID:1121017}
+\showURL{%
+\tempurl}
+
+
+\bibitem[\protect\citeauthoryear{Roy}{Roy}{2023}]%
+        {roy2023neural}
+\bibfield{author}{\bibinfo{person}{Bruno Roy}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Neural ShDF: Reviving an Efficient and Consistent
+  Mesh Segmentation Method}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2306.11737}}
+  (\bibinfo{year}{2023}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Sander, Gortler, Snyder, and Hoppe}{Sander
+  et~al\mbox{.}}{2002}]%
+        {sander2002signal}
+\bibfield{author}{\bibinfo{person}{Pedro~V Sander}, \bibinfo{person}{Steven
+  Gortler}, \bibinfo{person}{John Snyder}, {and} \bibinfo{person}{Hugues
+  Hoppe}.} \bibinfo{year}{2002}\natexlab{}.
+\newblock \showarticletitle{Signal-specialized parameterization}.
+\newblock  (\bibinfo{year}{2002}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Sander, Snyder, Gortler, and Hoppe}{Sander
+  et~al\mbox{.}}{2001}]%
+        {sander2001texture}
+\bibfield{author}{\bibinfo{person}{Pedro~V Sander}, \bibinfo{person}{John
+  Snyder}, \bibinfo{person}{Steven~J Gortler}, {and} \bibinfo{person}{Hugues
+  Hoppe}.} \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{Texture mapping progressive meshes}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 28th annual conference on
+  Computer graphics and interactive techniques}}. \bibinfo{pages}{409--416}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Sander, Wood, Gortler, Snyder, and
+  Hoppe}{Sander et~al\mbox{.}}{2003}]%
+        {Sander2003MultiChartGI}
+\bibfield{author}{\bibinfo{person}{Pedro~V. Sander},
+  \bibinfo{person}{Zo{\"e}~J. Wood}, \bibinfo{person}{Steven~J. Gortler},
+  \bibinfo{person}{John~M. Snyder}, {and} \bibinfo{person}{Hugues Hoppe}.}
+  \bibinfo{year}{2003}\natexlab{}.
+\newblock \showarticletitle{Multi-Chart Geometry Images}. In
+  \bibinfo{booktitle}{\emph{Eurographics Symposium on Geometry Processing}}.
+\newblock
+\urldef\tempurl%
+\url{https://api.semanticscholar.org/CorpusID:4893489}
+\showURL{%
+\tempurl}
+
+
+\bibitem[\protect\citeauthoryear{Sawhney and Crane}{Sawhney and Crane}{2017}]%
+        {sawhney2017boundary}
+\bibfield{author}{\bibinfo{person}{Rohan Sawhney} {and} \bibinfo{person}{Keenan
+  Crane}.} \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Boundary first flattening}.
+\newblock \bibinfo{journal}{\emph{ACM Transactions on Graphics (ToG)}}
+  \bibinfo{volume}{37}, \bibinfo{number}{1} (\bibinfo{year}{2017}),
+  \bibinfo{pages}{1--14}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Sch{\"u}ller, Kavan, Panozzo, and
+  Sorkine-Hornung}{Sch{\"u}ller et~al\mbox{.}}{2013}]%
+        {schuller2013locally}
+\bibfield{author}{\bibinfo{person}{Christian Sch{\"u}ller},
+  \bibinfo{person}{Ladislav Kavan}, \bibinfo{person}{Daniele Panozzo}, {and}
+  \bibinfo{person}{Olga Sorkine-Hornung}.} \bibinfo{year}{2013}\natexlab{}.
+\newblock \showarticletitle{Locally injective mappings}. In
+  \bibinfo{booktitle}{\emph{Computer Graphics Forum}},
+  Vol.~\bibinfo{volume}{32}. Wiley Online Library, \bibinfo{pages}{125--135}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Sheffer and De~Sturler}{Sheffer and
+  De~Sturler}{2000}]%
+        {sheffer2000surface}
+\bibfield{author}{\bibinfo{person}{Alla Sheffer} {and} \bibinfo{person}{Eric
+  De~Sturler}.} \bibinfo{year}{2000}\natexlab{}.
+\newblock \bibinfo{title}{Surface Parameterization for Meshing by Triangulation
+  Flattenin}.
+\newblock
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Sheffer and de~Sturler}{Sheffer and
+  de~Sturler}{2001}]%
+        {sheffer2001parameterization}
+\bibfield{author}{\bibinfo{person}{Alla Sheffer} {and} \bibinfo{person}{Eric de
+  Sturler}.} \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{Parameterization of faceted surfaces for meshing
+  using angle-based flattening}.
+\newblock \bibinfo{journal}{\emph{Engineering with computers}}
+  \bibinfo{volume}{17} (\bibinfo{year}{2001}), \bibinfo{pages}{326--337}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Sheffer, L{\'e}vy, Mogilnitsky, and
+  Bogomyakov}{Sheffer et~al\mbox{.}}{2005}]%
+        {sheffer2005abf++}
+\bibfield{author}{\bibinfo{person}{Alla Sheffer}, \bibinfo{person}{Bruno
+  L{\'e}vy}, \bibinfo{person}{Maxim Mogilnitsky}, {and}
+  \bibinfo{person}{Alexander Bogomyakov}.} \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{ABF++: fast and robust angle based flattening}.
+\newblock \bibinfo{journal}{\emph{ACM Transactions on Graphics (TOG)}}
+  \bibinfo{volume}{24}, \bibinfo{number}{2} (\bibinfo{year}{2005}),
+  \bibinfo{pages}{311--330}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Sorkine and Alexa}{Sorkine and Alexa}{2007}]%
+        {sorkine2007rigid}
+\bibfield{author}{\bibinfo{person}{Olga Sorkine} {and} \bibinfo{person}{Marc
+  Alexa}.} \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{As-rigid-as-possible surface modeling}. In
+  \bibinfo{booktitle}{\emph{Symposium on Geometry processing}},
+  Vol.~\bibinfo{volume}{4}. Citeseer, \bibinfo{pages}{109--116}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Sorkine, Cohen-Or, Goldenthal, and
+  Lischinski}{Sorkine et~al\mbox{.}}{2002}]%
+        {sorkine2002bounded}
+\bibfield{author}{\bibinfo{person}{Olga Sorkine}, \bibinfo{person}{Daniel
+  Cohen-Or}, \bibinfo{person}{Rony Goldenthal}, {and} \bibinfo{person}{Dani
+  Lischinski}.} \bibinfo{year}{2002}\natexlab{}.
+\newblock \showarticletitle{Bounded-distortion piecewise mesh
+  parameterization}. In \bibinfo{booktitle}{\emph{IEEE Visualization, 2002. VIS
+  2002.}} IEEE, \bibinfo{pages}{355--362}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Srinivasan, Garbin, Verbin, Barron, and
+  Mildenhall}{Srinivasan et~al\mbox{.}}{2024}]%
+        {srinivasan2024nuvo}
+\bibfield{author}{\bibinfo{person}{Pratul~P Srinivasan},
+  \bibinfo{person}{Stephan~J Garbin}, \bibinfo{person}{Dor Verbin},
+  \bibinfo{person}{Jonathan~T Barron}, {and} \bibinfo{person}{Ben Mildenhall}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Nuvo: Neural uv mapping for unruly 3d
+  representations}. In \bibinfo{booktitle}{\emph{European Conference on
+  Computer Vision}}. Springer, \bibinfo{pages}{18--34}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Su, Cui, Qian, Lei, Zhang, Zhang, and Gu}{Su
+  et~al\mbox{.}}{2016}]%
+        {su2016area}
+\bibfield{author}{\bibinfo{person}{Kehua Su}, \bibinfo{person}{Li Cui},
+  \bibinfo{person}{Kun Qian}, \bibinfo{person}{Na Lei}, \bibinfo{person}{Junwei
+  Zhang}, \bibinfo{person}{Min Zhang}, {and} \bibinfo{person}{Xianfeng~David
+  Gu}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{Area-preserving mesh parameterization for
+  poly-annulus surfaces based on optimal mass transportation}.
+\newblock \bibinfo{journal}{\emph{Computer Aided Geometric Design}}
+  \bibinfo{volume}{46} (\bibinfo{year}{2016}), \bibinfo{pages}{76--91}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Takahashi, Wu, Saw, Lin, and Yen}{Takahashi
+  et~al\mbox{.}}{2011}]%
+        {takahashi2011optimized}
+\bibfield{author}{\bibinfo{person}{Shigeo Takahashi},
+  \bibinfo{person}{Hsiang-Yun Wu}, \bibinfo{person}{Seow~Hui Saw},
+  \bibinfo{person}{Chun-Cheng Lin}, {and} \bibinfo{person}{Hsu-Chun Yen}.}
+  \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Optimized topological surgery for unfolding 3d
+  meshes}. In \bibinfo{booktitle}{\emph{Computer graphics forum}},
+  Vol.~\bibinfo{volume}{30}. Wiley Online Library, \bibinfo{pages}{2077--2086}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Taubin}{Taubin}{1995}]%
+        {taubin1995signal}
+\bibfield{author}{\bibinfo{person}{Gabriel Taubin}.}
+  \bibinfo{year}{1995}\natexlab{}.
+\newblock \showarticletitle{A signal processing approach to fair surface
+  design}. In \bibinfo{booktitle}{\emph{Proceedings of the 22nd annual
+  conference on Computer graphics and interactive techniques}}.
+  \bibinfo{pages}{351--358}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Tutte}{Tutte}{1963}]%
+        {tutte1963draw}
+\bibfield{author}{\bibinfo{person}{William~Thomas Tutte}.}
+  \bibinfo{year}{1963}\natexlab{}.
+\newblock \showarticletitle{How to draw a graph}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the London Mathematical
+  Society}} \bibinfo{volume}{3}, \bibinfo{number}{1} (\bibinfo{year}{1963}),
+  \bibinfo{pages}{743--767}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Vu, Kim, Luu, Nguyen, and Yoo}{Vu
+  et~al\mbox{.}}{2022}]%
+        {vu2022softgroup}
+\bibfield{author}{\bibinfo{person}{Thang Vu}, \bibinfo{person}{Kookhoi Kim},
+  \bibinfo{person}{Tung~M Luu}, \bibinfo{person}{Thanh Nguyen}, {and}
+  \bibinfo{person}{Chang~D Yoo}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Softgroup for 3d instance segmentation on point
+  clouds}. In \bibinfo{booktitle}{\emph{Proceedings of the IEEE/CVF conference
+  on computer vision and pattern recognition}}. \bibinfo{pages}{2708--2717}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Xiang, Xu, Hasan, Hold-Geoffroy, Sunkavalli,
+  and Su}{Xiang et~al\mbox{.}}{2021}]%
+        {xiang2021neutex}
+\bibfield{author}{\bibinfo{person}{Fanbo Xiang}, \bibinfo{person}{Zexiang Xu},
+  \bibinfo{person}{Milos Hasan}, \bibinfo{person}{Yannick Hold-Geoffroy},
+  \bibinfo{person}{Kalyan Sunkavalli}, {and} \bibinfo{person}{Hao Su}.}
+  \bibinfo{year}{2021}\natexlab{}.
+\newblock \showarticletitle{Neutex: Neural texture mapping for volumetric
+  neural rendering}. In \bibinfo{booktitle}{\emph{Proceedings of the IEEE/CVF
+  Conference on Computer Vision and Pattern Recognition}}.
+  \bibinfo{pages}{7119--7128}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Xiang, Lv, Xu, Deng, Wang, Zhang, Chen, Tong,
+  and Yang}{Xiang et~al\mbox{.}}{2024}]%
+        {xiang2024structured}
+\bibfield{author}{\bibinfo{person}{Jianfeng Xiang}, \bibinfo{person}{Zelong
+  Lv}, \bibinfo{person}{Sicheng Xu}, \bibinfo{person}{Yu Deng},
+  \bibinfo{person}{Ruicheng Wang}, \bibinfo{person}{Bowen Zhang},
+  \bibinfo{person}{Dong Chen}, \bibinfo{person}{Xin Tong}, {and}
+  \bibinfo{person}{Jiaolong Yang}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Structured 3d latents for scalable and versatile 3d
+  generation}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2412.01506}}
+  (\bibinfo{year}{2024}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Xu, Yin, Qiu, Liu, Tong, and Han}{Xu
+  et~al\mbox{.}}{2023}]%
+        {xu2023sampro3d}
+\bibfield{author}{\bibinfo{person}{Mutian Xu}, \bibinfo{person}{Xingyilang
+  Yin}, \bibinfo{person}{Lingteng Qiu}, \bibinfo{person}{Yang Liu},
+  \bibinfo{person}{Xin Tong}, {and} \bibinfo{person}{Xiaoguang Han}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Sampro3d: Locating sam prompts in 3d for zero-shot
+  scene segmentation}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2311.17707}}
+  (\bibinfo{year}{2023}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Xu, Chen, Zhao, Wang, Zhou, and Lu}{Xu
+  et~al\mbox{.}}{2024}]%
+        {xu2024embodiedsam}
+\bibfield{author}{\bibinfo{person}{Xiuwei Xu}, \bibinfo{person}{Huangxing
+  Chen}, \bibinfo{person}{Linqing Zhao}, \bibinfo{person}{Ziwei Wang},
+  \bibinfo{person}{Jie Zhou}, {and} \bibinfo{person}{Jiwen Lu}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Embodiedsam: Online segment any 3d thing in real
+  time}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2408.11811}}
+  (\bibinfo{year}{2024}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Yamauchi, Gumhold, Zayer, and Seidel}{Yamauchi
+  et~al\mbox{.}}{2005}]%
+        {yamauchi2005mesh}
+\bibfield{author}{\bibinfo{person}{Hitoshi Yamauchi}, \bibinfo{person}{Stefan
+  Gumhold}, \bibinfo{person}{Rhaleb Zayer}, {and} \bibinfo{person}{Hans-Peter
+  Seidel}.} \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{Mesh segmentation driven by Gaussian curvature}.
+\newblock \bibinfo{journal}{\emph{The Visual Computer}}  \bibinfo{volume}{21}
+  (\bibinfo{year}{2005}), \bibinfo{pages}{659--668}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Yan, Yang, Shi, and Zhang}{Yan
+  et~al\mbox{.}}{2005}]%
+        {yan2005mesh}
+\bibfield{author}{\bibinfo{person}{Jingqi Yan}, \bibinfo{person}{Xin Yang},
+  \bibinfo{person}{Pengfei Shi}, {and} \bibinfo{person}{David Zhang}.}
+  \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{Mesh parameterization by minimizing the synthesized
+  distortion metric with the coefficient-optimizing algorithm}.
+\newblock \bibinfo{journal}{\emph{IEEE transactions on visualization and
+  computer graphics}} \bibinfo{volume}{12}, \bibinfo{number}{1}
+  (\bibinfo{year}{2005}), \bibinfo{pages}{83--92}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Yang, Huang, Guo, Lu, Wu, Lam, Cao, and
+  Liu}{Yang et~al\mbox{.}}{2024}]%
+        {yang2024sampart3d}
+\bibfield{author}{\bibinfo{person}{Yunhan Yang}, \bibinfo{person}{Yukun Huang},
+  \bibinfo{person}{Yuan-Chen Guo}, \bibinfo{person}{Liangjun Lu},
+  \bibinfo{person}{Xiaoyang Wu}, \bibinfo{person}{Edmund~Y Lam},
+  \bibinfo{person}{Yan-Pei Cao}, {and} \bibinfo{person}{Xihui Liu}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Sampart3d: Segment any part in 3d objects}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2411.07184}}
+  (\bibinfo{year}{2024}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Yang, Wu, He, Zhao, and Liu}{Yang
+  et~al\mbox{.}}{2023}]%
+        {yang2023sam3d}
+\bibfield{author}{\bibinfo{person}{Yunhan Yang}, \bibinfo{person}{Xiaoyang Wu},
+  \bibinfo{person}{Tong He}, \bibinfo{person}{Hengshuang Zhao}, {and}
+  \bibinfo{person}{Xihui Liu}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Sam3d: Segment anything in 3d scenes}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2306.03908}}
+  (\bibinfo{year}{2023}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Yi, Kim, Ceylan, Shen, Yan, Su, Lu, Huang,
+  Sheffer, and Guibas}{Yi et~al\mbox{.}}{2016}]%
+        {yi2016scalable}
+\bibfield{author}{\bibinfo{person}{Li Yi}, \bibinfo{person}{Vladimir~G Kim},
+  \bibinfo{person}{Duygu Ceylan}, \bibinfo{person}{I-Chao Shen},
+  \bibinfo{person}{Mengyan Yan}, \bibinfo{person}{Hao Su},
+  \bibinfo{person}{Cewu Lu}, \bibinfo{person}{Qixing Huang},
+  \bibinfo{person}{Alla Sheffer}, {and} \bibinfo{person}{Leonidas Guibas}.}
+  \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{A scalable active framework for region annotation
+  in 3d shape collections}.
+\newblock \bibinfo{journal}{\emph{ACM Transactions on Graphics (ToG)}}
+  \bibinfo{volume}{35}, \bibinfo{number}{6} (\bibinfo{year}{2016}),
+  \bibinfo{pages}{1--12}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Yin, Liu, Xiao, Cohen-Or, Huang, and Chen}{Yin
+  et~al\mbox{.}}{2024}]%
+        {yin2024sai3d}
+\bibfield{author}{\bibinfo{person}{Yingda Yin}, \bibinfo{person}{Yuzheng Liu},
+  \bibinfo{person}{Yang Xiao}, \bibinfo{person}{Daniel Cohen-Or},
+  \bibinfo{person}{Jingwei Huang}, {and} \bibinfo{person}{Baoquan Chen}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Sai3d: Segment any instance in 3d scenes}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the IEEE/CVF Conference on Computer
+  Vision and Pattern Recognition}}. \bibinfo{pages}{3292--3302}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Young}{Young}{2019}]%
+        {xatlas}
+\bibfield{author}{\bibinfo{person}{Jonathan Young}.}
+  \bibinfo{year}{2019}\natexlab{}.
+\newblock \bibinfo{title}{xatlas}.
+\newblock \bibinfo{howpublished}{\url{https://github.com/jpcy/xatlas}}.
+\newblock
+\newblock
+\shownote{Accessed: 2025-09-26.}
+
+
+\bibitem[\protect\citeauthoryear{Yueh, Lin, Wu, and Yau}{Yueh
+  et~al\mbox{.}}{2019}]%
+        {yueh2019novel}
+\bibfield{author}{\bibinfo{person}{Mei-Heng Yueh}, \bibinfo{person}{Wen-Wei
+  Lin}, \bibinfo{person}{Chin-Tien Wu}, {and} \bibinfo{person}{Shing-Tung
+  Yau}.} \bibinfo{year}{2019}\natexlab{}.
+\newblock \showarticletitle{A novel stretch energy minimization algorithm for
+  equiareal parameterizations}.
+\newblock \bibinfo{journal}{\emph{Journal of Scientific Computing}}
+  \bibinfo{volume}{78} (\bibinfo{year}{2019}), \bibinfo{pages}{1353--1386}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Zayer, L{\'e}vy, and Seidel}{Zayer
+  et~al\mbox{.}}{2007}]%
+        {zayer2007linear}
+\bibfield{author}{\bibinfo{person}{Rhaleb Zayer}, \bibinfo{person}{Bruno
+  L{\'e}vy}, {and} \bibinfo{person}{Hans-Peter Seidel}.}
+  \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{Linear angle based parameterization}. In
+  \bibinfo{booktitle}{\emph{Fifth Eurographics Symposium on Geometry
+  Processing-SGP 2007}}. Eurographics Association, \bibinfo{pages}{135--141}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Zhang, Mischaikow, and Turk}{Zhang
+  et~al\mbox{.}}{2005}]%
+        {zhang2005feature}
+\bibfield{author}{\bibinfo{person}{Eugene Zhang}, \bibinfo{person}{Konstantin
+  Mischaikow}, {and} \bibinfo{person}{Greg Turk}.}
+  \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{Feature-based surface parameterization and texture
+  mapping}.
+\newblock \bibinfo{journal}{\emph{ACM Transactions on Graphics (TOG)}}
+  \bibinfo{volume}{24}, \bibinfo{number}{1} (\bibinfo{year}{2005}),
+  \bibinfo{pages}{1--27}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Zhang, Hou, Wang, and He}{Zhang
+  et~al\mbox{.}}{2024}]%
+        {zhang2024flatten}
+\bibfield{author}{\bibinfo{person}{Qijian Zhang}, \bibinfo{person}{Junhui Hou},
+  \bibinfo{person}{Wenping Wang}, {and} \bibinfo{person}{Ying He}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Flatten Anything: Unsupervised Neural Surface
+  Parameterization}. In \bibinfo{booktitle}{\emph{Proc. NeurIPS}}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Zhao, Zhang, Hou, Xia, Wang, and He}{Zhao
+  et~al\mbox{.}}{2025}]%
+        {zhao2025flexpara}
+\bibfield{author}{\bibinfo{person}{Yuming Zhao}, \bibinfo{person}{Qijian
+  Zhang}, \bibinfo{person}{Junhui Hou}, \bibinfo{person}{Jiazhi Xia},
+  \bibinfo{person}{Wenping Wang}, {and} \bibinfo{person}{Ying He}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{FlexPara: Flexible Neural Surface
+  Parameterization}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2504.19210}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Zhou, Synder, Guo, and Shum}{Zhou
+  et~al\mbox{.}}{2004}]%
+        {zhou2004iso}
+\bibfield{author}{\bibinfo{person}{Kun Zhou}, \bibinfo{person}{John Synder},
+  \bibinfo{person}{Baining Guo}, {and} \bibinfo{person}{Heung-Yeung Shum}.}
+  \bibinfo{year}{2004}\natexlab{}.
+\newblock \showarticletitle{Iso-charts: stretch-driven mesh parameterization
+  using spectral analysis}. In \bibinfo{booktitle}{\emph{Proceedings of the
+  2004 Eurographics/ACM SIGGRAPH symposium on Geometry processing}}.
+  \bibinfo{pages}{45--54}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Zhou, Park, and Koltun}{Zhou
+  et~al\mbox{.}}{2018a}]%
+        {zhou2018open3d}
+\bibfield{author}{\bibinfo{person}{Qian-Yi Zhou}, \bibinfo{person}{Jaesik
+  Park}, {and} \bibinfo{person}{Vladlen Koltun}.}
+  \bibinfo{year}{2018}\natexlab{a}.
+\newblock \showarticletitle{Open3D: A modern library for 3D data processing}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:1801.09847}}
+  (\bibinfo{year}{2018}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Zhou, Park, and Koltun}{Zhou
+  et~al\mbox{.}}{2018b}]%
+        {Zhou2018}
+\bibfield{author}{\bibinfo{person}{Qian-Yi Zhou}, \bibinfo{person}{Jaesik
+  Park}, {and} \bibinfo{person}{Vladlen Koltun}.}
+  \bibinfo{year}{2018}\natexlab{b}.
+\newblock \showarticletitle{{Open3D}: {A} Modern Library for {3D} Data
+  Processing}.
+\newblock \bibinfo{journal}{\emph{arXiv:1801.09847}} (\bibinfo{year}{2018}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Łukasz Czyż}{Łukasz Czyż}{2025}]%
+        {uvpackmaster3}
+\bibfield{author}{\bibinfo{person}{3~Coords~Computing Łukasz Czyż}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{UVPackmaster 3: GPU Accelerated UV Packing Engine}.
+\newblock \bibinfo{howpublished}{\url{https://uvpackmaster.com/}}.
+\newblock
+\newblock
+\shownote{Accessed: 2025-05-21.}
+
+
+\end{thebibliography}

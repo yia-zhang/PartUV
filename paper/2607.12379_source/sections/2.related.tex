@@ -1,0 +1,125 @@
+\section{Related Work}
+
+% \subsection{UV Mapping and Seam Placement}
+
+% Surface parameterization, which maps a 3D mesh to a 2D domain, has a long history in computer graphics~\cite{floater2005surface, sheffer2006mesh}. 
+% Classical methods include fixed-boundary formulations~\cite{tutte1963draw}, free-boundary and conformal approaches~\cite{levy2002least, sheffer2001parameterization, sheffer2005abf, mullen2008spectral, sawhney2021boundary, ben2009conformal}, and distortion-minimizing or injectivity-preserving optimization methods~\cite{sorkine2007arap, hormann2000mips, rabinovich2017scalable, li2018optcuts, pietroni2010almost, digne2016area, chen2012optimizing}.
+% While effective at reducing distortion and enforcing injectivity, these methods are largely driven by handcrafted geometric objectives and do not model the semantic or functional seam-placement priors that artists embed in UV layouts.
+
+% Because parameterization quality depends heavily on how the surface is cut into UV islands, a large body of work has also studied seam placement explicitly.
+% Bottom-up methods grow and merge charts under distortion bounds~\cite{julius2005d, sorkine2002bounded, levy2001bounded, sander2003multi, carr2006rectangular}, forming the basis of practical tools such as xatlas~\cite{young2019xatlas} and Blender's Smart UV Project~\cite{blender}, but often produce over-fragmented atlases.
+% Other approaches derive cuts from spectral analysis~\cite{zhou2004iso}, geometric feature lines~\cite{zhang2005feature, carlsson2014optimized}, or variational objectives that balance seam complexity and mapping distortion~\cite{liu2007mesh, poranne2017autocuts, sharp2018variational, li2018optcuts}.
+% However, these methods remain geometry-driven and do not exploit the rich priors available in artist-authored UV datasets.
+
+% To overcome the limitations of purely geometry-driven methods, recent learning-based approaches have explored data-driven formulations for UV generation and seam prediction. 
+% Neural parameterization methods learn continuous surface-to-domain mappings or distortion-aware representations~\cite{groueix2018papier, morreale2021neural, zhao2024flexpara, srinivasan2024nuvo, zhang2024flatten, liu2024dawand}, but do not explicitly model artist-authored seam-layout priors. 
+% PartUV~\cite{wang2025partuv} incorporates semantic part cues into chart decomposition by grouping faces according to both distortion and feature similarity, but it still does not explicitly model the distribution of artist-authored seam layouts from data.
+% Seamcrafter~\cite{liu2025seamcrafter} addresses this via reinforcement learning to generate seams aligned with artist preferences, and concurrent seam-generation preprints, including SeamGPT~\cite{li2025seamgpt} and MeshTailor~\cite{ma2026meshtailor}, move closer to our setting by learning seams directly from data, but both rely on autoregressive generation. 
+% By contrast, our method directly learns a stochastic distribution over artist-authored seam layouts on mesh edges and predicts all seams simultaneously.
+
+% \subsection{Geometry-driven UV Mapping}
+
+% Surface parameterization, which maps a 3D mesh to a 2D domain, has a long history in computer graphics~\cite{floater2005surface, sheffer2006mesh}. 
+% Classical methods include fixed-boundary formulations~\cite{tutte1963draw}, free-boundary and conformal approaches~\cite{levy2002least, sheffer2001parameterization, sheffer2005abf, mullen2008spectral, sawhney2021boundary, ben2009conformal}, and distortion-minimizing or injectivity-preserving optimization methods~\cite{sorkine2007arap, hormann2000mips, rabinovich2017scalable, li2018optcuts, pietroni2010almost, digne2016area, chen2012optimizing}.
+% These methods remain effective for producing low-distortion and valid parameterizations.
+% However, they are primarily driven by handcrafted geometric objectives, such as angle preservation, area preservation, stretch minimization, or injectivity constraints, and therefore do not explicitly model the semantic or functional preferences that artists encode when placing seams.
+
+% Because parameterization quality depends heavily on how the surface is cut into UV islands, a large body of work has also studied seam placement and chart decomposition explicitly.
+% Bottom-up methods grow and merge charts under distortion bounds~\cite{julius2005d, sorkine2002bounded, levy2001bounded, sander2003multi, carr2006rectangular}, forming the basis of practical tools such as xatlas~\cite{young2019xatlas} and Blender's Smart UV Project~\cite{blender}.
+% These approaches are efficient and widely used, but often produce over-fragmented atlases.
+% Other methods derive cuts from spectral analysis~\cite{zhou2004iso}, geometric feature lines~\cite{zhang2005feature, carlsson2014optimized}, or variational objectives that balance seam complexity and mapping distortion~\cite{liu2007mesh, poranne2017autocuts, sharp2018variational, li2018optcuts}.
+% Although these methods improve the trade-off between seam length, chart structure, and parameterization distortion, they remain largely geometry-driven and do not exploit the rich priors available in artist-authored UV layouts.
+
+\subsection{Geometry-driven UV Mapping}
+
+Constructing a UV atlas requires determining both how to cut a surface into charts and how to flatten the resulting charts into a 2D domain. 
+A long line of work addresses these problems through handcrafted geometric objectives~\cite{floater2005surface, sheffer2006mesh}. 
+Classical surface parameterization methods include fixed-boundary formulations~\cite{tutte1963draw}, free-boundary and conformal approaches~\cite{levy2002least, sheffer2001parameterization, sheffer2005abf, mullen2008spectral, sawhney2021boundary, ben2009conformal}, and distortion-minimizing or injectivity-preserving optimization methods~\cite{sorkine2007arap, hormann2000mips, rabinovich2017scalable, li2018optcuts, pietroni2010almost, digne2016area, chen2012optimizing}.
+These methods are effective for producing low-distortion and valid parameterizations, but they mainly optimize the geometric quality of the 2D map, such as angle preservation, area preservation, stretch minimization, or injectivity.
+Because the choice of cuts strongly affects the parameterization domain and the structure of the resulting UV atlas, many geometry-driven methods also explicitly study seam placement and chart decomposition.
+Bottom-up methods grow and merge charts under distortion bounds~\cite{julius2005d, DBLP:conf/visualization/SorkineCGL02, sander2003multi, carr2006rectangular}, forming the basis of practical tools such as xatlas~\cite{young2019xatlas} and Blender's Smart UV Project~\cite{blender}.
+Other methods derive cuts from spectral analysis~\cite{zhou2004iso}, geometric feature lines~\cite{zhang2005feature, carlsson2014optimized}, or variational objectives that balance seam complexity and mapping distortion~\cite{liu2007mesh, poranne2017autocuts, sharp2018variational, li2018optcuts}.
+However, they remain driven by predefined geometric criteria, rather than the semantic and perceptual preferences reflected in artist-authored UV layouts.
+
+
+\subsection{Learning-based Surface Parameterization}
+
+Recent work has explored neural formulations for surface parameterization and UV generation.
+Neural parameterization methods learn continuous surface-to-domain mappings or distortion-aware representations~\cite{groueix2018papier, morreale2021neural, zhao2024flexpara, srinivasan2024nuvo, zhang2024flatten, liu2024dawand}.
+Although these methods use neural networks, they are typically optimized with self-supervised geometric objectives, such as distortion, reconstruction, or injectivity-related losses.
+Moreover, they commonly formulate UV generation as a point-wise mapping problem, where surface points or vertices are mapped continuously to 2D coordinates.
+This differs from our setting, which focuses on predicting a discrete seam layout on the mesh connectivity and thereby determining a chart decomposition before flattening.
+As a result, these methods mainly learn parameterizations or distortion-aware mappings, rather than modeling artist-authored seam distributions.
+
+More recent methods move closer to data-driven UV decomposition.
+PartUV~\cite{wang2025partuv} incorporates semantic part cues into chart decomposition by grouping faces according to both distortion and feature similarity.
+Strips as Tokens~\cite{xu2026strips} introduces an autoregressive mesh generation framework with native UV segmentation, but its UV decomposition is generated as part of mesh generation rather than predicted for an existing input mesh.Concurrent work also explores data-driven seam generation.
+SeamGPT~\cite{li2025seamgpt} and MeshTailor~\cite{ma2026meshtailor} learn seam layouts from data, while SeamCrafter~\cite{liu2025seamcrafter} further incorporates reinforcement learning to improve autoregressive seam generation.
+Our method instead formulates seam cutting as generation on the mesh edge graph, using flow matching to jointly produce the full seam layout for a given input mesh.
+
+% More recent methods move closer to seam prediction and chart decomposition.
+% PartUV~\cite{wang2025partuv} incorporates semantic part cues into chart decomposition by grouping faces according to both distortion and feature similarity.
+% However, it does not directly learn a stochastic distribution over artist-authored seam layouts.
+% Seamcrafter~\cite{liu2025seamcrafter} addresses artist-preferred seam generation through reinforcement learning, while concurrent seam-generation preprints, including SeamGPT~\cite{li2025seamgpt} and MeshTailor~\cite{ma2026meshtailor}, learn seams directly from data.
+% These methods represent an important step toward data-driven seam generation, but they rely on sequential or autoregressive generation procedures. In contrast, our method directly learns a stochastic distribution over artist-authored seam layouts on mesh edges.
+% Given a mesh, it predicts all seam decisions jointly through a flow-matching formulation, enabling non-autoregressive generation of coherent seam layouts that capture both global chart structure and local seam-placement cues.
+
+% \subsection{Generative Models on Meshes}
+
+% Recent progress in generative modeling on meshes has been largely driven by the challenge of representing complex mesh structure in a form amenable to generation. Autoregressive methods tokenize meshes into sequential representations~\cite{nash2020polygen, yan2022shapeformer, chen2024octgpt, siddiqui2024meshgpt, tang2025edgerunner, weng2025scaling, wu2024llamamesh, chen2025meshtron}, progressively improving fidelity and scalability through better tokenization and sequence design. More recent methods reduce the reliance on direct token-by-token generation over native mesh topology: diffusion and flow-based approaches operate on alternative 3D representations~\cite{alliegro2023polydiff, he2025meshcraft, zhao2023michelangelo, liu2024object64, zhang2023shape2vecset}, while TRELLIS~\cite{xiang2025structured,trellis2}, Hunyuan3D~\cite{zhao2025hunyuan3d,hunyuan25}, and TripoSG~\cite{li2025triposg} generate expressive intermediate 3D representations that can be decoded into meshes. Despite their differences in representation and generation mechanism, these methods all aim to synthesize new mesh geometry or topology from scratch. By contrast, our setting assumes a fixed input mesh graph and models a stochastic distribution over binary seam labels on its edges, making our task a mesh analysis problem rather than mesh synthesis.
+
+
+% \subsection{Generative Models on Meshes}
+
+% Recent progress in generative modeling on meshes has been largely driven by the challenge of representing complex mesh structure in a form amenable to generation. Autoregressive methods tokenize meshes into sequential representations~\cite{nash2020polygen, yan2022shapeformer, chen2024octgpt, siddiqui2024meshgpt, tang2025edgerunner, weng2025scaling, wu2024llamamesh, chen2025meshtron}, progressively improving fidelity and scalability through better tokenization and sequence design. More recent methods reduce the reliance on direct token-by-token generation over native mesh topology: diffusion and flow-based approaches operate on alternative 3D representations~\cite{alliegro2023polydiff, he2025meshcraft, zhao2023michelangelo, liu2024object64, zhang2023shape2vecset}, while TRELLIS~\cite{xiang2025structured,trellis2}, Hunyuan3D~\cite{zhao2025hunyuan3d,hunyuan25}, and TripoSG~\cite{li2025triposg} generate expressive intermediate 3D representations that can be decoded into meshes. Despite their differences in representation and generation mechanism, these methods all aim to synthesize new mesh geometry or topology from scratch. By contrast, our setting assumes a fixed input mesh graph and models a stochastic distribution over binary seam labels on its edges, making our task a mesh analysis problem rather than mesh synthesis.
+
+
+% \section{Related Work}
+
+% \subsection{UV Mapping and Seam Placement}
+
+% Surface parameterization, which maps a 3D mesh to a 2D domain, has a long history in computer graphics~\cite{floater2005surface, sheffer2006mesh}. 
+% Classical methods include fixed-boundary formulations based on Laplacian systems~\cite{tutte1963draw}, free-boundary approaches such as LSCM and ABF/ABF++~\cite{levy2002least, sheffer2001parameterization, sheffer2005abf}, and more recent optimization-based methods such as SLIM and OptCuts~\cite{rabinovich2017scalable, li2018optcuts}. 
+% While effective at reducing distortion and enforcing injectivity, these methods are largely driven by handcrafted geometric objectives and do not model the semantic or functional seam-placement priors that artists embed in UV layouts.
+
+% Because parameterization quality depends heavily on how the surface is cut into UV islands, a large body of work has also studied seam placement explicitly. 
+% Bottom-up methods grow and merge charts under distortion bounds~\cite{julius2005d, sorkine2002bounded}, forming the basis of practical tools such as xatlas~\cite{young2019xatlas} and Blender's Smart UV Project~\cite{blender}, but often produce over-fragmented atlases. 
+% Other approaches derive cuts from spectral analysis, feature lines, or variational objectives that balance seam complexity and mapping distortion~\cite{liu2007mesh, zhang2005feature, poranne2017autocuts, sharp2018variational, li2018optcuts}. 
+% However, these methods remain geometry-driven and do not exploit the rich priors available in artist-authored UV datasets.
+
+% To overcome the limitations of purely geometry-driven methods, recent learning-based approaches have explored data-driven formulations for UV generation and seam prediction. 
+% Neural parameterization methods such as AtlasNet~\cite{groueix2018papier}, Neural Surface Maps~\cite{morreale2021neural}, Nuvo~\cite{srinivasan2024nuvo}, and FAM~\cite{zhang2024flatten} learn continuous surface-to-domain mappings, but do not explicitly model artist-authored seam-layout priors. 
+% PartUV~\cite{wang2025partuv} incorporates semantic part cues into chart decomposition by grouping faces according to both distortion and feature similarity, but it still does not explicitly model the distribution of artist-authored seam layouts from data. 
+% Concurrent seam-generation preprints, including SeamGPT~\cite{li2025seamgpt} and MeshTailor~\cite{ma2026meshtailor}, move closer to our setting by learning seams directly from data, but both rely on autoregressive generation. 
+% By contrast, our method directly learns a stochastic distribution over artist-authored seam layouts on mesh edges and predicts all seams simultaneously.
+
+
+% More recent learning-based methods move beyond purely handcrafted geometric optimization, but most still do not explicitly model the distribution of artist-authored UV layouts from data. Neural parameterization approaches such as AtlasNet~\cite{groueix2018papier}, Neural Surface Maps~\cite{morreale2021neural}, and Nuvo~\cite{srinivasan2024nuvo} learn continuous mappings between 3D surfaces and 2D domains, but typically rely on per-shape optimization and are not naturally aligned with standard mesh-based UV pipelines that require explicit edge-level seams and discrete UV islands. The Flatten Anything Model (FAM)~\cite{zhang2024flatten} likewise learns surface parameterization through a bi-directional cycle-mapping framework, but follows a per-model fitting paradigm that limits generalization. PartUV~\cite{wang2025partuv} incorporates semantic part priors with geometric heuristics, but still depends on fixed decomposition rules and conventional flattening algorithms. Recent data-driven seam generation preprints, including SeamGPT~\cite{li2025seamgpt} and MeshTailor~\cite{ma2026meshtailor}, move closer to our setting by generating seams directly from data. However, both adopt autoregressive formulations: SeamGPT predicts seams in quantized coordinate space, which can lead to cuts that are not natively aligned with mesh edges, while MeshTailor traces seams sequentially on the mesh graph, coupling cut topology with generation order. In contrast, our method directly learns a stochastic distribution over artist-authored seam layouts on mesh edges, and predicts per-edge seam probabilities simultaneously via a diffusion process, thereby avoiding sequential generation-order dependency while producing mesh-aligned and topologically consistent seams by construction.
+
+% \subsection{Generative Models on Meshes}
+% % \paragraph{Generative models on meshes.}
+% Recent progress in generative modeling on meshes has been largely driven by the challenge of representing complex mesh structure in a form amenable to generation. PolyGen~\cite{nash2020polygen} establishes an early autoregressive formulation by factorizing mesh synthesis into sequential vertex and face prediction. MeshGPT~\cite{siddiqui2024meshgpt} advances this paradigm by introducing learned geometric tokens for triangle meshes, and later methods such as EdgeRunner~\cite{tang2025edgerunner} and BPT~\cite{weng2025scaling} further improve its efficiency and scalability through more compact tokenization and sequence design. More recent methods reduce the reliance on direct token-by-token generation over native mesh topology. PolyDiff~\cite{alliegro2023polydiff} applies discrete diffusion directly to polygonal meshes, while MeshCraft~\cite{he2025meshcraft} explores efficient mesh generation with flow-based diffusion transformers. 3DShape2VecSet~\cite{zhang2023shape2vecset} introduces a vector-set representation for generative 3D modeling, and TRELLIS~\cite{xiang2025structured,trellis2}, Hunyuan3D~\cite{zhao2025hunyuan3d,hunyuan25}, and TripoSG~\cite{li2025triposg} further develop this direction by generating expressive intermediate 3D representations that can be decoded into meshes. Despite their differences in representation and generation mechanism, these methods all aim to synthesize new mesh geometry or topology from scratch. By contrast, our setting assumes a fixed input mesh graph and models a stochastic distribution over binary seam labels on its edges, making our task a mesh analysis problem rather than mesh synthesis.
+% Generative modeling on structured domains has been studied extensively for graphs and, more recently, meshes. 
+% Early graph generative models were mainly autoregressive: GraphRNN~\cite{you2018graphrnn} generates graphs as sequences of nodes and edges, while GRAN~\cite{liao2019gran} improves scalability through block-wise autoregressive decoding. 
+% More recent methods adopt denoising-based formulations. EDP-GNN~\cite{niu2020permutation} and GDSS~\cite{jo2022gdss} define score-based generative models over continuous node and edge representations, while DiGress~\cite{vignac2023digress} applies discrete diffusion to categorical graph structures. For molecules with 3D geometry, equivariant generative models such as EDM~\cite{hoogeboom2022equivariant} and MiDi~\cite{vignac2023midi} jointly model atom types and coordinates under rotational symmetry.
+
+% Generative modeling on meshes has mostly focused on shape synthesis rather than analysis on a given mesh. PolyGen~\cite{nash2020polygen} autoregressively generates mesh vertices and faces, and MeshGPT~\cite{siddiqui2024meshgpt} combines a learned codebook with a transformer for triangle-mesh generation. 
+% In all these methods, the graph or mesh structure itself is synthesized from scratch. By contrast, in our setting the mesh connectivity is fixed, and the goal is to model a distribution over binary seam labels on mesh edges. Our formulation is therefore closer to structured label generation on a fixed domain than to graph or mesh synthesis. To this end, we adopt Flow Matching~\cite{lipman2023flow} to learn a continuous generative process over per-edge seam labels on the input mesh graph.
+
+% Diffusion models~\cite{ho2020denoising, song2021scorebased} learn to reverse a gradual noising process and have achieved state-of-the-art results in image synthesis~\cite{rombach2022high} and 3D content creation.
+% Flow Matching~\cite{lipman2023flow} reformulates the generative process as regressing a velocity field along an optimal-transport probability path, providing simulation-free training with improved stability.
+% While most generative modeling research has focused on regular domains such as images, voxels, or point clouds, a parallel line of work extends these ideas to graph-structured data.
+
+% % TODO: Verify the citations in this paragraph (GraphRNN, GRAN, EDP-GNN, GDSS,
+% % EDM, MiDi, Analog Bits) — venues, authors, and titles were added by Claude
+% % based on prior knowledge and should be double-checked against the original
+% % papers before submission.
+% Early graph generative models relied on autoregressive factorizations: GraphRNN~\cite{you2018graphrnn} generates graphs as sequences of nodes and edges, and GRAN~\cite{liao2019gran} improves scalability via block-wise autoregressive decoding.
+% More recent diffusion-based approaches cast graph generation as an iterative denoising process.
+% EDP-GNN~\cite{niu2020permutation} and GDSS~\cite{jo2022gdss} define score-based models over continuous adjacency and node features, while DiGress~\cite{vignac2023digress} applies discrete denoising diffusion directly to categorical node and edge types and has become a standard baseline for molecule and general graph generation.
+% For molecules with 3D coordinates, equivariant diffusion models such as EDM~\cite{hoogeboom2022equivariant} and MiDi~\cite{vignac2023midi} jointly generate atom types and geometries under rotation equivariance.
+% These methods, however, all target \emph{graph synthesis}---the graph topology itself is sampled from scratch.
+% In contrast, the mesh graph in our setting is given, and the task is to generate a distribution over \emph{labels} (seam or not) on a fixed set of edges, closer in spirit to denoising diffusion for dense prediction over discrete targets~\cite{chen2023analog}, but adapted to mesh-edge features with geometric structure.
+% Applications of generative models to 3D meshes have primarily focused on shape synthesis: PolyGen~\cite{nash2020polygen} autoregressively generates mesh vertices and faces, and MeshGPT~\cite{siddiqui2024meshgpt} combines a learned codebook with a transformer for triangle mesh generation.
+% These methods synthesize the mesh topology end to end but do not address the downstream analysis tasks that operate on an existing mesh, such as UV unwrapping.
+% Our work brings flow matching into the domain of mesh \emph{analysis} rather than synthesis, formulating UV seam prediction as a continuous denoising process over per-edge labels on a fixed mesh graph.

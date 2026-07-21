@@ -1,0 +1,133 @@
+\begin{thebibliography}{10}
+
+\bibitem{bazazian2021edc}
+D.~Bazazian and M.~E. Par{\'e}s.
+\newblock Edc-net: Edge detection capsule network for 3d point clouds.
+\newblock {\em Applied Sciences}, 11(4):1833, 2021.
+
+\bibitem{objaverseXL}
+M.~Deitke, R.~Liu, M.~Wallingford, H.~Ngo, O.~Michel, A.~Kusupati, A.~Fan, C.~Laforte, V.~Voleti, S.~Y. Gadre, E.~VanderBilt, A.~Kembhavi, C.~Vondrick, G.~Gkioxari, K.~Ehsani, L.~Schmidt, and A.~Farhadi.
+\newblock Objaverse-xl: A universe of 10m+ 3d objects.
+\newblock {\em arXiv preprint arXiv:2307.05663}, 2023.
+
+\bibitem{objaverse}
+M.~Deitke, D.~Schwenk, J.~Salvador, L.~Weihs, O.~Michel, E.~VanderBilt, L.~Schmidt, K.~Ehsani, A.~Kembhavi, and A.~Farhadi.
+\newblock Objaverse: A universe of annotated 3d objects.
+\newblock {\em arXiv preprint arXiv:2212.08051}, 2022.
+
+\bibitem{floater2005surface}
+M.~S. Floater and K.~Hormann.
+\newblock Surface parameterization: a tutorial and survey.
+\newblock {\em Advances in multiresolution for geometric modelling}, pages 157--186, 2005.
+
+\bibitem{fu20213d}
+H.~Fu, R.~Jia, L.~Gao, M.~Gong, B.~Zhao, S.~Maybank, and D.~Tao.
+\newblock 3d-future: 3d furniture shape with texture.
+\newblock {\em International Journal of Computer Vision}, pages 1--25, 2021.
+
+\bibitem{hamilton2017inductive}
+W.~Hamilton, Z.~Ying, and J.~Leskovec.
+\newblock Inductive representation learning on large graphs.
+\newblock {\em Advances in neural information processing systems}, 30, 2017.
+
+\bibitem{hao2024meshtron}
+Z.~Hao, D.~W. Romero, T.-Y. Lin, and M.-Y. Liu.
+\newblock Meshtron: High-fidelity, artist-like 3d mesh generation at scale.
+\newblock {\em arXiv preprint arXiv:2412.09548}, 2024.
+
+\bibitem{himeur2021pcednet}
+C.-E. Himeur, T.~Lejemble, T.~Pellegrini, M.~Paulin, L.~Barthe, and N.~Mellado.
+\newblock Pcednet: A lightweight neural network for fast and interactive edge detection in 3d point clouds.
+\newblock {\em ACM Transactions on Graphics (TOG)}, 41(1):1--21, 2021.
+
+\bibitem{horn1987closed}
+B.~K. Horn.
+\newblock Closed-form solution of absolute orientation using unit quaternions.
+\newblock {\em Journal of the optical society of America A}, 4(4):629--642, 1987.
+
+\bibitem{jiang2017simplicial}
+Z.~Jiang, S.~Schaefer, and D.~Panozzo.
+\newblock Simplicial complex augmentation framework for bijective maps.
+\newblock {\em ACM Transactions on Graphics}, 36(6), 2017.
+
+\bibitem{levy2023least}
+B.~L{\'e}vy, S.~Petitjean, N.~Ray, and J.~Maillot.
+\newblock Least squares conformal maps for automatic texture atlas generation.
+\newblock In {\em Seminal Graphics Papers: Pushing the Boundaries, Volume 2}, pages 193--202. Arxiv, 2023.
+
+\bibitem{li2018optcuts}
+M.~Li, D.~M. Kaufman, V.~G. Kim, J.~Solomon, and A.~Sheffer.
+\newblock Optcuts: Joint optimization of surface cuts and parameterization.
+\newblock {\em ACM transactions on graphics (TOG)}, 37(6):1--13, 2018.
+
+\bibitem{li2025auto}
+Y.~Li, V.~Cheung, X.~Liu, Y.~Chen, Z.~Luo, B.~Lei, H.~Weng, Z.~Zhao, J.~Huang, Z.~Chen, et~al.
+\newblock Auto-regressive surface cutting.
+\newblock {\em arXiv preprint arXiv:2506.18017}, 2025.
+
+\bibitem{lutkepohl2013vector}
+H.~L{\"u}tkepohl.
+\newblock Vector autoregressive models.
+\newblock In {\em Handbook of research methods and applications in empirical macroeconomics}, pages 139--164. Edward Elgar Publishing, 2013.
+
+\bibitem{rabinovich2017scalable}
+M.~Rabinovich, R.~Poranne, D.~Panozzo, and O.~Sorkine-Hornung.
+\newblock Scalable locally injective mappings.
+\newblock {\em ACM Transactions on Graphics (TOG)}, 36(4):1, 2017.
+
+\bibitem{sara2019image}
+U.~Sara, M.~Akter, and M.~S. Uddin.
+\newblock Image quality assessment through fsim, ssim, mse and psnr—a comparative study.
+\newblock {\em Journal of Computer and Communications}, 7(3):8--18, 2019.
+
+\bibitem{sheffer2005abf++}
+A.~Sheffer, B.~L{\'e}vy, M.~Mogilnitsky, and A.~Bogomyakov.
+\newblock Abf++: fast and robust angle based flattening.
+\newblock {\em ACM Transactions on Graphics (TOG)}, 24(2):311--330, 2005.
+
+\bibitem{sheffer2007mesh}
+A.~Sheffer, E.~Praun, K.~Rose, et~al.
+\newblock Mesh parameterization methods and their applications.
+\newblock {\em Foundations and Trends{\textregistered} in Computer Graphics and Vision}, 2(2):105--171, 2007.
+
+\bibitem{smith2015bijective}
+J.~Smith and S.~Schaefer.
+\newblock Bijective parameterization with free boundaries.
+\newblock {\em ACM Transactions on Graphics (TOG)}, 34(4):1--9, 2015.
+
+\bibitem{sorkine2002bounded}
+O.~Sorkine, D.~Cohen-Or, R.~Goldenthal, and D.~Lischinski.
+\newblock Bounded-distortion piecewise mesh parameterization.
+\newblock In {\em IEEE Visualization, 2002. VIS 2002.}, pages 355--362. IEEE, 2002.
+
+\bibitem{srinivasan2024nuvo}
+P.~P. Srinivasan, S.~J. Garbin, D.~Verbin, J.~T. Barron, and B.~Mildenhall.
+\newblock Nuvo: Neural uv mapping for unruly 3d representations.
+\newblock In {\em European Conference on Computer Vision}, pages 18--34. Springer, 2024.
+
+\bibitem{vaswani2017attention}
+A.~Vaswani, N.~Shazeer, N.~Parmar, J.~Uszkoreit, L.~Jones, A.~N. Gomez, {\L}.~Kaiser, and I.~Polosukhin.
+\newblock Attention is all you need.
+\newblock {\em Advances in neural information processing systems}, 30, 2017.
+
+\bibitem{wang2020pie}
+X.~Wang, Y.~Xu, K.~Xu, A.~Tagliasacchi, B.~Zhou, A.~Mahdavi-Amiri, and H.~Zhang.
+\newblock Pie-net: Parametric inference of point cloud edges.
+\newblock {\em Advances in neural information processing systems}, 33:20167--20178, 2020.
+
+\bibitem{yu2018ec}
+L.~Yu, X.~Li, C.-W. Fu, D.~Cohen-Or, and P.-A. Heng.
+\newblock Ec-net: an edge-aware point set consolidation network.
+\newblock In {\em Proceedings of the European conference on computer vision (ECCV)}, pages 386--402, 2018.
+
+\bibitem{zhang2024flatten}
+Q.~Zhang, J.~Hou, W.~Wang, and Y.~He.
+\newblock Flatten anything: unsupervised neural surface parameterization.
+\newblock {\em Advances in Neural Information Processing Systems}, 37:2830--2850, 2024.
+
+\bibitem{zhao2025hunyuan3d}
+Z.~Zhao, Z.~Lai, Q.~Lin, Y.~Zhao, H.~Liu, S.~Yang, Y.~Feng, M.~Yang, S.~Zhang, X.~Yang, et~al.
+\newblock Hunyuan3d 2.0: Scaling diffusion models for high resolution textured 3d assets generation.
+\newblock {\em arXiv preprint arXiv:2501.12202}, 2025.
+
+\end{thebibliography}

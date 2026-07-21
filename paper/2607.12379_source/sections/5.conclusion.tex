@@ -1,0 +1,23 @@
+\section{Conclusion, Limitations, and Future Work}
+We presented \methodname{}, a flow-matching generative framework that learns the distribution of artist-authored UV seam layouts directly on the mesh graph. By designing a Mesh Transformer backbone that interleaves local message passing along mesh edges with global self-attention over all vertices, \methodname{} captures both fine-grained geometric cues and long-range context required for production-quality seam placement. A training-free inpainting procedure inherited from the flow matching formulation enables both user-guided seam generation and iterative resolution of overlapping UV islands with a single pretrained model, without heuristic post-processing or auxiliary training objectives. Experiments show that \methodname{} produces seam layouts whose seam-structure and UV-island statistics closely match the ground-truth distribution, outperforming distortion-based and semantic-proxy baselines across quantitative metrics, qualitative comparisons, and user studies.
+
+Despite these results, several limitations remain. 
+First, evaluating whether a generated seam distribution closely matches the ground truth remains challenging. 
+There is still no direct and widely accepted metric for measuring distribution-level alignment with artist-authored seam layouts. 
+Although we use UV-layout statistics, VLM-based evaluation, and a user study as complementary evidence, designing better objective metrics for artist-aligned seam assessment remains an important direction for future work.
+Second, \methodname{} may occasionally produce invalid UV atlases. 
+In the worst case, a small number of problematic islands may require local fallback to traditional unwrapping methods.
+% Conditional inpainting can repair many local failures, but does not guarantee overlap-free or distortion-optimal results.
+Finally, our current implementation may exceed GPU memory for meshes with more than roughly 30K faces. 
+Future hierarchical graph designs could improve scalability to high-resolution assets.
+
+% Despite these results, several limitations remain. 
+% First, evaluating the perceptual quality of seam layouts remains challenging. 
+% While our structural seam and island statistics quantify several measurable properties of the generated layouts, they only serve as indirect proxies for alignment with artist-authored conventions. 
+% In particular, there is still no widely accepted numerical metric that directly measures whether a seam layout matches artist preferences in terms of semantic placement, visual unobtrusiveness, and practical editability. 
+% We therefore complement our quantitative evaluation with a user study, and we believe that designing better objective metrics for artist-aligned seam layout assessment is an important direction for future work.
+% Second, as a generative model, \methodname{} samples from a learned distribution, and occasional failure cases may still occur when the sampled seams deviate from artist-authored conventions or lead to invalid parameterizations. 
+% Although conditional inpainting can correct many local failures, it does not provide a formal guarantee of overlap-free or distortion-optimal UV maps. 
+% Finally, scalability to very high-resolution meshes remains limited. 
+% In our current implementation, meshes with more than roughly 30K faces can exceed GPU memory, limiting direct application to very high-resolution production assets. 
+% Future work could explore hierarchical, patch-based, or coarse-to-fine graph representations to reduce memory consumption and enable seam generation on larger meshes.

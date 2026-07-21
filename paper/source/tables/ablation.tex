@@ -1,0 +1,49 @@
+% \begin{table}[t]
+%   \centering
+%   \scriptsize
+%   \setlength{\tabcolsep}{1pt}
+%   \vspace{-1em}
+%   \caption{\textbf{Ablation study conducted on the Trellis dataset.}}
+%   \vspace{-2em}
+%     \begin{tabular}{c|c|rrrrrr}
+%     \toprule
+%    &  \multirow{2}[2]{*}{version} & \multicolumn{1}{c}{average} & \multicolumn{1}{c}{median} & \multicolumn{1}{c}{area} & \multicolumn{1}{c}{angular} & \multicolumn{1}{c}{seam} & \multicolumn{1}{c}{\multirow{2}[2]{*}{time }} \\
+%       id &    & \multicolumn{1}{c}{ \# charts $\downarrow$} & \multicolumn{1}{c}{ \# charts $\downarrow$} & \multicolumn{1}{c}{distort.$\downarrow$} & \multicolumn{1}{c}{distort.$\uparrow$} & \multicolumn{1}{c}{  length $\downarrow$} &  \\
+%     \midrule
+%     a & fixed 20 parts & 397.02 & 223.00 & 2.18  & 0.9687 & 66.42 & 207.75 \\
+%     b & replace PF feat. with face normal & 574.43 & 259.50 & 1.28  & 0.9708 & 64.46 & 83.67 \\
+%     c & no merge & 763.74 & 270.50 & 1.30  & 0.9607 & 62.75 & 38.00 \\
+%     d & no recursion & 928.23 & 237.00 & 1.31  & 0.9630 & 59.17 & 40.66 \\
+%     e & no distortion surrogate & 575.31 & 216.50 & 1.24  & 0.9632 &  57.88 & 61.48 \\
+%     f & full  & 538.81 & 221.50 & 1.30  & 0.9609 & 57.92 & 41.88 \\
+%     \bottomrule
+%     \end{tabular}%
+%     \vspace{-0.5em}
+%   \label{tab:ablation}%
+% \end{table}%
+
+\begin{table}[t]
+  \centering
+  \scriptsize
+  \setlength{\tabcolsep}{1pt}
+  \vspace{-1em}
+  
+  \caption{\textbf{Ablation study conducted on the Trellis dataset.}}
+  \vspace{-2em}
+    \begin{tabular}{c|c|rrrrrr}
+    \toprule
+   &  \multirow{2}[2]{*}{version} & \multicolumn{1}{c}{average} & \multicolumn{1}{c}{median} & \multicolumn{1}{c}{area} & \multicolumn{1}{c}{angular} & \multicolumn{1}{c}{seam} & \multicolumn{1}{c}{\multirow{2}[2]{*}{time }} \\
+      id &    & \multicolumn{1}{c}{ \# charts $\downarrow$} & \multicolumn{1}{c}{ \# charts $\downarrow$} & \multicolumn{1}{c}{distort.$\downarrow$} & \multicolumn{1}{c}{distort.$\uparrow$} & \multicolumn{1}{c}{  length $\downarrow$} &  \\
+    \midrule
+    a & fixed 20 parts & 397.02 & 223.00 & 2.18  & 0.9687 & 66.42 & 207.75 \\
+    b & replace PF feat. with face normal & 574.43 & 259.50 & 1.28  & 0.9708 & 64.46 & 83.67 \\
+    c & no merge & 778.64 & 299.50 & 1.42  & 0.9815 & 63.25 & 24.59 \\
+    d & no recursion & 633.29 & 255.50 & 1.35  & 0.9822 & 61.02 & 33.82 \\
+    e & no distortion surrogate & 580.52 & 248.00 & 1.25  & 0.9822 & 60.98 & 32.88 \\
+    f & full  & 568.75 & 233.50 & 1.37  & 0.9811 & 59.85 & 26.03 \\
+    \bottomrule
+    
+    \end{tabular}%
+    \vspace{-0.5em}
+  \label{tab:ablation}%
+\end{table}%

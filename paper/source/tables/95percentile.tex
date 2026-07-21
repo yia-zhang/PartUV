@@ -1,0 +1,34 @@
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{6pt}
+\caption{\textbf{95th-percentile area distortion metrics across four datasets.}}
+\vspace{-2em}
+\begin{tabular}{c|c|ccc}
+\toprule
+\textbf{Dataset} & \textbf{Metric} & \textbf{Blender} & \textbf{xatlas} & \textbf{ours} \\
+\midrule
+\multicolumn{1}{c|}{\multirow{2}{*}{\textbf{ABC}}}
+& distortion 95th-shape $\downarrow$    &  1.175 & 1.726 & 1.273 \\
+\multicolumn{1}{c|}{}
+& distortion 95th-chart $\downarrow$           & 1.093 & 1.041 & 1.133 \\
+\midrule
+\multicolumn{1}{c|}{\multirow{2}{*}{\textbf{Common Shapes}}}
+& distortion 95th-shape $\downarrow$      & 1.885 & 1.504 & 1.404 \\
+\multicolumn{1}{c|}{}
+& distortion 95th-chart $\downarrow$           & 1.139 & 1.131 & 1.169 \\
+\midrule
+\multicolumn{1}{c|}{\multirow{2}{*}{\textbf{PartObjaverseTiny}}}
+& distortion 95th-shape $\downarrow$      & 1.728 & 1.286 & 1.271 \\
+\multicolumn{1}{c|}{}
+& distortion 95th-chart $\downarrow$           & 1.132 & 1.079 & 1.116 \\
+\midrule
+\multicolumn{1}{c|}{\multirow{2}{*}{\textbf{Trellis}}}
+& distortion 95th-shape $\downarrow$      & 1.319 & 4.701 & 1.442 \\
+\multicolumn{1}{c|}{}
+& distortion 95th-chart $\downarrow$           & 1.120 & 1.099 & 1.220 \\
+\bottomrule
+\end{tabular}
+\label{tab:95percentile}
+\vspace{-0.2em}
+\end{table}

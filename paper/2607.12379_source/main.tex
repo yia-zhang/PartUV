@@ -1,0 +1,135 @@
+% CVPR 2026 Paper Template — arXiv version
+% see https://github.com/cvpr-org/author-kit
+
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+% Pass options to packages loaded internally by cvpr.sty
+\PassOptionsToPackage{table}{xcolor}
+
+%%%%%%%%% PAPER TYPE
+% \usepackage{cvpr}              % To produce the CAMERA-READY version
+% \usepackage[review]{cvpr}      % To produce the REVIEW version
+\usepackage[pagenumbers]{cvpr}   % arXiv version: non-anonymous, with page numbers
+
+% Include additional packages here, before hyperref.
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{realboxes}
+\usepackage[ruled]{algorithm2e}
+\renewcommand{\algorithmcfname}{ALGORITHM}
+\SetAlFnt{\small}
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetAlCapHSkip{0pt}
+
+\definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
+\usepackage[pagebackref,breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
+
+\usepackage[capitalize]{cleveref}
+\usepackage{capt-of}   % for \captionof used in the teaser strip
+\crefname{section}{Sec.}{Secs.}
+\Crefname{section}{Section}{Sections}
+\Crefname{table}{Table}{Tables}
+\crefname{table}{Tab.}{Tabs.}
+
+% Method name — change once here to update everywhere
+\newcommand{\methodname}{SeamGen}
+
+\newcommand{\tightcolorbox}[2]{%
+  \begingroup
+  \setlength{\fboxsep}{1pt}%
+  \colorbox{#1}{#2}%
+  \endgroup
+}
+
+\definecolor{valueColor}{RGB}{235, 245, 255}
+\definecolor{gtColor}{RGB}{255, 245, 235}
+\newcommand{\lyt}[1]{\textcolor{blue}{#1}}
+
+%%%%%%%%% PAPER ID  (arXiv: not used for review, keep placeholder)
+\def\paperID{0000}
+\def\confName{CVPR}
+\def\confYear{2026}
+
+
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{\methodname: Artist-Aligned UV Seam Generation via Graph Flow Matching}
+
+%%%%%%%%% AUTHORS - PLEASE FILL IN
+% Multi-author, two-institution layout.
+% - Use $^{1}$, $^{2}$ superscripts on names to mark affiliation.
+% - Corresponding author: add $^{\dagger}$ (or {*}) and explain via \thanks or footnote.
+% - Emails: list the ones you want to show; comma-separate.
+\author{%
+  Hao Xu$^{1}$ \quad
+  Yuqing Zhang$^{1}$ \quad
+  Yiqian Wu$^{1}$ \quad
+  Xueqi Ma$^{2}$ \quad
+  Ding Liang$^{2}$ \quad
+  Yan-Pei Cao$^{2}$
+  \\[0.3em]
+  Ying-Tian Liu$^{2}$ \quad
+  Xiaogang Jin$^{1}$\thanks{Corresponding author.}
+  \\[0.4em]
+  $^{1}$State Key Lab of CAD\&CG, Zhejiang University \quad
+  $^{2}$VAST
+}
+
+\twocolumn[{%
+  \begin{@twocolumnfalse}
+    \maketitle
+    \begin{center}
+      \centering
+      \includegraphics[width=0.99\textwidth]{figures/teaser_new.pdf}
+      \captionof{figure}{%
+        \textbf{\methodname{} generates UV seams that match artist conventions.}
+        Instead of relying on hand-crafted distortion objectives for optimization, \methodname{} models the distribution of artist-authored seam layouts on irregular mesh graphs, generating coherent seam paths and well-structured UV islands that preserve semantic parts, reduce unnecessary fragmentation, place seams away from visually salient regions, and better support texture authoring in practice.%
+      }\label{fig:teaser}
+    \end{center}
+    \vspace{1em}
+  \end{@twocolumnfalse}
+}]
+
+\input{sections/0.abstract}
+
+%%%%%%%%% BODY TEXT
+\input{sections/1.intro}
+
+\input{sections/2.related}
+\input{sections/3.method}
+\input{sections/4.experiments}
+\input{sections/5.conclusion}
+
+%%%%%%%%% REFERENCES
+{
+    \small
+    \bibliographystyle{ieeenat_fullname}
+    \bibliography{main}
+}
+
+\begin{figure*}[p]
+    \centering
+    \includegraphics[width=\linewidth]{figures/qualitative.pdf}
+    \caption{\textbf{Qualitative comparison} of UV unwrapping results on representative meshes. From left to right, we show the results of Blender~\cite{blender}, xatlas~\cite{young2019xatlas}, OptCuts~\cite{li2018optcuts}, PartUV~\cite{wang2025partuv}, and \methodname{} (ours). For each method, we visualize the seam layout on the mesh and its corresponding UV map; seam edges are highlighted in red. Compared with the baselines, \methodname{} produces more complete and coherent seam layouts, yielding UV atlases that more closely resemble artist-authored references.}
+    \label{fig:qualitative}
+\end{figure*}
+
+\begin{figure*}[p]
+    \centering
+    \includegraphics[width=0.96\linewidth]{figures/sym.pdf}
+    \caption{\textbf{Qualitative results of symmetric seam layouts and downstream texturing.} We show that our method inherently respects the structural symmetry of input meshes during seam generation, enabling symmetric parts to share the same UV space after repacking. This significantly enhances texture utilization, providing a superior foundation for downstream UV-space texture generation and editing.}
+    \label{fig:sym}
+\end{figure*}
+
+\begin{figure*}[p]
+    \centering
+    \includegraphics[width=0.99\linewidth]{figures/part.pdf}
+    \caption{\textbf{Component-wise UV Seam Generation integrated with professional art workflows.} Although our model is primarily designed for meshes with moderate triangle counts, it perfectly adapts to professional production pipelines. In practice, artists typically decompose complex characters into multiple semantic parts (e.g., head, outfit, accessories) for UV unwrapping. Our method seamlessly integrates into this workflow, ensuring high-quality seam placement across all individual components.}
+    \label{fig:part}
+\end{figure*}
+
+\end{document}

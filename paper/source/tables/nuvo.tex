@@ -1,0 +1,37 @@
+\begin{table}[t]
+  \centering
+  \scriptsize
+  \setlength{\tabcolsep}{2.4pt}
+  \caption{\textbf{Quantitative comparison between Nuvo~\cite{srinivasan2024nuvo} and PartUV.}}
+  \vspace{-2em}
+    \begin{tabular}{c|c|cccccc}
+    \toprule
+      &       & \multicolumn{1}{c}{success}
+              & \multicolumn{1}{c}{average}
+              & \multicolumn{1}{c}{}
+              & \multicolumn{1}{c}{overall}
+              & \multicolumn{1}{c}{average}
+              &  \\
+% — Second header row: sub‐labels / units —
+              \multicolumn{1}{c|}{dataset}
+              & \multicolumn{1}{c|}{method}
+              & \multicolumn{1}{c}{rate}
+                  & \multicolumn{1}{c}{angular}
+                  & \multicolumn{1}{c}{area}
+                  & \multicolumn{1}{c}{area}
+                  & \multicolumn{1}{c}{\# of}
+                  & \multicolumn{1}{c}{time} \\
+        &
+        & \multicolumn{1}{c}{(\%)}
+        & \multicolumn{1}{c}{distortion $\uparrow$}
+        & \multicolumn{1}{c}{distortion $\downarrow$}
+        & \multicolumn{1}{c}{distortion $\downarrow$}
+        & \multicolumn{1}{c}{charts $\downarrow$}
+        & \multicolumn{1}{c}{ (s) } \\
+    \midrule
+    \multicolumn{1}{c|}{\multirow{2}[1]{*}{Common Shapes}} & nuvo  & 100.0 & 0.802 & 2.722 & \textcolor[rgb]{ .114,  .11,  .114}{1.940} & 17.0  & 2908.8 \\
+          & ours  & \textbf{100.0} & \textbf{0.987} & \textbf{1.281} & \textbf{1.128} & 24.4  & 52.3 \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:nuvo}%
+\end{table}%

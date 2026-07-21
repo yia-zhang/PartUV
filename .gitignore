@@ -4,7 +4,11 @@ code/data/
 code/data_calib/
 # 上游 PartUV 仓库(1.5GB, 自带 .git), 作为外部依赖引用
 code/PartUV/
-paper/
+# paper: 文本(tex/md/bib)与小 PDF 入库; 图片堆/tar.gz/大 PDF 排除
+paper/**/*.tar.gz
+paper/**/*.png
+paper/**/*.jpg
+paper/2511.16659.pdf
 MeshUV/datasets/cache/
 MeshUV/datasets/processed/
 MeshUV/datasets/rejected/

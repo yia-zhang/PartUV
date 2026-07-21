@@ -1,0 +1,159 @@
+\documentclass[acmtog]{acmart}
+\citestyle{acmauthoryear} 
+\acmSubmissionID{1207}
+
+\input{header}
+
+\usepackage{xspace}
+\usepackage{xcolor}
+\usepackage{float} 
+\usepackage{subcaption}    
+\usepackage{booktabs}
+
+\newcommand{\ourmodel}{PartUV\xspace}
+
+\author{Zhaoning Wang}
+\affiliation{
+  \institution{Hillbot Inc.}
+  \country{USA}
+}
+\email{zhaoning.eric.wang@gmail.com}
+
+\author{Xinyue Wei}
+\affiliation{
+  \institution{University of California San Diego}
+  \country{USA}
+}
+\affiliation{
+  \institution{Hillbot Inc.}
+  \country{USA}
+}
+\email{xiwei@ucsd.edu}
+
+\author{Ruoxi Shi}
+\affiliation{
+  \institution{University of California San Diego}
+  \country{USA}
+}
+\affiliation{
+  \institution{Hillbot Inc.}
+  \country{USA}
+}
+\email{r8shi@ucsd.edu}
+
+
+\author{Xiaoshuai Zhang}
+\affiliation{
+  \institution{Hillbot Inc.}
+  \country{USA}
+}
+\email{x@hillbot.ai}
+
+\author{Hao Su}
+\affiliation{
+  \institution{University of California San Diego}
+  \country{USA}
+}
+\affiliation{
+  \institution{Hillbot Inc.}
+  \country{USA}
+}
+\email{haosu@ucsd.edu}
+
+\author{Minghua Liu}
+\affiliation{
+  \institution{Hillbot Inc.}
+  \country{USA}
+}
+\email{m@hillbot.ai}
+
+\copyrightyear{2025}
+\acmYear{2025}
+\setcopyright{acmlicensed}\acmConference[SA Conference Papers '25]{SIGGRAPH Asia 2025 Conference Papers}{December 15--18, 2025}{Hong Kong, Hong Kong}
+\acmBooktitle{SIGGRAPH Asia 2025 Conference Papers (SA Conference Papers '25), December 15--18, 2025, Hong Kong, Hong Kong}
+\acmDOI{10.1145/3757377.3763843}
+\acmISBN{979-8-4007-2137-3/2025/12}
+
+
+\begin{CCSXML}
+<ccs2012>
+  <!-- Shape modeling / Shape analysis -->
+  <concept>
+    <concept_id>10010147.10010371.10010396.10010402</concept_id>
+    <concept_desc>Computing methodologies~Shape modeling~Shape analysis</concept_desc>
+    <concept_significance>500</concept_significance>
+  </concept>
+
+  <!-- Mesh geometry processing -->
+  <concept>
+    <concept_id>10010147.10010371.10010396.10010397</concept_id>
+    <concept_desc>Computing methodologies~Shape modeling~Mesh models~Mesh geometry processing</concept_desc>
+    <concept_significance>500</concept_significance>
+  </concept>
+
+  <!-- Parametrization (UV unwrapping) -->
+  <concept>
+    <concept_id>10010147.10010371.10010396.10010399</concept_id>
+    <concept_desc>Computing methodologies~Shape modeling~Mesh models~Parametrization</concept_desc>
+    <concept_significance>500</concept_significance>
+  </concept>
+
+  <!-- Computer graphics / Geometric algorithms -->
+  <concept>
+    <concept_id>10010147.10010371.10010396.10010398</concept_id>
+    <concept_desc>Computing methodologies~Shape modeling~Mesh models~Geometric algorithms</concept_desc>
+    <concept_significance>300</concept_significance>
+  </concept>
+
+  <!-- Parallel algorithms / efficiency -->
+  <concept>
+    <concept_id>10010147.10010178.10010205.10010206</concept_id>
+    <concept_desc>Computing methodologies~Parallel computing methodologies~Parallel algorithms</concept_desc>
+    <concept_significance>300</concept_significance>
+  </concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Shape modeling~Shape analysis}
+\ccsdesc[500]{Mesh models~Mesh geometry processing}
+\ccsdesc[500]{Mesh models~Parametrization}
+\ccsdesc[300]{Mesh models~Geometric algorithms}
+
+
+\begin{document}
+
+\title{PartUV: Part-Based UV Unwrapping of 3D Meshes}
+
+\begin{teaserfigure}
+  \includegraphics[width=\textwidth]{figures/partuv_teaser_small_.png}
+  \vspace{-2.5em}
+  \caption{We propose PartUV, a novel part-based UV unwrapping method for 3D meshes. Unlike traditional approaches that rely solely on local geometric priors and often produce over-fragmented charts, PartUV combines learned part priors with geometric cues to generate a small number of part-aligned charts. We evaluate our method on four diverse datasets—PartObjaverseTiny (man-made)~\cite{yang2024sampart3d}, Trellis (AI-generated)~\cite{xiang2024structured}, ABC (CAD)~\cite{koch2019abc}, and Common Shapes~\cite{jacobson_common3d_2023}—and show that it produces significantly less fragmented UV mappings while maintaining low distortion on par with baseline methods. Leveraging part-aware charts also enables applications such as generating one atlas per part.
+  }
+  \label{fig:teaser}
+\end{teaserfigure}
+
+\input{sections/abstract}
+
+\maketitle
+
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/method}
+\input{sections/experiment}
+\input{sections/conclusion}
+
+
+\clearpage
+\twocolumn[{%
+  {\sffamily\bfseries\Huge Appendix}
+  \par
+  \vspace{2em}
+}]
+\setcounter{section}{0}
+\renewcommand{\thesection}{A\arabic{section}} 
+\input{sections/appendix}
+
+\clearpage
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{bib}
+\end{document}

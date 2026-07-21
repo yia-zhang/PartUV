@@ -1,0 +1,50 @@
+% ------------------------------------------------------------------
+\begin{algorithm}[t]
+\caption{\textsc{PartTreeSearch}}
+\label{alg:search}
+\begin{algorithmic}[1]
+\Require $\mathcal{P}$ (a PartField subtree node), distortion threshold $\tau$, chart budget $B$
+\Ensure A \emph{UVChartSet} $\mathscr{C}=\{C_1, C_2, \cdots, C_k\}$ for $\mathcal{P}$'s mesh, whose charts $C_i$ have distortion $\le \tau$ and whose total chart count $k$ is $\le B$; return $\bot$ if no such set exists.
+
+\vspace{2pt}
+
+\Procedure{PartTreeSearch}{$\mathcal{P}$,\,$\tau$,\,$B$}
+    \If{$B < 1$}                          \Comment{budget exhausted}
+        \State \Return $\bot$
+    \EndIf
+% ------------------------------------------------------------------
+    \State $\mathcal{H}_1 \gets \Call{GenCandidatesH1}{\mathcal{P}.mesh,10}$ \Comment{Heuristic1} \label{line:heuristic1}
+    \ForAll{$\mathscr{C} \in \mathcal{H}_1$} \Comment{$\mathscr{C}$ is one of candidate $UVChartSet$}
+        \State \Call{ParameterizeABF}{$\mathscr{C}$}   \Comment{flatten and compute distortion}
+    \EndFor
+% ------------------------------------------------------------------
+    \If{$\min_{\mathscr{C}\in \mathcal{H}_1} \mathscr{C}.\text{dist} > \tau$}            \Comment{no admissible H1 candidate}
+        \State $L \gets \Call{PartTreeSearch}{\mathcal{P}.left\_child ,\tau, \infty\,}$
+        \State $R \gets \Call{PartTreeSearch}{\mathcal{P}.right\_child ,\tau, \infty\,}$
+        \State \Return $L \oplus R$ \Comment{merge chart sets from the subtrees}
+    \Else
+% ------------------------------------------------------------------
+    \State $\mathcal{H}_2 \gets \{\Call{GenCandidateH2}{\mathcal{P}.mesh,\tau}\}$ \Comment{Heuristic2} \label{line:heuristic2}
+    \State \Call{ParameterizeABF}{$\mathcal{H}_2[0]$} 
+    \State $\mathcal{S} \gets \bigl\{\,\mathscr{C}\in \mathcal{H}_1 \cup \mathcal{H}_2 \mid
+            \mathscr{C}.\text{dist}\le\tau \;\land\; \Call{NoOverlap}{\mathscr{C}}\bigr\}$
+    \State $\mathscr{C}_{\text{best}} \gets \arg\!\min_{\mathscr{C} \in \mathcal{S}} \mathscr{C}.\text{count}$
+% ------------------------------------------------------------------
+    \State \Comment{Recurse to determine whether a better solution exists}     \label{line:recursion}
+    \State $B' \gets \min(B,\,\mathscr{C}_{\text{best}}.\text{count}-1)$ 
+    \State $L \gets \Call{PartTreeSearch}{\mathcal{P}.left ,\tau,B'-1}$
+    \State $R \gets \Call{PartTreeSearch}{\mathcal{P}.right,\tau,B'-L.\text{count}}$
+    \State $\mathscr{C}_{\text{comb}} \gets L \oplus R$
+    \State $is\_valid \gets \mathscr{C}_{\text{comb}}.\text{dist}\le\tau \;\land\; \Call{NoOverlap}{\mathscr{C}_{\text{comb}}}$
+    \If{$\mathscr{C}_{\text{comb}}.\text{count}<\mathscr{C}_{\text{best}}.\text{count} \;\land\; is\_valid$}
+        \State $\mathscr{C}_{\text{best}}\gets \mathscr{C}_{\text{comb}}$
+    \EndIf
+    \State \Return $\mathscr{C}_{\text{best}}$
+    \EndIf
+% ------------------------------------------------------------------
+
+\EndProcedure
+\end{algorithmic}
+
+\end{algorithm}
+% \vspace{-2ex}

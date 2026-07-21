@@ -1,0 +1,155 @@
+\section{Experiments}
+\subsection{Implementation Details and Evaluation Setup}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figures/partuv_comparison.png} 
+    \vspace{-1em}
+    \caption{\textbf{Quantitative comparison between Blender~\cite{blender}, xatlas~\cite{xatlas}, and PartUV.} Unlike Blender and xatlas, which rely solely on local geometric properties for UV unwrapping, PartUV integrates high-level semantic priors with low-level geometric heuristics, enabling part-based chart decomposition. As a result, it produces significantly fewer charts, with boundaries that better align with semantic parts.}
+    \label{fig:partuv_comparison} 
+\end{figure*}
+
+\noindent \textbf{\textbf{Implementation Details.}}
+We train PartField~\cite{liu2025partfield} on Objaverse~\cite{objaverse} using 8 NVIDIA H100 GPUs for 15 days. During inference, we sample 10 points per face and average their features for face clustering and part tree construction. The core pipeline of PartUV is implemented in C++17, and we use UVPackmaster~\cite{uvpackmaster3} for final group-based UV packing. A distortion threshold of 1.25 is used in all experiments. For ABF++, we run 5 iterations per call, and follow Blender to set the gradient early-stop condition. Mesh simplification is controlled by a curvature-related threshold of 1e-4 and a maximum iteration count of 1,000. All parameters are fixed across experiments. All methods are evaluated on a cluster node with a 96-core Intel® Xeon® Platinum 8468 CPU and an NVIDIA H100 GPU.
+
+\noindent \textbf{\textbf{Evaluation Datasets.}}
+To comprehensively evaluate the approaches across diverse mesh sources, qualities, and styles, we use four datasets: (a) \emph{Common Shapes}~\cite{jacobsonCommon3DTestModels}, a GitHub repository of 24 widely used models in graphics (e.g., Bimba, Igea, Stanford Bunny) with provided processed .obj files;
+(b) \emph{PartObjaverseTiny}~\cite{yang2024sampart3d}, a 200-shape subset of Objaverse~\cite{objaverse} featuring high-quality, man-made meshes with multiple components and smooth surfaces; (c) \emph{ABC}~\cite{koch2019abc}, a CAD dataset of mechanical models combining sharp and smooth features—we use the first 100 meshes from its initial batch; and (d) \emph{Trellis}~\cite{xiang2024structured}, which includes 114 AI-generated meshes from a recent 3D diffusion-based generative model. These meshes are typically noisy and geometrically low-quality, posing greater challenges than human-made counterparts.
+
+\noindent \textbf{\textbf{Evaluation Metrics.}}  
+We evaluate the quality of the generated UV maps from four perspectives:  
+(1) \emph{Number of Charts}: For each shape, we count the number of charts and report both the average and median values across the dataset.  
+(2) \emph{Seam Length}: We compute the seam length by summing the lengths of all chart boundary edges, with UV coordinates normalized to a [0, 1] grid. The median value is reported across the dataset.  
+(3) \emph{Angular (Conformal) Distortion}: We compute the cosine between the tangent and bitangent vectors of each face. The distortion for a shape is defined as one minus the average cosine across all faces~\cite{srinivasan2024nuvo}. We report the average distortion across the dataset. 
+(4) \emph{Area (Equiareal) Distortion}: We compute both \emph{area distortion} and \emph{overall area distortion}. \emph{Area distortion} is defined as in Equation~\ref{equ:distortion}, based on the chart with the highest distortion in each shape. \emph{Overall area distortion} is computed by aggregating all triangles across all charts, calculating individual distortions, and averaging them. For both metrics, we first compute per-shape values and then average them across the dataset. All triangle-level distortion values are clipped to a maximum of 10. Notably, \emph{overall area distortion} may be smoothed by the number of faces, while \emph{area distortion} more effectively highlights problematic regions in the UV maps. We did not report stretch $L_2$ and $L_\infty$~\cite{sander2001texture} since they are per-triangle metrics that can diverge to infinity when triangles flip or have near-zero area---issues that are common in baselines such as xatlas, making direct comparison less meaningful. 
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.94\linewidth]{figures/open3d.png}
+       \vspace{-3ex}
+    \captionof{figure}{Open3D not only suffers from a limited success rate but also produces results with large distortion, which may reduce their practical utility.}
+    \label{fig:open3d}
+    \vspace{-1em}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.94\linewidth]{figures/partuv_nuvo_optcuts.png}
+   \vspace{-3ex}
+    \captionof{figure}{Nuvo and OptCuts incur significantly longer optimisation times for each shape. Nuvo’s results also exhibit large distortion.}
+    \label{fig:nuvo_optcut}
+\end{figure}
+
+\subsection{Comparison with Baselines}
+
+\noindent \textbf{\textbf{Baselines.}}
+We compare PartUV with commonly used tools—Blender’s Smart UV Project~\cite{blender}, xatlas~\cite{xatlas}, and Open3D—as well as optimization-based methods, including Nuvo~\cite{srinivasan2024nuvo} and OptCuts~\cite{li2018optcuts}.
+
+Blender, xatlas, and Open3D decompose meshes into charts using bottom-up strategies guided by local geometric priors. Blender clusters triangles based on mesh normals and flattens each chart using simple planar projection. xatlas employs a greedy algorithm that balances geometric deviation, UV distortion, and seam cost, followed by Least Squares Conformal Maps (LSCM)~\cite{lscm} for flattening. Open3D builds on Microsoft’s UVAtlas~\cite{UVAtlas,zhou2004iso,sander2002signal}, which uses region growing guided by the isometric stretch metric and flattens charts with LSCM. Among optimization-based methods, Nuvo~\cite{srinivasan2024nuvo} learns a continuous UV mapping via a neural field by minimizing distortion losses with various regularizations. OptCuts jointly optimizes surface cuts and distortion under a global bijectivity constraint. Both methods require significantly longer runtimes per mesh.
+
+\input{tables/main}
+\input{tables/open3d}
+\input{tables/nuvo}
+
+\noindent \textbf{Results.}
+As shown in Table~\ref{tab:blender_and_xatlas}, Blender and xatlas often produce over-fragmented charts, whereas PartUV generates UV maps with significantly fewer charts. For instance, on the Common Shapes dataset, PartUV uses only 1/31 as many charts as Blender. Consequently, it also results in shorter seam lengths. PartUV maintains low levels of both angular and area distortion, while xatlas may exhibit large area distortion on certain challenging shapes. Despite utilizing a more exhaustive decomposition search and a computationally expensive ABF flattening algorithm to achieve higher quality, PartUV maintains a runtime comparable to xatlas, typically completing in tens of seconds. See Figure~\ref{fig:partuv_comparison} for a qualitative comparison, where PartUV leverages semantic part information to produce chart boundaries that align more closely with object semantics.
+
+We report the comparison results with Open3D separately in Table~\ref{tab:Open3d} due to its failure to complete some shapes within a reasonable time. 
+For example, on the challenging Trellis dataset, it achieves a success rate of only 39.5\%. In Table~\ref{tab:Open3d}, we report the average performance only over the easy cases that Open3D successfully processes. For these cases, Open3D achieves a similar number of charts and seam lengths compared to our method. However, this comes at the cost of significant distortion. For instance, while Blender, xatlas, and PartUV all achieve angular distortion scores mostly above 0.95 across all datasets, Open3D consistently falls below 0.9 and even 0.8 in some cases. A similar phenomenon is observed for area distortion. Please refer to Figure~\ref{fig:open3d} and Figure~\ref{fig:baking} for qualitative examples, where Open3D produces large distortions, rendering the UV mappings less suitable for practical applications.
+
+Compared to Nuvo and OptCuts, we observe that although both methods effectively reduce the number of charts, they typically require significantly longer optimization times—often exceeding 30 minutes or even several hours. Moreover, Nuvo leads to substantially higher distortion, as shown in Table~\ref{tab:nuvo} and Figure~\ref{fig:nuvo_optcut}. While OptCuts achieves low distortion, its success rate is limited: it produces outputs for only 9 out of 24 shapes in the Common Shapes dataset. Additionally, neither method incorporates the concept of semantic parts during optimization.
+
+See supplementary material for additional qualitative examples UV efficiency comparisons, and analysis of Open3D results.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/partuv_baking.png}
+    \vspace{-1em}
+    \captionof{figure}{Texture-map comparison among Blender, xatlas, and our PartUV.}
+    
+    \label{fig:baking}
+\end{figure}
+
+\subsection{Applications and Analysis}
+
+In this section, we demonstrate the benefits of using our PartUV:
+
+\noindent \textbf{Texture Editing and Replacement.}  
+Since our UV mappings are less fragmented, texture maps can be more effectively edited or modified in 2D space. In Figure~\ref{fig:partuv_logo}, we show that our UV maps enable clean placement of conference logos, whereas the UV maps generated by Blender or xatlas fail to do so due to their overly fragmented layouts. Figure~\ref{fig:texture} further showcases an application where the texture is replaced with various tiling patterns. Because xatlas and Blender often produce numerous small charts containing only a few triangles, noticeable artifacts appear on the mesh surface. In contrast, our method preserves significantly better visual quality.
+
+\noindent \textbf{Texture Compression.}  
+UV maps always require padding between charts. When the UV layout is over-segmented, more padding is needed, which increases the risk of color bleeding. In Figure~\ref{fig:partuv_bleeding}, we demonstrate that reducing the UV map resolution from 1024 to 128—a common setting in mobile games—results in noticeable color bleeding for textures generated by xatlas and Blender. In contrast, PartUV is free from such issues.
+
+\noindent \textbf{Multi-Atlas Wrapping.}  
+As shown in Figure~\ref{fig:teaser} and Figure~\ref{fig:multiatlas}, PartUV supports part-based UV packing. Given the desired number of atlases, it can automatically extract semantic-meaningful parts and pack across separate atlases, facilitating downstream applications such as texture editing. 
+
+\noindent \textbf{Adaptive Threshold Adjustment.}  
+PartUV allows users to specify a distortion threshold $\tau$, enabling adaptive control over the trade-off between the number of charts and the distortion in the generated UV maps, as shown in Figure~\ref{fig:threshold}.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figures/partuv_logo.png} 
+    \vspace{-2.5em}
+    \caption{Unlike our baselines, which generate over-fragmented UV maps that hinder 2D texture editing, PartUV produces significantly fewer charts with part-aligned boundaries, enabling more effective 2D operations.} 
+    \vspace{-1em}
+    \label{fig:partuv_logo} 
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  
+  \includegraphics[width=0.94\linewidth]{figures/partuv_texture.png}
+  \vspace{-1em}
+  \captionof{figure}{Our UV map enables easy texture replacement, whereas xatlas / Blender maps cause severe artefacts due to over-segmentation.}
+  \label{fig:texture}
+\end{figure}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figures/partuv_multi_packing.png}
+    \vspace{-2.5em}
+    \captionof{figure}{Our part-based UV unwrapping can pack all charts into a single atlas or multiple atlases by semantic part, aiding tasks such as 2-D editing.}
+    \vspace{-1em}
+    \label{fig:multiatlas}
+\end{figure*}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figures/partuv_bleeding.png} % Ensure this path is correct
+    \vspace{-2em}
+    \caption{xatlas and Blender generate over-fragmented UV maps that may introduce color bleeding, especially with low-resolution texture maps (e.g., in mobile games). In contrast, our results are free from such issues.} 
+    \vspace{-0.5em}
+    \label{fig:partuv_bleeding} 
+\end{figure}
+
+\subsection{Ablation Studies}
+
+\noindent\textbf{PartField.} We integrate semantic part priors with geometric heuristics through an adaptive recursive tree search. A naive way to combine them is to first use PartField to decompose the shape into a fixed set of 20 parts, and then further decompose each part using the two heuristics. As shown in Table~\ref{tab:ablation}(a), this naive combination results in high distortion, as some parts may remain too complex to be flattened with low distortion. We also experimented with replacing the PartField features with face normals and then applying the original recursive tree search. As shown in Table~\ref{tab:ablation}(b), this variant doubles the runtime, increases the number of charts, and produces chart boundaries that no longer align with semantic parts.
+
+\noindent\textbf{Merge Heuristic.} We propose an innovative geometry-based heuristic, \emph{Merge}, for chart decomposition. When this heuristic is removed and only the \emph{Normal} heuristic is used (Table~\ref{tab:ablation}(c)), we observe an increase in the number of charts.
+
+\noindent\textbf{Recursion.} As shown in Alg.~\ref{alg:search}, Line~\ref{line:recursion}, we do not immediately return the first solution found but continue the search to find potentially better solutions. When this strategy is removed (Table~\ref{tab:ablation}(d)), we observe a significant increase in the number of charts.
+
+\noindent\textbf{Distortion Surrogate.} To accelerate the search, we first simplify the mesh during intermediate iterations and then apply the ABF algorithm to the simplified mesh to compute an approximate distortion, which helps guide the search more efficiently. When this strategy is removed (Table~\ref{tab:ablation}(e)), we observe an increase in runtime.
+
+We show more ablations and visualizations, including comparisons of different flattening algorithms, in the Appendix.
+\input{tables/ablation}
+
+\begin{figure}
+      \centering
+      \includegraphics[width=\linewidth]{figures/partuv_threshold.png}
+    \vspace{-5ex}
+      
+      \captionof{figure}{PartUV lets users set a distortion threshold, flexibly controlling both distortion and chart count.}
+      \vspace{-0.5em}
+      \label{fig:threshold}
+\end{figure}
+
+\subsection{95th Percentile Distortion Metrics}
+To evaluate worst-case behavior, we additionally report 95th-percentile distortion metrics and compare them with baseline methods on four datasets. As shown in Table~\ref{tab:95percentile}, we consider two metrics: \emph{distortion 95th-shape}, defined as the 95th-percentile area distortion across all shapes in a dataset, and \emph{distortion 95th-chart}, which first computes the 95th-percentile area distortion across all charts within a shape and then averages the results over all shapes in the dataset. As the table shows, our method consistently yields low 95th-percentile distortion values, with a maximum of 1.442, whereas baseline methods often produce much higher distortions (e.g., 4.701, 1.885, 1.728). These results demonstrate that our approach achieves more robust and stable performance under challenging cases.
+
+\section{Discussion on Failure Cases}
+
+Our method struggles with poor input mesh topology. For example, it cannot handle 3D meshes containing self-intersections. In such cases, the algorithm may recurse deeply in an attempt to resolve the intersections, which can lead to fragmented charts. Moreover, when input meshes are extremely fragmented—for instance, those with over 1000 components—the unwrapping results also become highly fragmented. In these cases, remeshing may be required before UV unwrapping. However, our method performs well on general meshes with few components and does not require meshes to be watertight or manifold.
+
+\input{tables/95percentile}

@@ -1,0 +1,52 @@
+\begin{table}[t]
+  \centering
+  \scriptsize
+  \setlength{\tabcolsep}{1.5pt}
+  \caption{\textbf{Quantitative comparison between Open3d~\cite{Zhou2018} and PartUV.} Note that Open3D has a limited success rate, and the reported numbers are averaged over the easier cases it successfully completes. Despite this, Open3D still exhibits large distortion.}
+  \vspace{-2em}
+    \begin{tabular}{c|c|cccccccc}
+    \toprule
+          &       & \multicolumn{1}{c}{success}
+                  & \multicolumn{1}{c}{average}
+                  & \multicolumn{1}{c}{}
+                  & \multicolumn{1}{c}{overall}
+                  & \multicolumn{1}{c}{average}
+                  & \multicolumn{1}{c}{median}
+                  & \multicolumn{1}{c}{median}
+                  &  \\
+              \multicolumn{1}{c|}{dataset}     
+              & \multicolumn{1}{c|}{method}
+              & \multicolumn{1}{c}{rate}
+                  & \multicolumn{1}{c}{angular}
+                  & \multicolumn{1}{c}{area}
+                  & \multicolumn{1}{c}{area}
+                  & \multicolumn{1}{c}{\# of}
+                  & \multicolumn{1}{c}{\# of}
+                  & \multicolumn{1}{c}{seam}
+                  & \multicolumn{1}{c}{time} \\
+        &
+        & \multicolumn{1}{c}{(\%)}
+        & \multicolumn{1}{c}{ distort. $\uparrow$}
+        & \multicolumn{1}{c}{distort. $\downarrow$}
+        & \multicolumn{1}{c}{distort. $\downarrow$}
+        & \multicolumn{1}{c}{charts $\downarrow$}
+        & \multicolumn{1}{c}{charts $\downarrow$}
+        & \multicolumn{1}{c}{ length $\downarrow$}
+        & \multicolumn{1}{c}{ (s) } \\
+    \midrule
+ \multicolumn{1}{c|}{\multirow{2}[0]{*}{\parbox{1.5cm}{\centering Common Shapes}}} & Open3d & 79.2  & 0.852 & 1.509 & 1.191 & 19.8  & 12.0  & 11.8  & 19.8 \\
+          & ours  & \textbf{100.0} & \textbf{0.987} & \textbf{1.281} & \textbf{1.128} & 24.4  & 12.0  & 15.1  & 52.3 \\
+    \midrule
+ \multicolumn{1}{c|}{\multirow{2}[0]{*}{\parbox{1.5cm}{\centering Trellis }}} & Open3d & 39.5  & 0.859 & 1.931 & 1.264 & 79.8  & 40.0  & 25.9  & 24.1 \\
+          & ours  & \textbf{100.0} & \textbf{0.984} & \textbf{1.308} & \textbf{1.144} & 97.9  & 51.0  & 27.4  & 23.7 \\
+    \midrule
+ \multicolumn{1}{c|}{\multirow{2}[0]{*}{\parbox{1.5cm}{\centering ABC }}} & Open3d & 83.0  & 0.878 & 1.459 & 1.162 & 15.0  & 8.0   & 9.3   & 17.6 \\
+          & ours  & \textbf{100.0} & \textbf{0.994} & \textbf{1.171} & \textbf{1.062} & 35.0  & 15.0  & 18.6  & 39.6 \\
+    \midrule
+ \multicolumn{1}{c|}{\multirow{2}[0]{*}{\parbox{1.5cm}{\centering PartObjaverse \\Tiny }}}  & Open3d & 52.5  & 0.799 & 2.772 & 1.295 & 161.5 & 80.0  & 25.6  & 10.0 \\
+          & ours  & \textbf{100.0} & \textbf{0.957} & \textbf{1.254} & \textbf{1.117} & 227.1 & 91.0  & 30.6  & 14.0 \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:Open3d}%
+  \vspace{-1em}
+\end{table}%

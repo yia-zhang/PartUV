@@ -1,0 +1,75 @@
+% \begin{table}[t]
+%   \centering
+%   \scriptsize
+%   \setlength{\tabcolsep}{1.2pt}
+%   \caption{\textbf{Quantitative comparison between Blender~\cite{blender}, xatlas~\cite{xatlas}, and PartUV.}}
+%     \vspace{-1.5em}
+%     \begin{tabular}{c|c|cccccccc}
+%     \toprule
+%           & & \multicolumn{1}{c}{success} &    \multicolumn{1}{c}{average}   & \multicolumn{1}{c}{median}      & \multicolumn{1}{c}{median} &       & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{overall  } & \\
+%           dataset &  method & \multicolumn{1}{c}{rate} & \multicolumn{1}{c}{\# of}  & \multicolumn{1}{c}{\# of} & \multicolumn{1}{c}{seam} &\multicolumn{1}{c}{angular}  & \multicolumn{1}{c}{area} & \multicolumn{1}{c}{area} &  \multicolumn{1}{c}{time} \\
+%           &       & \multicolumn{1}{c}{(\%)} & \multicolumn{1}{c}{ charts $\downarrow$} & \multicolumn{1}{c}{ charts $\downarrow$} & \multicolumn{1}{c}{ length $\downarrow$} & \multicolumn{1}{c}{ distort. $\uparrow$} & \multicolumn{1}{c}{distort. $\downarrow$} & \multicolumn{1}{c}{distort. $\downarrow$} & \multicolumn{1}{c}{ (s) } \\
+%     \midrule
+%     \multicolumn{1}{c|}{\multirow{3}[0]{*}{\parbox{1.5cm}{\centering Common Shapes\\(24 shapes)}}}
+%           & Blender & 100.0 & 1360.3 & 332.5 & 44.7  & 0.906 & 1.172 & 1.102 & 0.3 \\
+%           & xatlas & 100.0 & 974.8 & 301.0 & 42.9  & 0.987 & 1.885 & 1.504 & 77.9 \\
+%           & ours  & 100.0 & \textbf{43.6} & \textbf{15.0} & \textbf{16.8} & 0.982 & 1.404 & 1.131 & 54.0 \\
+%     \midrule
+%     \multicolumn{1}{c|}{\multirow{3}[0]{*}{\parbox{1.5cm}{\centering Trellis \\ (114 shapes)}}}
+%           & Blender & 100.0 & 3352.9 & 1957.0 & 94.5  & 0.921 & 1.252 & 1.107 & 1.1 \\
+%           & xatlas & 100.0 & 1541.6 & 895.0 & 91.2  & 0.984 & 2.357 & 1.093 & 13.1 \\
+%           & ours  & 100.0 & \textbf{538.8} & \textbf{221.5} & \textbf{55.9} & 0.961 & 1.300 & 1.135 & 41.9 \\
+%     \midrule
+%       \multicolumn{1}{c|}{\multirow{3}[0]{*}{\parbox{1.5cm}{\centering ABC \\ (100 shapes)}}}
+%           & Blender & 100.0 & 305.3 & 78.0  & 25.0  & 0.992 & 1.122 & 1.067 & 0.7 \\
+%           & xatlas & 100.0 & 249.6 & 56.0  & 26.5  & 1.000 & 1.192 & 1.030 & 31.0 \\
+%           & ours  & 100.0 & \textbf{74.0} & \textbf{18.0} & \textbf{19.8} & 0.999 & 1.175 & 1.058 & 43.1 \\
+%     \midrule
+%      \multicolumn{1}{c|}{\multirow{3}[0]{*}{\parbox{1.5cm}{\centering Part\\Objaverse\\Tiny (200 shapes)}}}
+%           & Blender & 100.0 & 1509.2 & 647.5 & 70.2  & 0.925 & 1.325 & 1.115 & 0.2 \\
+%           & xatlas & 100.0 & 1142.1 & 491.5 & 67.0  & 0.982 & 1.728 & 1.286 & 4.4 \\
+%           & ours  & 100.0 & \textbf{463.3} & \textbf{155.5} & \textbf{39.3} & 0.954 & 1.271 & 1.112 & 21.0 \\
+%     \bottomrule
+%     \end{tabular}%
+%   \label{tab:blender_and_xatlas}
+% \vspace{-1em}
+% \end{table}%
+\begin{table}[t]
+  \centering
+  \scriptsize
+  \setlength{\tabcolsep}{1.2pt}
+  \caption{\textbf{Quantitative comparison between Blender~\cite{blender}, xatlas~\cite{xatlas}, and PartUV.} }
+    \vspace{-1.5em}
+    \begin{tabular}{c|c|cccccccc}
+    
+    \toprule
+          & & \multicolumn{1}{c}{success} &    \multicolumn{1}{c}{average}   & \multicolumn{1}{c}{median}      & \multicolumn{1}{c}{median} &       & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{overall  } & \\
+          dataset &  method & \multicolumn{1}{c}{rate} & \multicolumn{1}{c}{\# of}  & \multicolumn{1}{c}{\# of} & \multicolumn{1}{c}{seam} &\multicolumn{1}{c}{angular}  & \multicolumn{1}{c}{area} & \multicolumn{1}{c}{area} &  \multicolumn{1}{c}{time} \\
+          &       & \multicolumn{1}{c}{(\%)} & \multicolumn{1}{c}{ charts $\downarrow$} & \multicolumn{1}{c}{ charts $\downarrow$} & \multicolumn{1}{c}{ length $\downarrow$} & \multicolumn{1}{c}{ distort. $\uparrow$} & \multicolumn{1}{c}{distort. $\downarrow$} & \multicolumn{1}{c}{distort. $\downarrow$} & \multicolumn{1}{c}{ (s) } \\
+    \midrule
+    \multicolumn{1}{c|}{\multirow{3}[0]{*}{\parbox{1.5cm}{\centering Common Shapes\\(24 shapes)}}} 
+          & Blender & 100.0 & 1360.3 & 332.5 & 44.7  & 0.906 & 1.172 & 1.102 & 0.3 \\
+          & xatlas & 100.0 & 974.8 & 301.0 & 42.9  & 0.987 & 1.885 & 1.504 & 77.9 \\
+          & ours  & 100.0 & \textbf{48.6} & \textbf{16.5} & \textbf{16.6} & 0.990 & 1.283 & 1.128 & 39.4 \\
+    \midrule
+    \multicolumn{1}{c|}{\multirow{3}[0]{*}{\parbox{1.5cm}{\centering Trellis \\ (114 shapes)}}} 
+          & Blender & 100.0 & 3352.9 & 1957.0 & 94.5  & 0.921 & 1.252 & 1.107 & 1.1 \\
+          & xatlas & 100.0 & 1541.6 & 895.0 & 91.2  & 0.984 & 2.357 & 1.093 & 13.1 \\
+          & ours  & 100.0 & \textbf{568.7} & \textbf{233.5} & \textbf{58.8} & 0.981 & 1.373 & 1.145 & 26.0 \\
+    \midrule
+      \multicolumn{1}{c|}{\multirow{3}[0]{*}{\parbox{1.5cm}{\centering ABC \\ (100 shapes)}}} 
+          & Blender & 100.0 & 305.3 & 78.0  & 25.0  & 0.992 & 1.122 & 1.067 & 0.7 \\
+          & xatlas & 100.0 & 249.6 & 56.0  & 26.5  & 1.000 & 1.192 & 1.030 & 31.0 \\
+          & ours  & 100.0 & \textbf{85.4} & \textbf{15.5} & \textbf{17.3} & 0.998 & 1.191 & 1.073 & 31.9 \\
+    \midrule
+     \multicolumn{1}{c|}{\multirow{3}[0]{*}{\parbox{1.5cm}{\centering Part\\Objaverse\\Tiny (200 shapes)}}} 
+          & Blender & 100.0 & 1509.2 & 647.5 & 70.2  & 0.925 & 1.325 & 1.115 & 0.2 \\
+          & xatlas & 100.0 & 1142.1 & 491.5 & 67.0  & 0.982 & 1.728 & 1.286 & 4.4 \\
+          & ours  & 100.0 & \textbf{544.8} & \textbf{177.0} & \textbf{41.8} & 0.983 & 1.305 & 1.112 & 10.1 \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:blender_and_xatlas}
+\vspace{-1em}
+\end{table}%
+
+

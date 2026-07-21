@@ -1,0 +1,98 @@
+\section{Additional Results and Comparisons}
+
+\subsection{More Qualitative Results}
+
+In the supplementary material, we provide an HTML file containing more qualitative and quantitative comparisons between our method and our baselines. The examples are gathered across the four datasets we used in the main paper. The metrics are computed and reported for individual shapes.
+
+\subsection{Efficiency}
+
+As we create the UV map with regard to semantic features and groups, it may raise doubts regarding the final efficiency of the resulting UV maps. In Table~\ref{tab:efficiency}, we show the comparison of the average efficiency of valid results between our method and the baselines. In our experiments, we always group the charts from the same parts when packing, and we use UVPackMaster~\cite{uvpackmaster3} to get the final packed UV map. We set the "heuristic search" time to 3 seconds for UVPackMaster, while most meshes finish within microseconds. We define efficiency as the total area of valid 2D faces within the normalized $0\text{–}1$ UV space.
+It can be seen that our method does not hurt the overall efficiency, and it remains competitive compared to our baseline methods.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{Appendix/o3d_distortion.png}
+    \caption{A demonstration of effects from Open3D's higher distortion results, creating curved (from angular distortion) and uneven (from area distortion) stripes. }
+    \label{fig:o3d_stripe}
+\end{figure}
+
+\begin{table}
+\centering
+\caption{Efficiency ($\uparrow$) comparison across methods}
+\label{tab:efficiency}
+\begin{tabular}{lrrrr}
+\toprule
+ & ours & Blender & Open3D & xatlas \\
+\midrule
+Part-Objaverse-Tiny & 0.606 & 0.514 & 0.332 & 0.666 \\
+Trellis             & 0.571 & 0.430 & 0.242 & 0.619 \\
+ABC                 & 0.568 & 0.554 & 0.490 & 0.646 \\
+Common Shapes       & 0.575 & 0.460 & 0.461 & 0.561 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Analysis and Visualization of Open3D Results}
+In our experiments, particularly on the more challenging meshes, Open3D frequently crashed or exceeded the allotted time budget. We designate a shape as timed-out when its runtime surpasses 30 seconds plus three times the longest runtime among other methods on the current shape. 
+
+Even for the shapes where Open3D successfully produces a UV map, the results still exhibit notable shortcomings.
+At first glance, Open3D seemingly generates results with chart numbers similar to our method, albeit with slightly higher distortion. However, such differences in distortion can significantly affect downstream tasks.
+In Fig.~\ref{fig:o3d_stripe}, we show one example from the ABC dataset, which Open3D creates a layout with a similar chart number with ours. However, with 0.2 difference in area distortion and 0.1 difference in angular distortion, the deformation of the texture is clearly noticeable. In particular, when using a striped texture, angular distortion leads to curved lines (bottom half of highlighted region), while area distortion causes uneven width (top half of highlighted region)—both prominently visible in the red-marked rectangle of the figure, not to mention the seams that disregard underlying geometric features. In contrast, our results exhibit minimal distortion, maintain the regularity of the shape, and feature seams that largely respect the underlying geometric structure.
+
+\section{Additional Ablation Results}
+
+\subsection{Replacing PartField feature with Face Normals}
+
+In our main pipeline, we create a top-down tree of faces with agglomerative clustering of PartField-predicted features. A simpler alternative would be replacing such features with face normals. In Fig.~\ref{fig:UNA}, we provide some visual examples of meshes using normal as Agglomerative features versus using the PartField-predicted ones. It can be seen that using normal is substantially prone to producing curly shapes, like the cherry on the left. Moreover, though being able to predict a similar number of charts under the same heuristic settings,  using normal as the agglomerative features leads to way less organized and neat UV layouts, as exemplified on the right of the figure.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{Appendix/UNA.png}
+    \caption{When using the face normals as agglomerative features for top-down tree construction, the pipeline generates messier results with no semantic alignment.}
+    \label{fig:UNA}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{Appendix/noMerge.png}
+    \caption{Visual comparison of with and without the merge heuristics.}
+    \label{fig:nomerge}
+\end{figure}
+
+\begin{table}[t]
+  \centering
+  \small
+  \setlength{\tabcolsep}{2pt}
+  \caption{\textbf{Comparison between using ABF++ (Ours) and LSCM (Ours-LSCM) in our pipeline.}}
+
+    \begin{tabular}{c|rrrrr}
+    \toprule
+        & \multicolumn{1}{c}{average} & \multicolumn{1}{c}{median} & \multicolumn{1}{c}{area} & \multicolumn{1}{c}{seam} & \multicolumn{1}{c}{time} \\
+       & \multicolumn{1}{c}{\# charts $\downarrow$} & \multicolumn{1}{c}{\# charts $\downarrow$} & \multicolumn{1}{c}{distort.\,$\downarrow$} & \multicolumn{1}{c}{length $\downarrow$} & \multicolumn{1}{c}{(s)}   \\
+    \midrule
+     Ours-LSCM & 1154.12 & 363.00 & 1.27 & 65.48 & 58.61 \\
+    Ours    &  538.81 & 221.50 & 1.30 & 57.92 & 41.88 \\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:lscm}%
+\end{table}%
+
+\subsection{Without Merge Heuristic}
+
+In the main manuscript, we propose two heuristics used to unwrap a part into charts, \textit{Normal} and \textit{Merge}. Despite the higher cost of computation,  \textit{Merge} often produces more visually appealing UV maps with fewer charts. As illustrated in Fig.~\ref{fig:nomerge}, the \textit{Merge} heuristic can usually unwrap the part in an "unfolding" manner, creating less number of charts with a neater layout, comparing under the same distortion threshold requirements with using only the \textit{Normal} Heuristics. 
+
+\subsection{Without Normal Heuristic }
+
+With two heuristics included in the pipeline, one can also opt to use only the \textit{Merge} throughout the pipeline. We show several example results in Fig.~\ref{fig:noAgg}. Due to its high computational cost, using only \textit{Merge}, especially at the beginning, incurs substantial runtime overhead. To be precise, the \textit{Merge} heuristic would compute an oriented bounding box
+(OBB) and use projection to get initial charts, and it could get hundreds of charts from a bumpy input. Trying to merge all of them would introduce significant overhead for such bumpy/uneven meshes. 
+For example, on the bimba mesh on the right side of the figure, the runtime increases from 147 seconds to over 892 seconds. Moreover, due to its bumpy geometry, the merging process often results in overlapping, leading to an increase in the number of charts. In essence, \textit{Merge} could yield better results, but only on simpler shapes. Therefore, it is most effective as a complement to the \textit{Normal} heuristic and should be invoked only when \textit{Normal} produces a sufficiently good result.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{Appendix/noagg.png}
+    \caption{Using only \textit{Merge} heuristic from the beginning would incur more runtime, and more fragmented charts on bumpy meshes.}
+    \label{fig:noAgg}
+\end{figure}
+\subsection{Using LSCM instead of ABF++ }
+
+In our main pipeline, we adopt ABF++~\cite{sheffer2005abf++} as the primary flattening algorithm due to its fast performance and low-distortion mappings. Most of our baselines utilize LSCM~\cite{lscm}, which generally offers faster runtimes thanks to its linear energy formulation. However, despite its speed, LSCM generally produces inferior mapping results compared to ABF++. Such suboptimal outputs can trigger additional recursions in our pipeline, resulting in increased runtimes and more fragmented UV charts. As shown in Table~\ref{tab:lscm}, using LSCM ultimately leads to both higher runtime and a larger number of charts on the Trellis dataset.
