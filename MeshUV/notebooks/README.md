@@ -5,7 +5,9 @@
 
 ## 环境与启动
 ```bash
-pip install -e /root/youjiaZhang/PartUV/MeshUV   # 或已装 geomae 环境
+# 统一使用 geomae 环境(所有脚本/notebook/训练)
+/root/miniconda3/envs/geomae/bin/pip install -e /root/youjiaZhang/PartUV/MeshUV
+# Jupyter kernel 已注册为 "Python (geomae)"
 cd /root/youjiaZhang/PartUV/MeshUV/notebooks
 jupyter lab
 ```
