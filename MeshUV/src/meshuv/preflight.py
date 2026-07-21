@@ -26,7 +26,7 @@ def quick_preflight(glb_path, max_faces=MAX_FACES):
         out["reason"] = "EMPTY_MESH"
         return out
     if len(geoms) > 1:
-        out["reason"] = f"MULTI_MATERIAL: {len(geoms)} geometries(暂不支持)"
+        out["reason"] = (f"MULTI_GEOMETRY_UNSUPPORTED: {len(geoms)} geometries(MVP 输入范围=单 geometry 单 basecolor; 几何计数是保守代理, 非严格多材质检测)")
         return out
     m = geoms[0]
     if not hasattr(m, "faces") or len(m.faces) == 0:

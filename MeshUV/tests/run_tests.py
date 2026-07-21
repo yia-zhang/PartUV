@@ -209,6 +209,52 @@ with tempfile.TemporaryDirectory() as td:
     check("preflight: 单贴图小网格通过", r2["ok"] and r2["tex_size"] == (64, 64),
           r2["reason"])
 
+# ---- 正式 TexVerse 闭环补充测试 ----
+import yaml as _yaml
+
+cfg_tex = _yaml.safe_load(open(os.path.join(ROOT, "configs/dataset_texverse_1k_mvp_v0.yaml")))
+check("正式配置 source=texverse_1k(不落 Objaverse)",
+      cfg_tex["source"] == "texverse_1k"
+      and "objaverse" not in cfg_tex["source_cache"]
+      and cfg_tex["target_accepted"] == 256 and cfg_tex["candidate_max"] == 3000)
+import importlib.util as _ilu
+_spec = _ilu.spec_from_file_location(
+    "bdm", os.path.join(ROOT, "scripts/build_dataset_mvp.py"))
+_bdm = _ilu.module_from_spec(_spec)
+_spec.loader.exec_module(_bdm)
+check("正式 builder 引用 quick_preflight",
+      "quick_preflight" in open(os.path.join(
+          ROOT, "scripts/build_dataset_mvp.py")).read()
+      and hasattr(_bdm, "atomic_json"))
+with tempfile.TemporaryDirectory() as td:
+    _bdm.atomic_json(f"{td}/x.json", dict(a=1))
+    check("原子状态写入(无 .tmp 残留)", json.load(open(f"{td}/x.json")) == dict(a=1)
+          and not os.path.exists(f"{td}/x.json.tmp"))
+# manifest 中断恢复无重复 UID
+with tempfile.TemporaryDirectory() as td:
+    srcd = _FakeTexVerse(cache_dir=td)
+    srcd.list_candidates(2)                # shard 000-000 完整写入(3 uid)
+    srcd2 = _FakeTexVerse(cache_dir=td)
+    c = srcd2.list_candidates(6)           # 续跑: 000-000 skip, 只补 000-001
+    uids = [r["uid"] for r in c]
+    check("manifest 中断恢复无重复 UID", len(uids) == len(set(uids)), uids)
+# 无 license_id 的候选可通过 index/validator 语义
+check("候选缺 license_id 不阻塞(builder .get 语义)",
+      ".get(\"license_id\"" in open(os.path.join(
+          ROOT, "scripts/build_dataset_mvp.py")).read()
+      and "license 字段缺失" not in open(os.path.join(
+          ROOT, "scripts/validate_dataset.py")).read())
+# 非零子进程返回码 -> ERROR 分类(builder 源码路径断言)
+_src = open(os.path.join(ROOT, "scripts/build_dataset_mvp.py")).read()
+check("非零 rc 立即记 ERROR(不等 TIMEOUT)",
+      "rc not in (None, 0)" in _src and "stderr_tail" in _src)
+# summary 比例语义
+check("统计语义字段齐备",
+      all(k in _src for k in ("preflight_pass_rate", "structural_qa_pass_rate",
+                              "quality_eligibility_rate",
+                              "post_preflight_acceptance",
+                              "end_to_end_acceptance")))
+
 n_fail = RESULTS.count(False)
 print(f"==== {len(RESULTS) - n_fail}/{len(RESULTS)} PASS ====")
 sys.exit(1 if n_fail else 0)

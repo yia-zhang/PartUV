@@ -46,8 +46,10 @@ class DataSource:
     def _write_status(self, uid, **kw):
         kw.setdefault("uid", uid)
         kw.setdefault("ts", time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
-        with open(self._status_path(uid), "w") as fp:
+        sp = self._status_path(uid)
+        with open(sp + ".tmp", "w") as fp:
             json.dump(kw, fp, ensure_ascii=False)
+        os.replace(sp + ".tmp", sp)              # 原子: 不留截断 JSON
         return kw
 
     def read_status(self, uid):
@@ -55,8 +57,9 @@ class DataSource:
         return json.load(open(p)) if os.path.exists(p) else dict(
             uid=uid, status="PENDING")
 
-    def ensure_local(self, uid, timeout=120):
-        """返回本地 GLB 路径; 失败返回 None 并记录原因. 幂等可断点."""
+    def ensure_local(self, uid, timeout=90, retries=2):
+        """返回本地 GLB 路径; 失败返回 None 并记录原因. 幂等可断点.
+        有限 timeout + 有限重试 + .part 临时 + 尺寸校验 + 原子改名。"""
         dst = self.local_path(uid)
         st = self.read_status(uid)
         if st.get("status") == "DOWNLOADED" and os.path.exists(dst):
@@ -64,20 +67,32 @@ class DataSource:
                 return dst                       # 校验通过, 复用
         tmp = dst + ".part"
         self._write_status(uid, status="DOWNLOADING")
-        try:
-            url = self.resolve_url(uid)
-            t0 = time.time()
-            urllib.request.urlretrieve(url, tmp)
-            size = os.path.getsize(tmp)
-            h = hashlib.sha256(open(tmp, "rb").read()).hexdigest()
-            os.replace(tmp, dst)                 # 原子重命名: 完成才可见
-            self._write_status(uid, status="DOWNLOADED", size=size,
-                               sha256=h, url=url,
-                               seconds=round(time.time() - t0, 2))
-            return dst
-        except Exception as e:
-            if os.path.exists(tmp):
-                os.remove(tmp)                   # 半成品绝不留作完成文件
-            self._write_status(uid, status="ERROR",
-                               error=f"{type(e).__name__}: {str(e)[:120]}")
-            return None
+        last = ""
+        for _ in range(retries + 1):
+            try:
+                url = self.resolve_url(uid)
+                t0 = time.monotonic()
+                req = urllib.request.Request(
+                    url, headers={"User-Agent": "meshuv/0.1"})
+                with urllib.request.urlopen(req, timeout=timeout) as r, \
+                        open(tmp, "wb") as fp:
+                    while True:
+                        buf = r.read(1 << 20)
+                        if not buf:
+                            break
+                        fp.write(buf)
+                size = os.path.getsize(tmp)
+                if size < 64:
+                    raise IOError(f"下载体积异常({size}B)")
+                h = hashlib.sha256(open(tmp, "rb").read()).hexdigest()
+                os.replace(tmp, dst)             # 原子重命名: 完成才可见
+                self._write_status(uid, status="DOWNLOADED", size=size,
+                                   sha256=h, url=url,
+                                   seconds=round(time.monotonic() - t0, 2))
+                return dst
+            except Exception as e:
+                last = f"{type(e).__name__}: {str(e)[:120]}"
+                if os.path.exists(tmp):
+                    os.remove(tmp)               # 半成品绝不留作完成文件
+        self._write_status(uid, status="ERROR", error=last)
+        return None

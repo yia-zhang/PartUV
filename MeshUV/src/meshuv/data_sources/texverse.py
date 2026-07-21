@@ -35,11 +35,14 @@ class TexVerse1K(DataSource):
         return json.load(urllib.request.urlopen(req, timeout=30))
 
     def _load_manifest(self):
-        rows = []
+        rows, seen = [], set()
         if os.path.exists(self.manifest_path):
             for ln in open(self.manifest_path):
                 if ln.strip():
-                    rows.append(json.loads(ln))
+                    r = json.loads(ln)
+                    if r["uid"] not in seen:     # shard 中断重列时按 UID 去重
+                        seen.add(r["uid"])
+                        rows.append(r)
         return rows
 
     def list_candidates(self, n):
@@ -61,8 +64,11 @@ class TexVerse1K(DataSource):
                                    self._api_json(f"{GLB_ROOT}/{sh}")
                                    if e["type"] == "file"
                                    and e["path"].endswith(".glb"))
+                    have = {r["uid"] for r in self._rows}
                     for i, rel in enumerate(files):
                         uid = os.path.basename(rel).replace("_1024.glb", "")
+                        if uid in have:                     # 中断续跑不重复追加
+                            continue
                         row = dict(uid=uid, rel_path=rel, shard=sh,
                                    shard_complete=(i == len(files) - 1))
                         self._rows.append(row)

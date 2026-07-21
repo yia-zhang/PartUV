@@ -15,6 +15,7 @@ import json
 import os
 import subprocess
 import sys
+import threading
 import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
@@ -26,6 +27,13 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "src"))
 from meshuv.teacher_adapter import PARTUV_ROOT, teacher_code_hash  # noqa: E402
 from meshuv.data_sources import get_source  # noqa: E402
+from meshuv.preflight import quick_preflight  # noqa: E402
+
+
+def atomic_json(path, obj):
+    with open(path + ".tmp", "w") as fp:
+        json.dump(obj, fp, indent=1, ensure_ascii=False)
+    os.replace(path + ".tmp", path)
 
 PY = sys.executable
 OK_LIC = {"CC0-1.0", "CC-BY-4.0", "CC-BY-SA-4.0", "cc0", "by", "by-sa"}
@@ -160,44 +168,72 @@ def main():
         man = (json.load(open(mpath)) if os.path.exists(mpath)
                else build_candidates(cfg, mpath))
         cands = sorted(man["candidates"], key=lambda c: c["selection_rank"])
+    t_wall0 = time.monotonic()
 
-    def n_accepted():
-        return sum(1 for f in glob.glob(f"{dsroot}/objects/*/status.json")
-                   if json.load(open(f)).get("status") == "ACCEPTED")
+    # accepted 计数器: 启动时盘点一次, 之后线程安全递增(断点恢复友好, 无 O(n²) 扫盘)
+    _lock = threading.Lock()
+    _acc = sum(1 for f in glob.glob(f"{dsroot}/objects/*/status.json")
+               if json.load(open(f)).get("status") == "ACCEPTED")
 
     def run_one(c):
+        nonlocal _acc
         oid = c["object_id"]
         outd = f"{dsroot}/objects/{oid}"
         spath = f"{outd}/status.json"
         if os.path.exists(spath):
             return json.load(open(spath))
-        if n_accepted() >= cfg["target_accepted"]:
-            return None
+        with _lock:
+            if _acc >= cfg["target_accepted"]:
+                return None                      # 达标即停止消费候选
+        t_obj0 = time.monotonic()
+        os.makedirs(outd, exist_ok=True)
         try:
             glb = (src.ensure_local(c["uid"]) if src is not None
                    else ensure_glb(c, cfg))
             if glb is None:
                 raise RuntimeError(src.read_status(c["uid"]).get("error", "下载失败"))
         except Exception as e:
-            os.makedirs(outd, exist_ok=True)
             st = dict(object_id=oid, status="ACQUISITION_FAILED",
                       reason=f"{type(e).__name__}: {str(e)[:120]}")
-            json.dump(st, open(spath, "w"), ensure_ascii=False)
+            atomic_json(spath, st)
             return st
+        t_dl = round(time.monotonic() - t_obj0, 2)
+        pf = quick_preflight(glb, max_faces=cfg.get("max_faces", 300000))
+        if not pf["ok"]:                          # PartUV/PartField 前快速拒绝
+            st = dict(object_id=oid, status="PRECHECK_REJECTED",
+                      reason=pf["reason"], preflight=pf,
+                      timings=dict(download=t_dl,
+                                   total=round(time.monotonic() - t_obj0, 2)))
+            atomic_json(spath, st)
+            print(f"  -> [{oid}] PRECHECK_REJECTED {pf['reason'][:44]}",
+                  flush=True)
+            return st
+        rc = None
         try:
-            subprocess.run([PY, f"{ROOT}/scripts/_build_one_object.py",
-                            glb, oid, outd, beta, phash],
-                           timeout=cfg["timeout_s"], capture_output=True,
-                           text=True, env=dict(os.environ,
-                                               PARTUV_ROOT=PARTUV_ROOT))
+            pr = subprocess.run([PY, f"{ROOT}/scripts/_build_one_object.py",
+                                 glb, oid, outd, beta, phash],
+                                timeout=cfg["timeout_s"], capture_output=True,
+                                text=True, env=dict(os.environ,
+                                                    PARTUV_ROOT=PARTUV_ROOT))
+            rc = pr.returncode
         except subprocess.TimeoutExpired:
             pass
+        if not os.path.exists(spath) and rc not in (None, 0):
+            st = dict(object_id=oid, status="ERROR",     # 立即崩溃 != 超时
+                      reason=f"子进程 rc={rc}",
+                      stderr_tail=(pr.stderr or "")[-400:])
+            atomic_json(spath, st)
         if not os.path.exists(spath):
             st = dict(object_id=oid, status="PROCESSING_TIMEOUT",
                       reason=f">{cfg['timeout_s']}s")
-            os.makedirs(outd, exist_ok=True)
-            json.dump(st, open(spath, "w"), ensure_ascii=False)
+            atomic_json(spath, st)
         st = json.load(open(spath))
+        st.setdefault("timings", {})["download"] = t_dl
+        st["timings"]["wall_total"] = round(time.monotonic() - t_obj0, 2)
+        atomic_json(spath, st)
+        if st["status"] == "ACCEPTED":
+            with _lock:
+                _acc += 1
         print(f"  -> [{oid}] {st['status']} {st.get('quality_status', '')} "
               f"{st.get('reason', '')[:50]}", flush=True)
         return st
@@ -211,9 +247,9 @@ def main():
         spath = f"{dsroot}/objects/{c['object_id']}/status.json"
         if not os.path.exists(spath):
             continue
-        st = json.load(open(spath)) | dict(uid=c["uid"],
-                                           license_id=c["license_id"],
-                                           selection_rank=c["selection_rank"])
+        st = json.load(open(spath)) | dict(
+            uid=c["uid"], license_id=c.get("license_id", ""),
+            selection_rank=c["selection_rank"])
         # object-level 去重(geometry+content hash)
         if st["status"] == "ACCEPTED":
             key = (st["hashes"]["geometry"], st["hashes"]["content_phash"])
@@ -228,28 +264,52 @@ def main():
     yield_cnt = {}
     for st in sts:
         yield_cnt[st["status"]] = yield_cnt.get(st["status"], 0) + 1
-    json.dump(dict(attempted=len(sts), yield_counts=yield_cnt,
-                   accepted=len(accepted),
-                   target=cfg["target_accepted"]),
-              open(f"{dsroot}/processing_yield.json", "w"),
-              indent=1, ensure_ascii=False)
-    json.dump([st for st in sts if st["status"] != "ACCEPTED"],
-              open(f"{dsroot}/rejection_summary.json", "w"),
-              indent=1, ensure_ascii=False)
-    with open(f"{dsroot}/dataset_index.jsonl", "w") as fp:
+    n = max(len(sts), 1)
+    n_pre_ok = n - yield_cnt.get("PRECHECK_REJECTED", 0) \
+        - yield_cnt.get("ACQUISITION_FAILED", 0)
+    n_struct_ok = n_pre_ok - yield_cnt.get("STRUCTURAL_REJECTED", 0) \
+        - yield_cnt.get("PARTUV_FAILED", 0) - yield_cnt.get("PACKING_FAILED", 0) \
+        - yield_cnt.get("PROCESSING_TIMEOUT", 0) - yield_cnt.get("ERROR", 0) \
+        - yield_cnt.get("QUALITY_UNVERIFIABLE", 0)
+    wall_h = (time.monotonic() - t_wall0) / 3600
+    totals = sorted(st.get("timings", {}).get("wall_total", 0) for st in sts)
+    import numpy as _np
+    rate = len(accepted) / max(wall_h, 1e-9)
+    stats = dict(
+        attempted=len(sts), accepted=len(accepted),
+        rejected=len(sts) - len(accepted), yield_counts=yield_cnt,
+        target=cfg["target_accepted"],
+        candidates_exhausted=len(sts) >= len(cands),
+        # 统计语义(分母各不相同, 不得混称):
+        preflight_pass_rate=round(n_pre_ok / n, 3),
+        structural_qa_pass_rate=round(n_struct_ok / max(n_pre_ok, 1), 3),
+        quality_eligibility_rate=round(len(accepted) / max(n_struct_ok, 1), 3),
+        post_preflight_acceptance=round(len(accepted) / max(n_pre_ok, 1), 3),
+        end_to_end_acceptance=round(len(accepted) / n, 3),
+        timing=dict(p50_obj_s=round(float(_np.percentile(totals, 50)), 1)
+                    if totals else None,
+                    p90_obj_s=round(float(_np.percentile(totals, 90)), 1)
+                    if totals else None,
+                    wall_clock_hours=round(wall_h, 3)),
+        accepted_per_hour=round(rate, 1),
+        eta_256_hours=round(256 / max(rate, 1e-9), 2))
+    atomic_json(f"{dsroot}/processing_yield.json", stats)
+    atomic_json(f"{dsroot}/rejection_summary.json",
+                [st for st in sts if st["status"] != "ACCEPTED"])
+    print(json.dumps(stats, ensure_ascii=False, indent=1))
+    with open(f"{dsroot}/dataset_index.jsonl.tmp", "w") as fp:
         for st in accepted[:cfg["target_accepted"]]:
             fp.write(json.dumps(dict(
                 object_id=st["object_id"], uid=st["uid"],
-                license_id=st["license_id"],
+                license_id=st.get("license_id", ""),
                 selection_rank=st["selection_rank"],
                 sample_dir=f"objects/{st['object_id']}",
                 quality_status=st["quality_status"],
                 geometry_hash=st["hashes"]["geometry"],
                 content_phash=st["hashes"]["content_phash"]),
                 ensure_ascii=False) + "\n")
-    print(f"\nattempted={len(sts)} accepted={len(accepted)} "
-          f"target={cfg['target_accepted']}")
-    print("yield:", yield_cnt)
+    os.replace(f"{dsroot}/dataset_index.jsonl.tmp",
+               f"{dsroot}/dataset_index.jsonl")
     print("BUILD_DATASET: DONE")
 
 
