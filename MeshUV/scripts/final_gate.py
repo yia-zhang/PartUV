@@ -49,7 +49,7 @@ def main():
         f"rebuild={len(audit['rebuild_candidates'])} "
         f"relabel={len(audit['relabel_candidates'])}")
     ds = CleanDataset(DS)
-    sp = object_splits(ds)
+    sp = object_splits(DS)
     ids = [set(sp[k]) for k in ("train", "val", "test")]
     overlap = (ids[0] & ids[1]) | (ids[0] & ids[2]) | (ids[1] & ids[2])
     union = ids[0] | ids[1] | ids[2]

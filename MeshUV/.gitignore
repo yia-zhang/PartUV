@@ -7,3 +7,4 @@ __pycache__/
 core
 core.*
 datasets/quarantine/
+datasets/extras_beyond_256/
