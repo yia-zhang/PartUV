@@ -1,0 +1,33 @@
+{
+ "label_mode": "CANONICAL",
+ "beta": 0.25,
+ "workers": 4,
+ "attempted": 64,
+ "accepted": 9,
+ "rejected": 55,
+ "yield_counts": {
+  "ACCEPTED": 9,
+  "PRECHECK_REJECTED": 46,
+  "STRUCTURAL_REJECTED": 7,
+  "NOT_ELIGIBLE": 2
+ },
+ "download_success_rate": 1.0,
+ "preflight_yield": 0.281,
+ "qa_acceptance": 0.818,
+ "timing": {
+  "p50_total": 9.8,
+  "p90_total": 66.9,
+  "stage_seconds": {
+   "parse_preflight": 66.3,
+   "partuv_partfield": 412.2,
+   "label_computation": 0.1,
+   "packing_quality": 301.8,
+   "serialization": 5.0,
+   "total": 789.3,
+   "download": 758.4,
+   "preflight_fast": 15.4
+  }
+ },
+ "accepted_per_hour": 83.7,
+ "eta_256_accepted_hours": 3.1
+}

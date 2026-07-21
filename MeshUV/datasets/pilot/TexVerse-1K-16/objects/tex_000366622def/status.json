@@ -1,0 +1,52 @@
+{
+ "object_id": "tex_000366622def",
+ "status": "NOT_ELIGIBLE",
+ "reason": "quality=MIXED",
+ "quality_status": "MIXED",
+ "label_mode": "CANONICAL",
+ "eligible": false,
+ "artifact_valid": {
+  "packed_layout": true,
+  "rebaked_asset": false
+ },
+ "signal_dist": 0.0543,
+ "gates": {
+  "geometry_face_correspondence": true,
+  "coverage>=99.9%": true,
+  "finite_local_uv": true,
+  "demand_nonneg_sum1": true,
+  "chart_labels_finite": true,
+  "beta_protocol_consistent": true
+ },
+ "quality_check": {
+  "status": "OK",
+  "R_uniform": 724,
+  "R_teacher": 720,
+  "bsignal_match": 1.006,
+  "G_global_eq": -0.0205,
+  "G_HF_eq": 0.0348,
+  "overlap": 0
+ },
+ "timings": {
+  "parse_preflight": 3.99,
+  "partuv_partfield": 77.18,
+  "label_computation": 0.01,
+  "packing_quality": 32.18,
+  "total": 113.59,
+  "download": 2.71,
+  "preflight_fast": 0.02
+ },
+ "uid": "000366622def4a35b353c67c33ce1461",
+ "preflight": {
+  "ok": true,
+  "reason": "",
+  "n_faces": 122272,
+  "n_verts": 63219,
+  "n_geoms": 1,
+  "tex_size": [
+   1024,
+   1024
+  ],
+  "tex_mode": "RGB"
+ }
+}

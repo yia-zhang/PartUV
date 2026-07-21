@@ -1,0 +1,1 @@
+{"object_id": "tex_00062c16533f", "uid": "00062c16533f42de9381f44375bda22b", "status": "PRECHECK_REJECTED", "reason": "MULTI_MATERIAL: 17 geometries(暂不支持)", "preflight": {"ok": false, "reason": "MULTI_MATERIAL: 17 geometries(暂不支持)", "n_faces": 0, "n_verts": 0, "n_geoms": 17, "tex_size": null, "tex_mode": null}, "timings": {"download": 3.73, "preflight_fast": 0.01}}

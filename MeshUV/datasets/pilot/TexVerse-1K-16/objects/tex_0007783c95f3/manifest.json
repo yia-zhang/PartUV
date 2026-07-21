@@ -1,0 +1,40 @@
+{
+ "schema_version": "meshuv_td_mvp_v0",
+ "label_type": "partuv_td_allocation_pseudo_gt",
+ "label_semantics": "linear_texel_density_log_ratio_v1",
+ "label_mode": "CANONICAL",
+ "semantics": {
+  "label_type": "partuv_td_allocation_pseudo_gt",
+  "label_semantics": "linear_texel_density_log_ratio_v1",
+  "quality_scope": "td_allocation_only",
+  "artist_gt": false,
+  "local_uv_refinement": "none",
+  "seam_topology_target": false,
+  "packed_uv_regression_target": false
+ },
+ "object_id": "tex_0007783c95f3",
+ "teacher": {
+  "name": "partuv_td_teacher_pseudo_gt_v1",
+  "beta": 0.25,
+  "protocol_hash": "aa184eaa8d15c929e742db72640080a4c696f68227e96da83199d5daeab23e88",
+  "code_hash": "aff5bd74951e8453c4bfbd62f9d3ff43c9ea1172f8fec308af981bae98773bc4",
+  "evaluator": "texel_center_v1+coverage_center_v1"
+ },
+ "geometry": {
+  "n_faces": 2204,
+  "n_charts": 48,
+  "train_face_coverage": 1.0
+ },
+ "hashes": {
+  "geometry": "bec505aa40f852dd913e6633da5673d2298eb25ea9840dafa9ea86a025af8525",
+  "chart": "999ae16cb1c5003452db6fb3091b9d26402af343da5b6aaa9b1bfa5ac399e758",
+  "label": "ad1bd1e3b0b763d2c6ddda614512ed85355ddedb2de5123e51b17723d3de7625",
+  "content_phash": "000bfbff60f2f076"
+ },
+ "teacher_diagnostics_policy": "face/chart_content_score 禁止作为 Student-v0 输入",
+ "files": {
+  "arrays": "arrays.npz",
+  "reference_texture": "reference_basecolor.png",
+  "quality": "quality.json"
+ }
+}

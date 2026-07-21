@@ -25,6 +25,7 @@ import yaml
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "src"))
 from meshuv.teacher_adapter import PARTUV_ROOT, teacher_code_hash  # noqa: E402
+from meshuv.data_sources import get_source  # noqa: E402
 
 PY = sys.executable
 OK_LIC = {"CC0-1.0", "CC-BY-4.0", "CC-BY-SA-4.0", "cc0", "by", "by-sa"}
@@ -147,10 +148,18 @@ def main():
     beta, phash = str(fz["beta"]), fz["protocol_hash"]
     dsroot = rp(cfg["dataset_root"])
     os.makedirs(dsroot, exist_ok=True)
-    mpath = rp(cfg["candidate_manifest"])
-    man = (json.load(open(mpath)) if os.path.exists(mpath)
-           else build_candidates(cfg, mpath))
-    cands = sorted(man["candidates"], key=lambda c: c["selection_rank"])
+    # 数据源: 配置含 source 时走数据源抽象(如 texverse_1k), 否则 Objaverse 遗留路径
+    src = (get_source(cfg["source"], cache_dir=rp(cfg["source_cache"]))
+           if cfg.get("source") else None)
+    if src is not None:
+        cands = [dict(uid=r["uid"], selection_rank=i,
+                      object_id=f"mv0_{r['uid'][:12]}")
+                 for i, r in enumerate(src.list_candidates(cfg["candidate_max"]))]
+    else:
+        mpath = rp(cfg["candidate_manifest"])
+        man = (json.load(open(mpath)) if os.path.exists(mpath)
+               else build_candidates(cfg, mpath))
+        cands = sorted(man["candidates"], key=lambda c: c["selection_rank"])
 
     def n_accepted():
         return sum(1 for f in glob.glob(f"{dsroot}/objects/*/status.json")
@@ -165,7 +174,10 @@ def main():
         if n_accepted() >= cfg["target_accepted"]:
             return None
         try:
-            glb = ensure_glb(c, cfg)
+            glb = (src.ensure_local(c["uid"]) if src is not None
+                   else ensure_glb(c, cfg))
+            if glb is None:
+                raise RuntimeError(src.read_status(c["uid"]).get("error", "下载失败"))
         except Exception as e:
             os.makedirs(outd, exist_ok=True)
             st = dict(object_id=oid, status="ACQUISITION_FAILED",

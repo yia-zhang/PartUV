@@ -1,0 +1,12 @@
+# TexVerse-1K 端到端 pilot(非正式数据集; 样本不写正式 dataset root)
+source: texverse_1k
+cache_dir: datasets/cache/texverse_1k
+pilot_root: datasets/pilot/TexVerse-1K-16
+teacher_frozen_config: configs/teacher_frozen_v0.yaml
+pilot_beta_non_canonical: 0.25   # 仅 teacher 未冻结时使用, 标签标 NON_CANONICAL_PILOT
+
+target_accepted: 16
+attempt_cap: 64
+workers: 4          # 下载/预检并发; GPU 子进程并发由 2 对象 smoke 实测后调整
+timeout_s: 900
+max_faces: 300000

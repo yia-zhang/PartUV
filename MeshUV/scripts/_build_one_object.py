@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-"""单对象数据生成(子进程单元; 驱动: build_dataset_mvp.py).
-用法: _build_one_object.py <glb> <object_id> <out_dir> <beta> <protocol_hash>
-写 <out_dir>/status.json(+ accepted 时的三件套)。"""
+"""单对象数据生成(子进程单元; 驱动: build_dataset_mvp.py / pilot_texverse.py).
+用法: _build_one_object.py <glb> <object_id> <out_dir> <beta> <protocol_hash> [label_mode]
+label_mode: CANONICAL(默认) | NON_CANONICAL_PILOT(teacher 未冻结时的临时标签)。
+写 <out_dir>/status.json(含各阶段耗时)(+ accepted 时的三件套)。"""
 import hashlib
 import json
 import os
 import sys
+import time
 import traceback
 
 import numpy as np
@@ -19,10 +21,16 @@ from meshuv.teacher_adapter import (check_support, compute_labels,
                                     run_teacher_context, teacher_code_hash,
                                     TEACHER_VERSION)
 from meshuv.data.schema import (REQUIRED_NPZ, SEMANTICS, SCHEMA_VERSION,
-                                LABEL_TYPE)
+                                LABEL_TYPE, LABEL_SEMANTICS)
 
 glb, oid, outd, beta, phash = (sys.argv[1], sys.argv[2], sys.argv[3],
                                float(sys.argv[4]), sys.argv[5])
+label_mode = sys.argv[6] if len(sys.argv) > 6 else "CANONICAL"
+_T0, _timings = time.time(), {}
+
+
+def _tick(stage, t0):
+    _timings[stage] = round(time.time() - t0, 2)
 
 
 def _local_uv(pu, nF):
@@ -34,11 +42,13 @@ def _local_uv(pu, nF):
 
 os.makedirs(outd, exist_ok=True)
 st = dict(object_id=oid, status="", reason="", quality_status="",
-          eligible=False, artifact_valid=dict(packed_layout=False,
-                                              rebaked_asset=False))
+          label_mode=label_mode, eligible=False,
+          artifact_valid=dict(packed_layout=False, rebaked_asset=False))
 
 
 def finish():
+    _timings["total"] = round(time.time() - _T0, 2)
+    st["timings"] = _timings
     with open(f"{outd}/status.json", "w") as fp:
         json.dump(st, fp, indent=1, ensure_ascii=False)
     print("BUILD_ONE:", st["status"], flush=True)
@@ -47,15 +57,21 @@ def finish():
 
 try:
     pick_free_gpu()
+    t0 = time.time()
     sup = check_support(glb)
+    _tick("parse_preflight", t0)
     if not sup["supported"]:
         st.update(status="PRECHECK_REJECTED", reason=sup["reason"][:160])
         finish()
+    t0 = time.time()
     tc = run_teacher_context(glb, f"{outd}/partuv/")
+    _tick("partuv_partfield", t0)
     if tc["status"] != "OK":
         st.update(status=tc["status"], reason=tc.get("reason", "")[:160])
         finish()
+    t0 = time.time()
     labels = compute_labels(tc, beta)
+    _tick("label_computation", t0)
     pu, ref = tc["pu"], tc["ref"]
     F, V = pu["F"], pu["V"]
     dsh = labels["chart_demand_normalized"]
@@ -88,7 +104,9 @@ try:
         st["quality_status"] = "VALID_NO_OP"
         st["artifact_valid"]["packed_layout"] = True   # no-op 布局=Uniform 合法
     else:
+        t0 = time.time()
         q = quality_check_medium(tc, labels)
+        _tick("packing_quality", t0)
         st["quality_check"] = q
         if q["status"] != "OK":
             st.update(status="QUALITY_UNVERIFIABLE", reason=q["status"],
@@ -111,6 +129,7 @@ try:
         finish()
 
     # ---- 写样本三件套(相对路径, 可迁移) ----
+    t0 = time.time()
     tris = V[F]
     arrays = dict(
         vertices=V.astype(np.float32), faces=F.astype(np.int64),
@@ -155,6 +174,7 @@ try:
                         for v in tex.ravel())
     manifest = dict(
         schema_version=SCHEMA_VERSION, label_type=LABEL_TYPE,
+        label_semantics=LABEL_SEMANTICS, label_mode=label_mode,
         semantics=SEMANTICS, object_id=oid,
         teacher=dict(name=TEACHER_VERSION, beta=beta, protocol_hash=phash,
                      code_hash=teacher_code_hash(),
@@ -178,6 +198,7 @@ try:
     # 回读校验
     z2 = dict(np.load(f"{outd}/arrays.npz"))
     assert all((z2[k] == arrays[k]).all() for k in arrays), "回读不一致"
+    _tick("serialization", t0)
     st.update(status="ACCEPTED",
               hashes=manifest["hashes"], n_charts=len(pu["charts"]),
               n_faces=int(len(F)))

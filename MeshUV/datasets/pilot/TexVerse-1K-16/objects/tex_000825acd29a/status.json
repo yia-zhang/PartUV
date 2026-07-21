@@ -1,0 +1,61 @@
+{
+ "object_id": "tex_000825acd29a",
+ "status": "ACCEPTED",
+ "reason": "",
+ "quality_status": "POSITIVE",
+ "label_mode": "CANONICAL",
+ "eligible": true,
+ "artifact_valid": {
+  "packed_layout": true,
+  "rebaked_asset": false
+ },
+ "signal_dist": 0.149,
+ "gates": {
+  "geometry_face_correspondence": true,
+  "coverage>=99.9%": true,
+  "finite_local_uv": true,
+  "demand_nonneg_sum1": true,
+  "chart_labels_finite": true,
+  "beta_protocol_consistent": true
+ },
+ "quality_check": {
+  "status": "OK",
+  "R_uniform": 724,
+  "R_teacher": 724,
+  "bsignal_match": 0.9979,
+  "G_global_eq": 0.193,
+  "G_HF_eq": 0.3738,
+  "overlap": 0
+ },
+ "hashes": {
+  "geometry": "a6c83376f026b4feaa67a8a170019616f94de09f4ba65cefe58ed2dc453bd9c1",
+  "chart": "e2bb3081ebc4130a3ef4ec30a0fbcbb69c9b3142d43aab65c41c7e4b5fea7772",
+  "label": "ff23de442f5f43ec7322e662b1d0827b599b5b55137b653daa377aeb2d3348ce",
+  "content_phash": "ff771608084c5a17"
+ },
+ "n_charts": 519,
+ "n_faces": 47141,
+ "timings": {
+  "parse_preflight": 3.47,
+  "partuv_partfield": 18.38,
+  "label_computation": 0.01,
+  "packing_quality": 56.97,
+  "serialization": 0.7,
+  "total": 79.77,
+  "download": 6.17,
+  "preflight_fast": 0.01
+ },
+ "uid": "000825acd29a4b91a7370746392ae928",
+ "preflight": {
+  "ok": true,
+  "reason": "",
+  "n_faces": 47141,
+  "n_verts": 27961,
+  "n_geoms": 1,
+  "tex_size": [
+   1024,
+   1024
+  ],
+  "tex_mode": "RGB"
+ }
+}

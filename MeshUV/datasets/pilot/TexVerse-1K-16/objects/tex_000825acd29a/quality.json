@@ -1,0 +1,26 @@
+{
+ "quality_status": "POSITIVE",
+ "signal_dist": 0.149,
+ "quality_check": {
+  "status": "OK",
+  "R_uniform": 724,
+  "R_teacher": 724,
+  "bsignal_match": 0.9979,
+  "G_global_eq": 0.193,
+  "G_HF_eq": 0.3738,
+  "overlap": 0
+ },
+ "gates": {
+  "geometry_face_correspondence": true,
+  "coverage>=99.9%": true,
+  "finite_local_uv": true,
+  "demand_nonneg_sum1": true,
+  "chart_labels_finite": true,
+  "beta_protocol_consistent": true
+ },
+ "artifact_valid": {
+  "packed_layout": true,
+  "rebaked_asset": false
+ },
+ "eligible": true
+}
