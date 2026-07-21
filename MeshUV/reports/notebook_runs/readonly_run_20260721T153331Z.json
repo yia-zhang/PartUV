@@ -1,0 +1,26 @@
+{
+ "ts": "20260721T153331Z",
+ "runs": [
+  {
+   "nb": "01_data_browser",
+   "result": "PASS",
+   "seconds": 4.7,
+   "fail_cell": null,
+   "error": null,
+   "html": "/root/youjiaZhang/PartUV/MeshUV/reports/notebook_runs/01_data_browser_20260721T153331Z.html"
+  },
+  {
+   "nb": "02_uv_comparison",
+   "result": "PASS",
+   "seconds": 12.0,
+   "fail_cell": null,
+   "error": null,
+   "html": "/root/youjiaZhang/PartUV/MeshUV/reports/notebook_runs/02_uv_comparison_20260721T153331Z.html"
+  },
+  {
+   "nb": "03_sanity_checkpoint_browser",
+   "result": "WAITING_CHECKPOINT",
+   "note": "缺 student_v0_sanity.ckpt, 非 bug"
+  }
+ ]
+}
