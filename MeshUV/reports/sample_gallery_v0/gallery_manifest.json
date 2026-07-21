@@ -4,7 +4,7 @@
  "teacher": {
   "version": "partuv_td_teacher_pseudo_gt_v1",
   "beta": 0.25,
-  "budget": "fixed medium B_signal(等交付纹素±1%, frac=0.5, r_cap=2048)"
+  "budget": "equal occupied signal texels (B_signal, ±1%), NOT necessarily equal raw atlas resolution/memory; frac=0.5, r_cap=2048"
  },
  "selection": [
   "logr 方差最低",
@@ -91,5 +91,6 @@
    "size_kb": 813
   }
  ],
- "semantics": "packed UV/rebake 为冻结 Teacher 真实 xatlas+texel-center baker 产物; source UV 与 target 分开标注"
+ "semantics": "packed UV/rebake 为冻结 Teacher 真实 xatlas+texel-center baker 产物; source UV 与 target 分开标注; 预算公平轴 = equal occupied signal texels (B_signal, ±1%), NOT necessarily equal raw atlas resolution/memory",
+ "total_png_kb": 4461
 }

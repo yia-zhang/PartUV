@@ -20,9 +20,10 @@ from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "src"))
-from meshuv.teacher_adapter import (pick_free_gpu, quality_check_medium,
-                                    tc_from_sample, textured_render,
-                                    TEACHER_VERSION)      # noqa: E402
+from meshuv.teacher_adapter import pick_free_gpu, TEACHER_VERSION  # noqa: E402
+from meshuv.visualization.gallery_artifacts import (pack_and_rebake_pair,
+                                                    tc_from_sample,
+                                                    textured_render)  # noqa: E402
 from meshuv.visualization.plots import _t                 # noqa: E402
 
 DS = f"{ROOT}/datasets/processed/MeshUV-TD-PseudoGT-MVP-v0"
@@ -87,16 +88,17 @@ def uv_panel(ax, uvs, charts_F, title):
 
 
 def make_fig(rank, rec, why):
-    tc, labels, z, texA = tc_from_sample(rec["dir"])
-    q = quality_check_medium(tc, labels, return_artifacts=True)
+    tc, z = tc_from_sample(rec["dir"])
+    texA = tc["texA"]
+    q = pack_and_rebake_pair(tc, z["chart_target_scale"].astype(float))
     if q["status"] != "OK":
         print(f"[缺失] {rec['uid']}: 真实 packing 不可恢复({q['status']}), "
               f"跳过 packed/rebake 面板")
         return None
-    art = q["artifacts"]
+    art = dict(uniform=q["uniform"], td=q["td"])
     V, F = z["vertices"], z["faces"]
     f2c = z["face_to_chart"]
-    charts_F = [np.asarray(c["F"]) for c in tc["pu"]["charts"]]
+    charts_F = [np.asarray(c["F"]) for c in tc["charts"]]
     ok = np.ones(len(F), bool)
     uv_src = z["source_uv"].reshape(-1, 2)
     tris = np.arange(len(uv_src)).reshape(-1, 3)
@@ -136,17 +138,16 @@ def make_fig(rank, rec, why):
     axs[1, 1].set_title("target linear texel-density log-ratio", fontsize=9)
     plt.colorbar(tp, ax=axs[1, 1], fraction=0.04)
     # 7/8 真实 packed UV
-    from meshuv.teacher_adapter import _ensure_path
     uv_panel(axs[1, 2], art["uniform"].get("uvs") or [], charts_F,
              f"UNIFORM packed UV (real xatlas, R={art['uniform']['R']})")
     uv_panel(axs[1, 3], art["td"].get("uvs") or [], charts_F,
              f"TD TARGET packed UV (beta={BETA}, R={art['td']['R']})")
     # 9/10 rebake / 11 差异 / 12 指标
     axs[2, 0].imshow(np.clip(art["uniform"]["tex"], 0, 1))
-    axs[2, 0].set_title(f"UNIFORM rebake (B_signal={art['uniform']['B_signal']:,})",
+    axs[2, 0].set_title(f"UNIFORM rebake (B_signal={art['uniform']['S']:,})",
                         fontsize=9)
     axs[2, 1].imshow(np.clip(art["td"]["tex"], 0, 1))
-    axs[2, 1].set_title(f"TD rebake (B_signal={art['td']['B_signal']:,})",
+    axs[2, 1].set_title(f"TD rebake (B_signal={art['td']['S']:,})",
                         fontsize=9)
     r_u = textured_render(V, F, art["uniform"]["nuv"], ok,
                           art["uniform"]["tex"], view=(18, 40))
@@ -157,8 +158,8 @@ def make_fig(rank, rec, why):
     axs[2, 2].set_title("render |uniform - TD| (same camera)", fontsize=9)
     plt.colorbar(imd, ax=axs[2, 2], fraction=0.04)
     man = json.load(open(f"{rec['dir']}/manifest.json"))
-    fill_u = art["uniform"]["B_signal"] / art["uniform"]["R"] ** 2
-    fill_t = art["td"]["B_signal"] / art["td"]["R"] ** 2
+    fill_u = art["uniform"]["S"] / art["uniform"]["R"] ** 2
+    fill_t = art["td"]["S"] / art["td"]["R"] ** 2
     axs[2, 3].text(0.02, 0.96, "\n".join([
         f"faces={len(F):,}  charts={int(f2c.max()) + 1}",
         f"beta={BETA} (FROZEN)  logr_var={rec['logr_var']:.4f}",
@@ -187,8 +188,9 @@ def make_fig(rank, rec, why):
                 object_id=rec["object_id"], reason=why,
                 logr_var=round(rec["logr_var"], 5), n_charts=rec["n_charts"],
                 G_global_eq=q["G_global_eq"], G_HF_eq=q["G_HF_eq"],
-                bsignal=dict(uniform=art["uniform"]["B_signal"],
-                             td=art["td"]["B_signal"]),
+                bsignal=dict(uniform=art["uniform"]["S"],
+                             td=art["td"]["S"]),
+                atlas_R=dict(uniform=art["uniform"]["R"], td=art["td"]["R"]),
                 size_kb=round(os.path.getsize(p) / 1024))
 
 
@@ -208,8 +210,9 @@ def main():
                             text=True).stdout.strip()
     man = dict(schema="sample_gallery_v0", commit=commit,
                teacher=dict(version=TEACHER_VERSION, beta=BETA,
-                            budget="fixed medium B_signal(等交付纹素±1%, "
-                                   "frac=0.5, r_cap=2048)"),
+                            budget="equal occupied signal texels (B_signal, "
+                                   "±1%), NOT necessarily equal raw atlas "
+                                   "resolution/memory; frac=0.5, r_cap=2048"),
                selection=["logr 方差最低", "logr 方差中位", "logr 方差最高",
                           "chart 数最多", "G_HF_eq 最大"],
                accepted_pool=len(rows), entries=entries,
@@ -219,7 +222,9 @@ def main():
               indent=1, ensure_ascii=False)
     readme = ["# Sample Gallery v0\n",
               "从 TexVerse-256 构建中的 accepted 对象确定性选 5 个; packed UV 与",
-              "rebake 来自冻结 Teacher(β=0.25)真实 packing(等 B_signal 公平轴)。\n"]
+              "rebake 来自冻结 Teacher(β=0.25)真实 xatlas packing。",
+              "预算公平轴 = equal occupied signal texels (B_signal, ±1%),",
+              "NOT necessarily equal raw atlas resolution/memory。\n"]
     for e in entries:
         readme.append(f"- `{e['file']}` — {e['reason']}: uid `{e['uid']}`, "
                       f"{e['n_charts']} charts, G_HF_eq={e['G_HF_eq']:+.3f}, "

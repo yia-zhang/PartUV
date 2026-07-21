@@ -12,3 +12,6 @@ __pycache__/
 *.pyc
 *.egg-info/
 *.log
+
+# curated gallery 例外(小型验收产物)
+!reports/sample_gallery_v0/*.png
