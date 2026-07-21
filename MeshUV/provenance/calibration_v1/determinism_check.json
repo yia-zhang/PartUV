@@ -1,0 +1,58 @@
+[
+ {
+  "object_id": "objv_b8478cea5145",
+  "chart_hash": {
+   "concurrent": "884187fa4bdc77f2",
+   "serial": "1f74054befa73eb0",
+   "match": false
+  },
+  "verdict": "PartUV 跨运行非确定性(已知), 非并发问题"
+ },
+ {
+  "object_id": "objv_2c88306f3d72",
+  "chart_hash": {
+   "concurrent": "2bea4b7b30e7fe6e",
+   "serial": "2bea4b7b30e7fe6e",
+   "match": true
+  },
+  "target_scale_hash": {
+   "concurrent": "4f38082405d272c7",
+   "serial": "4f38082405d272c7",
+   "match": true
+  },
+  "metrics_hash": {
+   "concurrent": "125fb034f90862a1",
+   "serial": "125fb034f90862a1",
+   "match": true
+  },
+  "verdict": "DETERMINISTIC"
+ },
+ {
+  "object_id": "objv_4f6e6b0d481a",
+  "chart_hash": {
+   "concurrent": "90679f758f218e13",
+   "serial": "9ee0c4d27ccd3937",
+   "match": false
+  },
+  "verdict": "PartUV 跨运行非确定性(已知), 非并发问题"
+ },
+ {
+  "object_id": "objv_2b80440f9800",
+  "chart_hash": {
+   "concurrent": "d213587f5bb3f303",
+   "serial": "d213587f5bb3f303",
+   "match": true
+  },
+  "target_scale_hash": {
+   "concurrent": "350b35895c85298b",
+   "serial": "350b35895c85298b",
+   "match": true
+  },
+  "metrics_hash": {
+   "concurrent": "52b8b073caf5cb11",
+   "serial": "52b8b073caf5cb11",
+   "match": true
+  },
+  "verdict": "DETERMINISTIC"
+ }
+]

@@ -14,6 +14,9 @@ import numpy as np
 PARTUV_ROOT = os.environ.get("PARTUV_ROOT", "/root/youjiaZhang/PartUV/code")
 TEACHER_VERSION = "partuv_td_teacher_pseudo_gt_v1"
 EVALUATOR = "sampler=texel_center_v1 + reduce=coverage_center_v1"
+# canonical label 语义: 线性纹理密度(texels/单位长度)的 mean-centered log 比,
+# 与 TD(f)=R·sqrt(A_UV/A_3D) 及 chart_target_scale(线性 sqrt)约定一致。
+LABEL_SEMANTICS = "linear_texel_density_log_ratio_v1"
 
 _wired = False
 
@@ -27,15 +30,40 @@ def _ensure_path():
         _wired = True
 
 
-def teacher_code_hash():
-    """tdlib 全部 .py 的内容 sha256(冻结校验用)."""
+def _repo_root():
+    """仓库根 = PARTUV_ROOT 的上级(hash 用仓库相对路径, 与绝对位置无关)."""
+    return os.path.dirname(os.path.abspath(PARTUV_ROOT))
+
+
+def teacher_hash_files():
+    """Teacher provenance 覆盖的文件(仓库相对路径, 排序稳定):
+    - code/tdlib/**/*.py         teacher 计算核心
+    - MeshUV/src/meshuv/teacher_adapter.py   canonical label 实现(本文件)
+    - code/notebook/partuv_config.yaml       PartUV 管线配置
+    不含生成的 frozen YAML(避免循环依赖)。"""
+    root = _repo_root()
+    files = ["MeshUV/src/meshuv/teacher_adapter.py",
+             "code/notebook/partuv_config.yaml"]
+    td = os.path.join(root, "code", "tdlib")
+    for dirpath, _, fns in os.walk(td):
+        for fn in fns:
+            if fn.endswith(".py"):
+                files.append(os.path.relpath(os.path.join(dirpath, fn), root))
+    return sorted(files)
+
+
+def _hash_files(root, rel_files):
+    """内容 sha256: 只依赖相对路径与文件字节, 与遍历顺序/时间戳/绝对路径无关."""
     h = hashlib.sha256()
-    td = os.path.join(PARTUV_ROOT, "tdlib")
-    for fn in sorted(os.listdir(td)):
-        if fn.endswith(".py"):
-            h.update(fn.encode())
-            h.update(open(os.path.join(td, fn), "rb").read())
+    for rel in sorted(rel_files):
+        h.update(rel.encode())
+        h.update(open(os.path.join(root, rel), "rb").read())
     return h.hexdigest()
+
+
+def teacher_code_hash():
+    """Teacher 代码+配置的 provenance hash(冻结校验用)."""
+    return _hash_files(_repo_root(), teacher_hash_files())
 
 
 def pick_free_gpu():
@@ -89,9 +117,13 @@ def compute_labels(tc, beta):
     valid_c = (dem > 0) & (A3 > 0) & (a2 > 0)
     dshare = dem / max(dem.sum(), 1e-20)
     ashare = A3 / max(A3.sum(), 1e-20)
+    # canonical: mean-centered log LINEAR texel-density ratio
+    # (LABEL_SEMANTICS=linear_texel_density_log_ratio_v1)。
+    # 0.5 因子把面积纹素分配比(texels/面积)转为线性密度(texels/长度),
+    # 恒等式: 0.5*log(dshare/ashare) == log(target_scale/uniform_scale)+const
     logr = np.zeros(len(charts))
-    logr[valid_c] = np.log(np.maximum(dshare[valid_c], 1e-20)
-                           / np.maximum(ashare[valid_c], 1e-20))
+    logr[valid_c] = 0.5 * np.log(np.maximum(dshare[valid_c], 1e-20)
+                                 / np.maximum(ashare[valid_c], 1e-20))
     logr[valid_c] -= logr[valid_c].mean()          # mean-centered
     chart_cw = np.array([float(np.average(
         cw[c["gidx"]], weights=np.maximum(fa3[c["gidx"]], 1e-12)))

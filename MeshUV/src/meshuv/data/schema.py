@@ -10,8 +10,14 @@
 SCHEMA_VERSION = "meshuv_td_mvp_v0"
 LABEL_TYPE = "partuv_td_allocation_pseudo_gt"
 
+# chart_log_density_ratio = mean-centered log LINEAR texel-density ratio
+# (0.5*log(demand_share/surface_area_share); 线性密度=texels/单位长度,
+#  非面积分配比 —— 语义版本随 protocol hash 冻结)
+LABEL_SEMANTICS = "linear_texel_density_log_ratio_v1"
+
 SEMANTICS = dict(
     label_type=LABEL_TYPE,
+    label_semantics=LABEL_SEMANTICS,
     quality_scope="td_allocation_only",
     artist_gt=False,
     local_uv_refinement="none",

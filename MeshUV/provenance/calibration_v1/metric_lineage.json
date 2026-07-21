@@ -1,0 +1,73 @@
+{
+ "schema": "metric_lineage_v1",
+ "created": "2026-07-20",
+ "coordinate_convention": "texel-center: 采样 x=u*W-0.5(clamp-to-edge), 光栅化 u*W (像素 i 覆盖 [i,i+1), 中心 i+0.5) —— rd.bilinear 与 gpu._bilinear_t 统一; 旧 u*(W-1) 角点约定废弃",
+ "baker_fix": "rd.bake_atlas_ss coverage_center_v1(满覆盖块线性域面积平均 + 部分覆盖块覆盖感知 bilinear 取纹素中心)",
+ "protocol_hashes": {
+  "old_corner_convention_naive_reduce": "5e00cb2d2af2995e231ef3cb",
+  "intermediate_coverage_fix_only": "b7421ef150025787efdfffe3",
+  "new_unified": "b7421ef150025787efdfffe3(注: 与 intermediate 同值 —— 当时 protocol dict 未含 sampler 字段, 无法区分采样约定; pilot_v2_rebaseline 全部指标确为 texel_center_v1+coverage_center_v1 评测器产物, 以本血缘文件为准。gate protocol 已补 sampler 字段, 未来运行哈希自动区分)"
+ },
+ "affected_reports": [
+  {
+   "path": "outputs/pilot_v1/pilot_summary.json",
+   "status": "SUPERSEDED_BY_BAKER_FIX",
+   "superseded_by": "outputs/pilot_v2_rebaseline/summary.json"
+  },
+  {
+   "path": "outputs/pilot_v1_1/rejudge_summary.json",
+   "status": "SUPERSEDED_BY_BAKER_FIX",
+   "superseded_by": "outputs/pilot_v2_rebaseline/summary.json"
+  },
+  {
+   "path": "outputs/pilot_v1_1/dual_axis_summary.json",
+   "status": "SUPERSEDED_BY_BAKER_FIX",
+   "superseded_by": "outputs/pilot_v2_rebaseline/summary.json",
+   "note": "唯一标签变化: Avocado allocation MIXED->NEGATIVE"
+  },
+  {
+   "path": "outputs/pilot_v1_1/seam_diagnosis_gradient.json",
+   "status": "SUPERSEDED_BY_BAKER_FIX",
+   "superseded_by": "outputs/pilot_v1_1/baker_audit/report.json",
+   "note": "seam 份额/floor/SS8 恶化数字均为修复前评测器产物"
+  },
+  {
+   "path": "outputs/pilot_v1_1/diagnosis.json",
+   "status": "PARTIALLY_SUPERSEDED",
+   "superseded_by": "outputs/pilot_v2_rebaseline/summary.json",
+   "note": "几何量(demand/texel 份额/fill/subpixel/padding)仍有效; MSE/seam/fixed-B_signal 数字过期(定性归因 packing_delivery 在新评测器下复核维持)"
+  },
+  {
+   "path": "outputs/pilot_v1_1/baker_regression_4assets.json",
+   "status": "SUPERSEDED_BY_BAKER_FIX",
+   "superseded_by": "outputs/pilot_v2_rebaseline/summary.json",
+   "note": "coverage 修复时代/约定统一前的中间态"
+  },
+  {
+   "path": "outputs/p1b/summary.json",
+   "status": "SUPERSEDED_BY_BAKER_FIX",
+   "superseded_by": "outputs/p1b_rebaseline/summary.json",
+   "note": "重扫后 qualifying_betas=[], β=0.75 不再满足原停止条件"
+  },
+  {
+   "path": "outputs/pseudo_gt_quality/",
+   "status": "SUPERSEDED_BY_BAKER_FIX",
+   "superseded_by": "outputs/pilot_v2_rebaseline/(鞋未含; 如需可按新协议重跑)"
+  },
+  {
+   "path": "outputs/storage_ab(固定存储预算实验)",
+   "status": "SUPERSEDED_BY_BAKER_FIX",
+   "superseded_by": "(未复跑; 定性结论「源 UV 降采样占优」未在新评测器下重验)"
+  },
+  {
+   "path": "outputs/pilot_v1_1/packing_ab_min.json",
+   "status": "GEOMETRY_VALID",
+   "note": "fill/order-rotation 零敏感为纯几何结论, 不受 baker/约定影响; MSE 字段过期"
+  }
+ ],
+ "notes": [
+  "原 17 资产 = development set",
+  "β 冻结状态: 待用户决策(不自动选新 β)"
+ ],
+ "evaluator_new": "sampler=texel_center_v1 + reduce=coverage_center_v1"
+}

@@ -16,8 +16,9 @@ import yaml
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "src"))
-from meshuv.teacher_adapter import (teacher_code_hash, TEACHER_VERSION,
-                                    EVALUATOR)  # noqa: E402
+from meshuv.teacher_adapter import (teacher_code_hash, teacher_hash_files,
+                                    TEACHER_VERSION, EVALUATOR,
+                                    LABEL_SEMANTICS)  # noqa: E402
 
 CAL = "/root/youjiaZhang/PartUV/code/notebook/outputs/calibration_v1"
 rep = json.load(open(f"{CAL}/calibration_report_stratified.json"))
@@ -27,6 +28,7 @@ if beta is None or float(beta) == 0.0:
     sys.exit(2)
 
 protocol = dict(teacher_version=TEACHER_VERSION, evaluator=EVALUATOR,
+                label_semantics=LABEL_SEMANTICS,   # 语义变化必然改变 protocol hash
                 beta=float(beta), medium_frac=0.5, r_cap=2048,
                 seed_eval=2, n_samples=150000, bsignal_dev_max=0.01,
                 pos=dict(band_g=0.02, pos_hf=0.05, neg_g=-0.05),
@@ -35,6 +37,8 @@ phash = hashlib.sha256(json.dumps(protocol, sort_keys=True).encode()).hexdigest(
 fz = dict(status="FROZEN", frozen=True, teacher_version=TEACHER_VERSION, evaluator=EVALUATOR,
           beta=float(beta), protocol=protocol, protocol_hash=phash,
           code_hash=teacher_code_hash(),
+          label_semantics=LABEL_SEMANTICS,
+          hash_files=teacher_hash_files(),
           calibration_report=f"{CAL}/calibration_report_stratified.json",
           decision_steps=rep["decision_steps"])
 yaml.safe_dump(fz, open(f"{ROOT}/configs/teacher_frozen_v0.yaml", "w"),

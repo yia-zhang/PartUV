@@ -1,9 +1,48 @@
-# 冻结 teacher —— calibration 决策后由 scripts/freeze_teacher.py 一次性写入。
-# status != FROZEN 时, build_dataset_mvp 拒绝生成任何正式 target labels。
-status: PENDING_CALIBRATION
-beta: null
-protocol_hash: null
+status: FROZEN
+frozen: true
 teacher_version: partuv_td_teacher_pseudo_gt_v1
-evaluator: texel_center_v1+coverage_center_v1
-code_hash: null
-calibration_report: null
+evaluator: sampler=texel_center_v1 + reduce=coverage_center_v1
+beta: 0.25
+protocol:
+  teacher_version: partuv_td_teacher_pseudo_gt_v1
+  evaluator: sampler=texel_center_v1 + reduce=coverage_center_v1
+  label_semantics: linear_texel_density_log_ratio_v1
+  beta: 0.25
+  medium_frac: 0.5
+  r_cap: 2048
+  seed_eval: 2
+  n_samples: 150000
+  bsignal_dev_max: 0.01
+  pos:
+    band_g: 0.02
+    pos_hf: 0.05
+    neg_g: -0.05
+  low_td_contrast: 0.05
+  coverage_gate: 0.999
+protocol_hash: aa184eaa8d15c929e742db72640080a4c696f68227e96da83199d5daeab23e88
+code_hash: aff5bd74951e8453c4bfbd62f9d3ff43c9ea1172f8fec308af981bae98773bc4
+label_semantics: linear_texel_density_log_ratio_v1
+hash_files:
+- MeshUV/src/meshuv/teacher_adapter.py
+- code/notebook/partuv_config.yaml
+- code/tdlib/__init__.py
+- code/tdlib/api.py
+- code/tdlib/budget.py
+- code/tdlib/dataset.py
+- code/tdlib/gates.py
+- code/tdlib/geometry.py
+- code/tdlib/gpu.py
+- code/tdlib/layout.py
+- code/tdlib/metrics.py
+- code/tdlib/pipeline.py
+- code/tdlib/rd.py
+- code/tdlib/signal.py
+calibration_report: /root/youjiaZhang/PartUV/code/notebook/outputs/calibration_v1/calibration_report_stratified.json
+decision_steps:
+- 决策集 = random-30 common-support(n=14)
+- '1.NEGATIVE 少: β=0.125:0 vs β=0.25:0'
+- '2.MIXED 少: β=0.125:0 vs β=0.25:0'
+- '3.POSITIVE 多: β=0.125:10 vs β=0.25:10'
+- '4.median global 非劣: 0.0595 vs 0.0890'
+- '5.median HF: 0.0811 vs 0.1027'
+- '  -> 决出 β=0.25'
