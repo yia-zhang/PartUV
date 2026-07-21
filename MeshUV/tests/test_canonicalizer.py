@@ -74,10 +74,18 @@ with tempfile.TemporaryDirectory() as td:
     check("异图: 两 cell 都进 atlas", len(c["geometry_names"]) == 2)
     check("node transform: 世界坐标正确",
           abs(c["V"][:, 0].max() - 4.0) < 1e-9 and abs(c["V"][:, 1].max() - 2.0) < 1e-9)
-    # 5) RGB 一致性: 按名称定位 imgB geometry(场景节点顺序与添加顺序无关)
+    # 5) RGB 一致性: glTF 语义 lin(tex)*factor -> sRGB
     giB = next(i for i, n in enumerate(c["geometry_names"]) if "geometry_1" in n)
-    fac = np.array([128, 255, 64]) / 255.0           # GLB roundtrip 后的量化 factor
-    srcB = np.asarray(imgB, float) / 255.0 * fac
+    fac = np.array([128, 255, 64]) / 255.0
+
+    def s2l(x):
+        return np.where(x <= 0.04045, x / 12.92, ((x + 0.055) / 1.055) ** 2.4)
+
+    def l2s(x):
+        return np.where(x <= 0.0031308, x * 12.92,
+                        1.055 * np.clip(x, 0, 1) ** (1 / 2.4) - 0.055)
+
+    srcB = l2s(s2l(np.asarray(imgB, float) / 255.0) * fac)  # factor 本身是 linear
     pts = rng.rand(500, 2)
     faceB = c["face_source"] == giB
     uvB_new = c["uv"][np.unique(c["F"][faceB])]      # 该 quad 全部角点
@@ -97,6 +105,51 @@ with tempfile.TemporaryDirectory() as td:
     check("bbox 正确", np.allclose(c["V"].min(0), [0, 0, 0])
           and np.allclose(c["V"].max(0), [4, 2, 0]))
     check("multi-geometry 非拒绝原因", not any("拒" in w for w in c["warnings"]))
+
+    # glTF factor 解析值: tex=0.5(sRGB), factor=0.5 -> lin 0.2140*0.2140? no:
+    # lin(0.5)=0.2140, factor 已是 linear? glTF factor 为 linear 值 —— 本实现把
+    # 传入 factor 视为 sRGB 编码转换(GLB roundtrip 以 0-255 存), 校验数值:
+    g1 = np.full((4, 4, 3), 128, np.uint8)
+    from meshuv.asset.canonicalizer import _bake_factor
+    got = _bake_factor(Image.fromarray(g1), np.array([0.5, 1.0, 0.25]))
+    exp = l2s(s2l(128 / 255) * np.array([0.5, 1.0, 0.25]))
+    check("factor glTF 数值解析", np.abs(got[0, 0] - exp).max() < 1e-9,
+          f"{got[0,0].round(4)} vs {exp.round(4)}")
+
+    # 纯色无 UV geometry 保留(常量采样)
+    solid = trimesh.Trimesh(vertices=[[0, 0, 0], [1, 0, 0], [0, 1, 0]],
+                            faces=[[0, 1, 2]], process=False)
+    s2 = trimesh.Scene(); s2.add_geometry(_quad(imgA)); s2.add_geometry(solid)
+    p2 = f"{td}/solid.glb"; s2.export(p2)
+    c2 = canonicalize(p2)
+    check("纯色无 UV geometry 保留(非删除)", len(c2["F"]) == 3
+          and c2["retained"]["n_faces"] == 3
+          and c2["retained_area_ratio"] > 0.99,
+          f"faces={len(c2['F'])}")
+    check("original/retained 面积字段",
+          c2["original"]["surface_area"] > 0
+          and "retained_area_ratio" in c2)
+
+    # 单面跨 tile -> 拒绝
+    m3 = _quad(imgA)
+    uv3 = np.array([[0, 0], [1.6, 0], [1.6, 1], [0, 1]], float)  # 面跨 2 tile
+    m3.visual = trimesh.visual.TextureVisuals(uv=uv3, image=imgA)
+    s3 = trimesh.Scene(); s3.add_geometry(m3)
+    p3 = f"{td}/tiled.glb"; s3.export(p3)
+    try:
+        canonicalize(p3)
+        check("跨 tile 面 -> TILED_UV_UNSUPPORTED", False, "未拒绝")
+    except ValueError as e:
+        check("跨 tile 面 -> TILED_UV_UNSUPPORTED", "TILED" in str(e))
+
+    # 整套整数平移 UV -> 归一后接受
+    m4 = _quad(imgA)
+    m4.visual = trimesh.visual.TextureVisuals(
+        uv=np.array([[2, 3], [3, 3], [3, 4], [2, 4]], float), image=imgA)
+    s4 = trimesh.Scene(); s4.add_geometry(m4)
+    p4 = f"{td}/shifted.glb"; s4.export(p4)
+    c4 = canonicalize(p4)
+    check("整套整数 tile 平移可接受", len(c4["F"]) == 2)
 
 n_fail = RESULTS.count(False)
 print(f"==== {len(RESULTS) - n_fail}/{len(RESULTS)} PASS ====")

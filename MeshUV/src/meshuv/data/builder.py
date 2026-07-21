@@ -25,6 +25,20 @@ def _git_sha():
         return "unknown"
 
 
+def _face_source_on_processed(canon, cs):
+    """canonical face_source 映射到 PartUV 处理后 mesh(面心最近邻)."""
+    Vc, Fc = canon["V"], canon["F"]
+    cc = Vc[Fc].mean(1)
+    Vp, Fp = cs["vertices"].astype(float), cs["faces"]
+    pc = Vp[Fp].mean(1)
+    try:
+        from scipy.spatial import cKDTree
+        idx = cKDTree(cc).query(pc, k=1)[1]
+    except Exception:
+        idx = np.argmin(((pc[:, None] - cc[None]) ** 2).sum(-1), 1)
+    return canon["face_source"][idx].astype(np.int64)
+
+
 def build_object(glb_path, object_id, out_dir):
     """返回 status dict(写盘 status.json; ACCEPTED 时写全套样本)."""
     os.makedirs(out_dir, exist_ok=True)
@@ -46,7 +60,11 @@ def build_object(glb_path, object_id, out_dir):
     try:
         canon = canonicalize(glb_path)
     except ValueError as e:
-        return done("PRECHECK_REJECTED", str(e))
+        r = str(e)
+        code = ("TILED_UV_UNSUPPORTED" if "TILED" in r else
+                "TEXTURED_NO_UV" if "TEXTURED_NO_UV" in r else
+                "PRECHECK_REJECTED")
+        return done(code, r)
     except Exception as e:
         return done("UNPARSABLE", f"{type(e).__name__}: {str(e)[:100]}")
     st["warnings"] += canon["warnings"]
@@ -74,6 +92,7 @@ def build_object(glb_path, object_id, out_dir):
         source_uv=cs["source_uv"], source_uv_valid=cs["source_uv_valid"],
         train_face_mask=(cs["covered"] & cs["source_uv_valid"]),
         face_area=cs["face_area"],
+        face_source=_face_source_on_processed(canon, cs),
         chart_surface_area=lab["chart_surface_area"],
         chart_target_area_fraction=lab["chart_target_area_fraction"],
         chart_log_density_ratio=lab["chart_log_density_ratio"],
@@ -94,6 +113,10 @@ def build_object(glb_path, object_id, out_dir):
                     git_sha=_git_sha(),
                     n_faces=int(len(cs["faces"])), n_charts=cs["n_charts"],
                     coverage_area=cs["coverage_area"],
+                    original=canon["original"], retained=canon["retained"],
+                    retained_area_ratio=canon["retained_area_ratio"],
+                    coverage_vs_original=cs["coverage_area"]
+                    * canon["retained_area_ratio"],
                     geometry_hash=h("vertices", "faces"),
                     content_hash=h("face_content_score"),
                     diagnostics_policy="face/chart_content_score 禁作 Student 输入")

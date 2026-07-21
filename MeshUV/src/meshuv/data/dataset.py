@@ -27,7 +27,9 @@ class CleanDataset:
         z = dict(np.load(f"{d}/arrays.npz"))
         man = json.load(open(f"{d}/manifest.json"))
         item = dict(object_id=self.ids[i],
-                    inputs={k: z[k] for k in CORE},
+                    inputs={k: (z[k] if k in z else
+                                np.zeros(len(z["faces"]), np.int64))
+                            for k in CORE},   # 旧样本缺 face_source -> 0
                     targets={k: z[k] for k in TARGETS},
                     basecolor=f"{d}/basecolor.png", manifest=man)
         if self.expose:

@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 from meshuv.data.dataset import CleanDataset  # noqa: E402
 from meshuv.data.collate import collate  # noqa: E402
 from meshuv.model.student_v0 import StudentV0  # noqa: E402
-from meshuv.training.trainer import train  # noqa: E402
+from meshuv.training.trainer import train_minibatch, evaluate  # noqa: E402
 
 DATA_ROOT = os.environ.get("MESHUV_DATA_ROOT", os.path.join(ROOT, "datasets"))
 
@@ -44,9 +44,20 @@ def main():
     batch = collate(items)
     print(f"objects={len(items)} charts={len(batch['features'])} "
           f"valid={int(batch['valid'].sum())}")
+    from meshuv.data.collate import collate as _c
     model = StudentV0(d=192)
     dev = "cuda" if torch.cuda.is_available() else "cpu"
-    r = train(model, batch, steps=a.steps, lr=4e-3, device=dev, log_every=500)
+    losses = train_minibatch(model, items, _c, steps=a.steps, lr=4e-3,
+                             batch_objects=4, device=dev, log_every=500)
+    ev = evaluate(model, items, _c, device=dev)
+    import torch as T
+    with T.no_grad():
+        pred = model(T.as_tensor(batch["features"], device=dev),
+                     batch["object_ranges"],
+                     T.as_tensor(batch["valid"], device=dev)).cpu().numpy()
+    r = dict(losses=losses, loss_first=losses[0], loss_last=losses[-1],
+             spearman_active=ev["macro"]["spearman_median"], pred=pred,
+             eval=ev)
     ratio = r["loss_last"] / max(r["loss_first"], 1e-12)
     out = dict(n_objects=len(items), n_charts=len(batch["features"]),
                loss_first=round(r["loss_first"], 6),
@@ -54,7 +65,8 @@ def main():
                loss_ratio=round(ratio, 5),
                pass_loss=bool(ratio < 0.01),
                spearman_active=round(r["spearman_active"], 4),
-               pass_spearman=bool(r["spearman_active"] > 0.95))
+               pass_spearman=bool(r["spearman_active"] > 0.95),
+               metrics=r["eval"])
     os.makedirs(f"{ROOT}/reports", exist_ok=True)
     json.dump(out, open(f"{ROOT}/reports/overfit_8.json", "w"), indent=1)
     fig, axs = plt.subplots(1, 2, figsize=(11, 4))

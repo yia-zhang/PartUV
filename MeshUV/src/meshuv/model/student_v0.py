@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Student-v0: chart-token MLP + 2 层 object 内 Transformer -> 每 chart 标量.
-object-wise mean centering 使输出与标签同分布(标签均值居中)。"""
+"""Student-v0(handcrafted-signal baseline): O(C) 结构.
+per-chart encoder -> object pooled context(valid 加权 mean/max) -> 拼接
+-> head -> 每 chart 标量 -> object 内(valid) mean centering。
+invalid charts 不参与 context 池化。无 O(C²) attention。"""
 import torch
 import torch.nn as nn
 
@@ -8,24 +10,28 @@ N_FEATS = 17
 
 
 class StudentV0(nn.Module):
-    def __init__(self, d=64, heads=4):
+    name = "handcrafted_signal_baseline"
+
+    def __init__(self, d=128):
         super().__init__()
-        self.embed = nn.Sequential(nn.Linear(N_FEATS, d), nn.ReLU(),
-                                   nn.Linear(d, d), nn.ReLU())
-        layer = nn.TransformerEncoderLayer(d, heads, d * 2, batch_first=True,
-                                           dropout=0.0)
-        self.tf = nn.TransformerEncoder(layer, 2)
-        self.head = nn.Linear(d, 1)
+        self.enc = nn.Sequential(nn.Linear(N_FEATS, d), nn.ReLU(),
+                                 nn.Linear(d, d), nn.ReLU())
+        self.head = nn.Sequential(nn.Linear(d * 3, d), nn.ReLU(),
+                                  nn.Linear(d, 1))
 
     def forward(self, feats, object_ranges, valid):
-        """feats(T,F) 扁平 chart tokens; 逐 object 过 Transformer(变长)."""
-        h = self.embed(feats)
+        h = self.enc(feats)
         out = torch.zeros(len(feats), device=feats.device)
         for a, b in object_ranges:
-            tok = self.tf(h[a:b].unsqueeze(0)).squeeze(0)
-            y = self.head(tok).squeeze(-1)
-            m = valid[a:b]
+            hv, m = h[a:b], valid[a:b]
             if m.any():
-                y = y - y[m].mean()               # object-wise mean centering
+                ctx_mean = hv[m].mean(0)
+                ctx_max = hv[m].max(0).values
+            else:
+                ctx_mean = ctx_max = torch.zeros_like(hv[0])
+            ctx = torch.cat([ctx_mean, ctx_max]).expand(b - a, -1)
+            y = self.head(torch.cat([hv, ctx], 1)).squeeze(-1)
+            if m.any():
+                y = y - y[m].mean()
             out[a:b] = y
         return out

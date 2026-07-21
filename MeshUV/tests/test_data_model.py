@@ -34,6 +34,7 @@ def fake_obj(root, oid, nC, geo_hash):
              source_uv_valid=np.ones(nF, bool),
              train_face_mask=np.ones(nF, bool),
              face_area=np.ones(nF, np.float32),
+             face_source=np.zeros(nF, np.int64),
              chart_surface_area=np.ones(nC, np.float32),
              chart_target_area_fraction=np.full(nC, 1 / nC, np.float32),
              chart_log_density_ratio=(rng.randn(nC) * 0.2).astype(np.float32),
@@ -64,7 +65,7 @@ with tempfile.TemporaryDirectory() as td:
 
     import torch
     from meshuv.model.student_v0 import StudentV0
-    m = StudentV0(d=32, heads=2)
+    m = StudentV0(d=32)
     X = torch.as_tensor(b["features"])
     v = torch.as_tensor(b["valid"])
     out = m(X, b["object_ranges"], v)
