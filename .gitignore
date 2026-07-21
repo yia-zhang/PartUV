@@ -20,3 +20,5 @@ __pycache__/
 *.ckpt
 *.pth
 MeshUV/datasets/pilot/*/objects/
+MeshUV/notebooks/.ipynb_checkpoints/
+MeshUV/notebooks/outputs/
