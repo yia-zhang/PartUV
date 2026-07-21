@@ -1,0 +1,9 @@
+# 冻结 teacher —— calibration 决策后由 scripts/freeze_teacher.py 一次性写入。
+# status != FROZEN 时, build_dataset_mvp 拒绝生成任何正式 target labels。
+status: PENDING_CALIBRATION
+beta: null
+protocol_hash: null
+teacher_version: partuv_td_teacher_pseudo_gt_v1
+evaluator: texel_center_v1+coverage_center_v1
+code_hash: null
+calibration_report: null

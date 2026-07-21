@@ -1,0 +1,8 @@
+# 8-object overfit smoke(非正式训练)
+dataset_root: datasets/processed/MeshUV-TD-PseudoGT-MVP-v0
+n_objects: 8
+steps: 400
+lr: 0.01
+hidden: 64
+target: chart_log_density_ratio
+seed: 3
