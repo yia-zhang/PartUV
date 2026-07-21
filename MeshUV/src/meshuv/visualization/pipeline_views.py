@@ -89,13 +89,13 @@ def show_signal(item, ax):
             "texture signal (diagnostic, not a Student input)", cmap="magma")
 
 
-def show_target(item, ax):
+def show_target(item, ax, vmax=None):
     tt = item["targets"]
     logr = tt["chart_log_density_ratio"][np.maximum(
         item["inputs"]["face_to_chart"], 0)]
     logr = np.where(item["inputs"]["face_to_chart"] >= 0, logr, 0)
     _uv_tri(ax, item, logr, "target TD log-ratio (linear density)",
-            cmap="coolwarm", sym=True)
+            cmap="coolwarm", sym=True, vmax=vmax)
 
 
 def show_geometry_groups(item, ax=None):
@@ -106,11 +106,11 @@ def show_geometry_groups(item, ax=None):
             f"geometry groups ({int(fs.max()) + 1})", cmap="tab10")
 
 
-def show_prediction(item, pred_chart, ax):
+def show_prediction(item, pred_chart, ax, vmax=None):
     p = pred_chart[np.maximum(item["inputs"]["face_to_chart"], 0)]
     p = np.where(item["inputs"]["face_to_chart"] >= 0, p, 0)
     _uv_tri(ax, item, p, "Student prediction log-ratio", cmap="coolwarm",
-            sym=True)
+            sym=True, vmax=vmax)
 
 
 def object_summary(item):

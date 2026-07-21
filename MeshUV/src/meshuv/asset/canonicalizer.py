@@ -24,6 +24,17 @@ def _lin2srgb(x):
                     1.055 * np.clip(x, 0, 1) ** (1 / 2.4) - 0.055)
 
 
+def uv_tile_violation(uv, F):
+    """整个 geometry 只能占一个 tile 的 canonical 判定(audit 与 canonicalizer 共用).
+    统一整数平移后任何 used UV 越出 [0,1](eps) 即违规。"""
+    uv = np.asarray(uv, float)
+    used = np.unique(np.asarray(F))
+    if not len(used):
+        return False
+    u = uv[used] - np.floor(uv[used].min(0) + 1e-9)
+    return bool((u < -1e-6).any() or (u > 1 + 1e-6).any())
+
+
 def _bake_factor(img, factor):
     """glTF 语义: sRGB 贴图 -> linear, 乘 linear factor, 转回 sRGB."""
     a = _srgb2lin(np.asarray(img, float) / 255.0)
@@ -111,8 +122,7 @@ def canonicalize(path):
             uv = uv - shift
         # 同一 geometry 必须整体只占一个 tile: 统一整数平移后全部 used UV
         # 落在 [0,1](eps 容差)。跨 tile 面或分散多 tile 均拒绝, 不 fract 折叠。
-        if len(used) and ((uv[used] < -1e-6).any()
-                          or (uv[used] > 1 + 1e-6).any()):
+        if uv_tile_violation(uv, g["F"]):
             raise ValueError(
                 "TILED_UV_UNSUPPORTED: geometry UV 跨多个 tile(统一平移后仍越界)")
         uv = np.clip(uv, 0, 1)

@@ -12,6 +12,8 @@ import numpy as np
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "src"))
 from meshuv.asset.loader import load_glb  # noqa: E402
+from meshuv.asset.canonicalizer import uv_tile_violation  # noqa: E402
+from meshuv.data.schema import CORE, TARGETS  # noqa: E402
 from meshuv.density.signal import face_content_score  # noqa: E402
 from meshuv.density.allocation import chart_targets  # noqa: E402
 
@@ -29,8 +31,21 @@ def main():
         st_all.append(st)
         for k, v in st.get("timings", {}).items():
             timings.setdefault(k, []).append(v)
-    acc_dirs = [os.path.dirname(f) for f in
-                sorted(glob.glob(f"{DS}/objects/*/manifest.json"))]
+    acc_dirs, schema_bad = [], []
+    for f in sorted(glob.glob(f"{DS}/objects/*/manifest.json")):
+        d = os.path.dirname(f)
+        try:
+            st = json.load(open(f"{d}/status.json"))
+            if st.get("status") != "ACCEPTED":
+                continue
+            with np.load(f"{d}/arrays.npz") as zz:
+                missing = set(CORE + TARGETS) - set(zz.files)
+            if missing:
+                schema_bad.append(os.path.basename(d))
+                continue
+            acc_dirs.append(d)
+        except Exception:
+            schema_bad.append(os.path.basename(d))
     n_factor = n_nouv_solid = n_nouv_tex = n_oob = n_shift = n_cross = 0
     label_drift = []
     for d in acc_dirs:
@@ -73,13 +88,11 @@ def main():
                                 uvn = uv - sh
                                 if (sh != 0).any():
                                     row["uv_tile_shift"] = True
-                                cr = (np.floor(uvn[g["F"]].max(1) - 1e-9)
-                                      != np.floor(uvn[g["F"]].min(1) + 1e-9)).any(1)
-                                if cr.any():
+                                if uv_tile_violation(uv, g["F"]):
                                     row["uv_cross_tile"] = True
                 row["orig_area"] = oarea
             except Exception as e:
-                row["orig_load_error"] = type(e).__name__
+                row["orig_load_error"] = type(e).__name__   # 错误也进 rebuild
         n_factor += bool(row.get("factor_ne_1"))
         n_nouv_solid += bool(row.get("nouv_solid"))
         n_nouv_tex += bool(row.get("nouv_textured"))
@@ -108,9 +121,11 @@ def main():
     cpo = np.array(cpo)
     q = lambda p: float(np.percentile(cpo, p)) if len(cpo) else None
     yield_cnt = Counter(s.get("status", "?") for s in st_all)
-    rebuild = [r["object_id"] for r in rows
-               if r.get("uv_cross_tile") or r.get("nouv_textured")
-               or not r.get("has_v2_fields")]
+    rebuild = sorted(set(
+        [r["object_id"] for r in rows
+         if r.get("uv_cross_tile") or r.get("nouv_textured")
+         or not r.get("has_v2_fields") or r.get("orig_load_error")
+         or r.get("label_drift_error")] + schema_bad))
     relabel = [r["object_id"] for r in rows
                if r.get("label_drift_max", 0) > 1e-4]
     audit = dict(
@@ -132,6 +147,16 @@ def main():
                  for k, v in timings.items()},
         rebuild_candidates=rebuild, relabel_candidates=relabel,
         objects=rows)
+    import hashlib, subprocess
+    audit["adapter_distribution"] = dict(__import__("collections").Counter(
+        json.load(open(f"{d}/manifest.json")).get("source_adapter_version", "?")
+        for d in acc_dirs))
+    audit["schema_bad"] = schema_bad
+    audit["commit"] = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=os.path.dirname(ROOT),
+        capture_output=True, text=True).stdout.strip()[:12]
+    blob = json.dumps(audit, sort_keys=True, ensure_ascii=False).encode()
+    audit["audit_hash"] = hashlib.sha256(blob).hexdigest()[:16]
     json.dump(audit, open(f"{DS}/audit_clean_256.json", "w"), indent=1,
               ensure_ascii=False)
     md = [f"# Clean 256 审计\n",
@@ -145,7 +170,9 @@ def main():
           f"{sum(1 for r in rows if not r['has_v2_fields'])}",
           f"- label drift(clean 重算 vs 已存): max "
           f"{audit['label_drift']['max']:.5f}, >1e-4 共 {len(relabel)}",
-          f"- 需重建 UID(跨tile/有纹理无UV/v1字段): {len(rebuild)}",
+          f"- 需重建 UID(跨tile/有纹理无UV/v1字段/错误/schema): {len(rebuild)}",
+          f"- adapter 分布: {audit['adapter_distribution']}",
+          f"- audit_hash: {audit['audit_hash']}  commit: {audit['commit']}",
           ]
     open(f"{DS}/audit_clean_256.md", "w").write("\n".join(md) + "\n")
     print("\n".join(md))

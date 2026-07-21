@@ -44,14 +44,17 @@ try:
 except Exception as e:
     check("nb01 全 cell 执行", False, f"{type(e).__name__}: {str(e)[:90]}")
 try:
-    if have_data and have_ckpt:
-        r = run_nb("03_sanity_checkpoint_browser.ipynb")
-        check("nb03 全 cell 执行", r == "OK", r)
-    else:
-        check("nb03 全 cell 执行(需数据+ckpt)", have_data,
-              "ckpt 未生成" if have_data else "无数据")
+    r = run_nb("02_uv_comparison.ipynb") if have_data else "NO_DATA"
+    check("nb02 全 cell 执行", r == "OK", r)
 except Exception as e:
-    check("nb03 全 cell 执行", False, f"{type(e).__name__}: {str(e)[:90]}")
+    check("nb02 全 cell 执行", False, f"{type(e).__name__}: {str(e)[:90]}")
+try:
+    r = (run_nb("03_sanity_checkpoint_browser.ipynb")
+         if (have_data and have_ckpt) else "MISSING_CKPT_OR_DATA")
+    check("nb03 全 cell 执行(缺 ckpt 即 FAIL)", r == "OK", r)
+except Exception as e:
+    check("nb03 全 cell 执行(缺 ckpt 即 FAIL)", False,
+          f"{type(e).__name__}: {str(e)[:90]}")
 
 n_fail = RESULTS.count(False)
 print(f"==== {len(RESULTS) - n_fail}/{len(RESULTS)} PASS ====")

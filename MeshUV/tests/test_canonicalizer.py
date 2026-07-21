@@ -167,6 +167,12 @@ with tempfile.TemporaryDirectory() as td:
     except ValueError as e:
         check("不连通面分居多 tile -> 拒绝(不折叠)", "TILED" in str(e))
 
+    # audit 与 canonicalizer 共用规则: 不连通多 tile 必须命中
+    from meshuv.asset.canonicalizer import uv_tile_violation
+    check("audit 规则命中不连通多 tile 反例",
+          uv_tile_violation(uv5, np.array([[0, 1, 2], [3, 4, 5]]))
+          and not uv_tile_violation(uv5[:3], np.array([[0, 1, 2]])))
+
 n_fail = RESULTS.count(False)
 print(f"==== {len(RESULTS) - n_fail}/{len(RESULTS)} PASS ====")
 sys.exit(1 if n_fail else 0)
