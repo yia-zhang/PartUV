@@ -1,10 +1,10 @@
 {
  "n_objects": 8,
- "n_charts": 9413,
- "loss_first": 0.048151,
- "loss_last": 0.003334,
- "loss_ratio": 0.06923,
- "pass_loss": false,
- "spearman_active": 0.9608,
+ "n_charts": 4398,
+ "loss_first": 0.045998,
+ "loss_last": 0.000213,
+ "loss_ratio": 0.00464,
+ "pass_loss": true,
+ "spearman_active": 0.9963,
  "pass_spearman": true
 }

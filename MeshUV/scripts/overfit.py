@@ -32,7 +32,15 @@ def main():
                                                                    a.dataset)
     torch.manual_seed(3)
     ds = CleanDataset(root)
-    items = [ds[i] for i in range(min(a.n, len(ds)))]
+    # 确定性选 8 个 chart 数最接近中位数的对象(overfit 验证可训练性,
+    # 非容量压力测试; 巨兽对象留给 256 sanity)
+    import json as _j
+    counts = [( _j.load(open(f"{root}/objects/{o}/manifest.json"))["n_charts"], o)
+              for o in ds.ids]
+    med = sorted(c for c, _ in counts)[len(counts) // 2]
+    chosen = [o for _, o in sorted(counts, key=lambda t: (abs(t[0] - med), t[1]))][:a.n]
+    print("selected(median-band):", chosen)
+    items = [ds[ds.ids.index(o)] for o in sorted(chosen)]
     batch = collate(items)
     print(f"objects={len(items)} charts={len(batch['features'])} "
           f"valid={int(batch['valid'].sum())}")
