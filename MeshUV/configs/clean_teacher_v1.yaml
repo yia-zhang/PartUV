@@ -1,0 +1,15 @@
+# clean_teacher_v1 冻结(用户三项决策 2026-07-21):
+# - 信号源: 落盘 PNG uint8/255(唯一 canonical, round-trip drift<=1e-6)
+# - 不复刻旧 frozen teacher 的 (W-1) 采样; 旧 diff 报告保留为 provenance
+# - beta=0.25 为 MVP 固定超参数(未针对 clean_teacher_v1 重新校准)
+teacher: clean_teacher_v1
+beta: 0.25
+signal_version: luminance_std_png_u8_v1
+label_semantics: linear_texel_density_log_ratio_v1
+code_hash_files:
+  - src/meshuv/asset/canonicalizer.py
+  - src/meshuv/density/signal.py
+  - src/meshuv/density/allocation.py
+  - src/meshuv/baseline/partuv_adapter.py
+  - $PARTUV_ROOT/notebook/partuv_config.yaml
+provenance_diff_report: reports/teacher_diff_report.json

@@ -1,0 +1,59 @@
+{
+ "teacher": "clean_teacher_v1",
+ "beta": 0.25,
+ "code_hash": "4d8ecc5d349b709c",
+ "comparison": "tdlib frozen(luminance_std+demand) vs clean 实现, 同一 canonical atlas/source_uv 输入",
+ "n_objects": 12,
+ "max_abs_logr_diff": 0.94117,
+ "verdict": "SIGNIFICANT_REPORT_FIRST",
+ "per_object": [
+  {
+   "object_id": "tex_00001dbc99db",
+   "max_abs_diff": 0.07637
+  },
+  {
+   "object_id": "tex_0004c0cc3cf8",
+   "max_abs_diff": 0.66959
+  },
+  {
+   "object_id": "tex_000825acd29a",
+   "max_abs_diff": 0.343
+  },
+  {
+   "object_id": "tex_000ceaffd5d6",
+   "max_abs_diff": 0.94117
+  },
+  {
+   "object_id": "tex_00102fc5fe91",
+   "max_abs_diff": 0.09915
+  },
+  {
+   "object_id": "tex_00124c3fa3d0",
+   "max_abs_diff": 0.5916
+  },
+  {
+   "object_id": "tex_001668717384",
+   "max_abs_diff": 0.92556
+  },
+  {
+   "object_id": "tex_002953abe3f4",
+   "max_abs_diff": 0.01131
+  },
+  {
+   "object_id": "tex_00493b2e0e3a",
+   "max_abs_diff": 0.36063
+  },
+  {
+   "object_id": "tex_00554ccf1592",
+   "max_abs_diff": 0.80933
+  },
+  {
+   "object_id": "tex_0060c0f6babb",
+   "max_abs_diff": 0.60915
+  },
+  {
+   "object_id": "tex_007297ea7ab3",
+   "max_abs_diff": 0.16218
+  }
+ ]
+}

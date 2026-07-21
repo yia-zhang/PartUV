@@ -15,6 +15,24 @@ from ..density.allocation import chart_targets, BETA, LABEL_SEMANTICS
 from .schema import SCHEMA_VERSION, REQUIRED_NPZ
 
 
+def _teacher_code_hash():
+    """clean_teacher_v1 code hash: canonicalizer+signal+allocation+adapter+config."""
+    root = os.path.dirname(os.path.dirname(os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__)))))
+    h = hashlib.sha256()
+    for rel in ("src/meshuv/asset/canonicalizer.py",
+                "src/meshuv/density/signal.py",
+                "src/meshuv/density/allocation.py",
+                "src/meshuv/baseline/partuv_adapter.py"):
+        h.update(rel.encode())
+        h.update(open(os.path.join(root, rel), "rb").read())
+    cfg = os.path.join(os.environ.get("PARTUV_ROOT",
+                       "/root/youjiaZhang/PartUV/code"),
+                       "notebook", "partuv_config.yaml")
+    h.update(open(cfg, "rb").read())
+    return h.hexdigest()[:16]
+
+
 def _git_sha():
     import subprocess
     try:
@@ -77,8 +95,11 @@ def build_object(glb_path, object_id, out_dir):
         return done(cs.get("status", "PARTUV_FAILED"), cs.get("reason", ""))
 
     t = time.monotonic()
-    score = face_content_score(canon["atlas"], cs["source_uv"],
-                               cs["source_uv_valid"])
+    # canonical 信号源 = 最终落盘的 uint8 PNG 数据(同一份 u8/255 算标签+存盘,
+    # 保证标签可从持久化产物精确复现)
+    atlas_u8 = (np.clip(canon["atlas"], 0, 1) * 255).astype(np.uint8)
+    score = face_content_score(atlas_u8.astype(float) / 255.0,
+                               cs["source_uv"], cs["source_uv_valid"])
     lab = chart_targets(cs, score)
     tick("labels", t)
     if not (np.isfinite(cs["vertices"]).all()
@@ -101,12 +122,13 @@ def build_object(glb_path, object_id, out_dir):
         chart_content_score=lab["chart_content_score"])
     assert not (set(REQUIRED_NPZ) - set(arrays)), "schema 缺字段"
     np.savez_compressed(f"{out_dir}/arrays.npz", **arrays)
-    Image.fromarray((np.clip(canon["atlas"], 0, 1) * 255).astype(np.uint8)
-                    ).save(f"{out_dir}/basecolor.png")
+    Image.fromarray(atlas_u8).save(f"{out_dir}/basecolor.png")
     h = lambda *ks: hashlib.sha256(b"".join(
         np.ascontiguousarray(arrays[k]).tobytes() for k in ks)).hexdigest()[:16]
     manifest = dict(schema_version=SCHEMA_VERSION, object_id=object_id,
                     label_semantics=LABEL_SEMANTICS, beta=BETA,
+                    teacher="clean_teacher_v1",
+                    teacher_code_hash=_teacher_code_hash(),
                     signal_version=SIGNAL_VERSION,
                     baseline_version=cs["baseline_version"],
                     source_adapter_version=canon["adapter_version"],
