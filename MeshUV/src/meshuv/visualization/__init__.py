@@ -6,4 +6,4 @@ from .plots import (plot_funnel, plot_rejections, plot_label_distributions,
                     plot_splits, show_basecolor, show_mesh_preview,
                     show_chart_segmentation, show_demand_heatmap,
                     show_density_heatmap, show_packed_atlas, show_quality,
-                    show_uv_over_texture)  # noqa
+                    show_source_uv_over_reference)  # noqa

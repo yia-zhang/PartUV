@@ -141,7 +141,7 @@ def compute_labels(tc, beta):
 
 
 def quality_check_medium(tc, labels, frac=0.5, r_cap=2048, seed=2,
-                         n_samples=150_000):
+                         n_samples=150_000, return_artifacts=False):
     """固定中等 fixed-B_signal 预算: Uniform vs teacher 的 global/HF 表面误差.
     等 B_signal(偏差<=1%), texel-center baker。返回 dict(status=..., 指标)。"""
     _ensure_path()
@@ -167,7 +167,8 @@ def quality_check_medium(tc, labels, frac=0.5, r_cap=2048, seed=2,
         nuv = np.zeros((len(F), 3, 2))
         for ci, c in enumerate(charts):
             nuv[c["gidx"]] = uvs[ci][np.asarray(c["F"])]
-        return dict(S=int((owner >= 0).sum()), ov=int(ov), tex=tex, nuv=nuv)
+        return dict(S=int((owner >= 0).sum()), ov=int(ov), tex=tex, nuv=nuv,
+                    uvs=uvs)
 
     a2 = labels["chart_uv_area_before_td"]
     A3 = labels["chart_surface_area"]
@@ -212,7 +213,49 @@ def quality_check_medium(tc, labels, frac=0.5, r_cap=2048, seed=2,
     d_t = err(pt)
     g_eq = 1 - float(d_t.mean()) / max(float(d_u.mean()), 1e-20)
     ghf_eq = 1 - float(d_t[hi].mean()) / max(float(d_u[hi].mean()), 1e-20)
-    return dict(status="OK", R_uniform=R, R_teacher=R_t,
-                bsignal_match=round(match, 4),
-                G_global_eq=round(g_eq, 4), G_HF_eq=round(ghf_eq, 4),
-                overlap=pu_b["ov"] + pt["ov"])
+    out = dict(status="OK", R_uniform=R, R_teacher=R_t,
+               bsignal_match=round(match, 4),
+               G_global_eq=round(g_eq, 4), G_HF_eq=round(ghf_eq, 4),
+               overlap=pu_b["ov"] + pt["ov"])
+    if return_artifacts:
+        # 真实 packing/rebake 产物(gallery/QA 用; 不入训练 schema)
+        out["artifacts"] = dict(
+            uniform=dict(tex=pu_b["tex"], nuv=pu_b["nuv"], uvs=pu_b["uvs"],
+                         R=R, B_signal=pu_b["S"]),
+            td=dict(tex=pt["tex"], nuv=pt["nuv"], uvs=pt["uvs"],
+                    R=R_t, B_signal=pt["S"]))
+    return out
+
+
+def textured_render(V, F, nuv, ok, tex, view=(15, 45), px=700):
+    """tdlib GPU 纹理渲染直通(gallery/QA 用)."""
+    _ensure_path()
+    from tdlib import gpu as tdgpu
+    return tdgpu.textured_render(np.asarray(V, float), np.asarray(F),
+                                 np.asarray(nuv, float), np.asarray(ok, bool),
+                                 np.asarray(tex, float), view=view, px=px)
+
+
+def tc_from_sample(sample_dir):
+    """从已导出样本重建 quality_check_medium 所需上下文(不重跑 PartUV/signal).
+    chart 分解与标签均来自冻结样本; 打包/重烘用唯一 canonical 实现。"""
+    import json as _json
+    from PIL import Image as _Image
+    _ensure_path()
+    from run_pseudo_gt_quality_gate import charts_from_sample
+    z = dict(np.load(os.path.join(sample_dir, "arrays.npz")))
+    texA = np.asarray(_Image.open(os.path.join(
+        sample_dir, "reference_basecolor.png")), float)[:, :, :3] / 255.0
+    charts = charts_from_sample(z)
+    V, F = z["vertices"].astype(float), z["faces"]
+    tris = V[F]
+    fa3 = np.linalg.norm(np.cross(tris[:, 1] - tris[:, 0],
+                                  tris[:, 2] - tris[:, 0]), axis=1) / 2
+    tc = dict(pu=dict(charts=charts, F=F, V=V), fa3=fa3,
+              face_refuv=z["source_uv"].astype(float),
+              valid=z["source_uv_valid"], ref=dict(texA=texA), sel=None,
+              cw=None)
+    labels = dict(chart_target_scale=z["chart_target_scale"].astype(float),
+                  chart_uv_area_before_td=z["chart_uv_area_before_td"].astype(float),
+                  chart_surface_area=z["chart_surface_area"].astype(float))
+    return tc, labels, z, texA

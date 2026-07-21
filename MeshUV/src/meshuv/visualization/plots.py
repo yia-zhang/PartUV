@@ -159,8 +159,8 @@ def show_density_heatmap(item, ax=None):
                   sym=True)
 
 
-def show_uv_over_texture(item, ax=None, max_edges=60000):
-    """UV map 实际效果: basecolor 纹理 + UV 三角网 wireframe 叠加."""
+def show_source_uv_over_reference(item, ax=None, max_edges=60000):
+    """SOURCE UV(非 target): reference 纹理 + 源 UV wireframe 叠加."""
     ax = ax or plt.gca()
     p = item.get("reference_texture", "")
     if not os.path.exists(p):
@@ -177,7 +177,7 @@ def show_uv_over_texture(item, ax=None, max_edges=60000):
                                      alpha=0.6))
     ax.set_xlim(0, 1); ax.set_ylim(0, 1)
     ax.set_aspect("equal"); ax.set_axis_off()
-    ax.set_title(_t("UV map(纹理+网格线)", "UV map (texture + wireframe)"),
+    ax.set_title(_t("SOURCE UV(非 target)", "SOURCE UV wireframe (not target)"),
                  fontsize=10)
 
 
