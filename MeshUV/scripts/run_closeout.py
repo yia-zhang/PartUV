@@ -46,10 +46,28 @@ def run_stage(name, cmd, verify, env=None):
     print(f"[done] {name}: {detail}")
 
 
+def _teacher_guard():
+    """state 与 teacher 代码哈希绑定: 不匹配即停(须先归档旧 state)."""
+    sys.path.insert(0, os.path.join(ROOT, "src"))
+    from meshuv.data.builder import _teacher_code_hash
+    th = _teacher_code_hash()
+    p = f"{ST}/TEACHER_HASH"
+    if os.path.exists(p):
+        old = open(p).read().strip()
+        if old != th:
+            print(f"[FAIL] closeout state 绑定 teacher hash {old} != 当前 {th}; "
+                  f"请归档 {ST} 后重跑")
+            sys.exit(1)
+    else:
+        open(p, "w").write(th + "\n")
+    return th
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--confirm-migration", action="store_true")
     a = ap.parse_args()
+    _teacher_guard()
     if a.confirm_migration:
         open(f"{ST}/CONFIRM_MIGRATION", "w").write("confirmed\n")
         print("已写入迁移确认标记")
@@ -70,9 +88,6 @@ def main():
               lambda: (os.path.exists(f"{DS}/audit_clean_256.json"),
                        "audit_hash=" + json.load(open(
                            f"{DS}/audit_clean_256.json"))["audit_hash"]))
-    run_stage("teacher_diff", [PY, f"{ROOT}/scripts/teacher_diff.py"],
-              lambda: (os.path.exists(f"{ROOT}/reports/teacher_diff_report.json"),
-                       json.load(open(f"{ROOT}/reports/teacher_diff_report.json"))["verdict"]))
     run_stage("migration_dryrun",
               [PY, f"{ROOT}/scripts/closeout_migrate.py", "--dry-run"],
               lambda: (True, "计划已打印"))
@@ -86,12 +101,18 @@ def main():
                        ["audit_hash"] == audit_h, "audit hash 绑定一致"))
     run_stage("topup", [PY, f"{ROOT}/scripts/build_dataset.py",
                         "--n-candidates", "2000", "--target", "256"],
-              lambda: (json.load(open(f"{DS}/summary.json"))["accepted"] >= 1,
+              lambda: (json.load(open(f"{DS}/summary.json"))["accepted"] >= 256,
                        f"accepted={json.load(open(f'{DS}/summary.json'))['accepted']}"))
+    def v_audit_final():
+        aj = json.load(open(f"{DS}/audit_clean_256.json"))
+        ok = (not aj["rebuild_candidates"] and not aj["relabel_candidates"])
+        return ok, (f"rebuild={len(aj['rebuild_candidates'])} "
+                    f"relabel={len(aj['relabel_candidates'])}")
     run_stage("audit_final", [PY, f"{ROOT}/scripts/audit_clean_256.py"],
-              lambda: (len(json.load(open(f"{DS}/audit_clean_256.json"))
-                           ["rebuild_candidates"]) == 0,
-                       "rebuild 候选清零"))
+              v_audit_final)
+    run_stage("final_gate", [PY, f"{ROOT}/scripts/final_gate.py"],
+              lambda: (json.load(open(f"{ROOT}/reports/final_gate.json"))
+                       ["all_pass"], "六条件硬闸门全过"))
     run_stage("overfit", [PY, f"{ROOT}/scripts/overfit.py"],
               lambda: (json.load(open(f"{ROOT}/reports/overfit_8.json"))
                        ["pass_loss"], "loss<1% 初始"),

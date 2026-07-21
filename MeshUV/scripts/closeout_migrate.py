@@ -23,6 +23,7 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 from meshuv.density.signal import face_content_score, SIGNAL_VERSION
 from meshuv.density.allocation import chart_targets, BETA, LABEL_SEMANTICS
 from meshuv.asset.canonicalizer import ADAPTER_VERSION
+from meshuv.data.builder import _teacher_code_hash
 
 DATA = os.environ.get("MESHUV_DATA_ROOT", f"{ROOT}/datasets")
 DS = f"{DATA}/processed/clean_v1"
@@ -48,7 +49,7 @@ def relabel_inplace(d):
     cs = dict(face_to_chart=z["face_to_chart"], face_area=z["face_area"],
               covered=z["train_face_mask"],
               source_uv_valid=z["source_uv_valid"],
-              n_charts=int(z["face_to_chart"].max()) + 1)
+              n_charts=len(z["chart_surface_area"]))
     lab = chart_targets(cs, sc)
     z.update(face_content_score=sc,
              chart_content_score=lab["chart_content_score"],
@@ -60,6 +61,10 @@ def relabel_inplace(d):
     man = json.load(open(f"{d}/manifest.json"))
     man["relabel"] = f"{SIGNAL_VERSION}+beta{BETA} 原地重标(未重跑 PartUV)"
     man["label_semantics"] = LABEL_SEMANTICS
+    man["teacher"] = "clean_teacher_v1"
+    man["teacher_code_hash"] = _teacher_code_hash()
+    man["signal_version"] = SIGNAL_VERSION
+    man["beta"] = BETA
     man["content_hash"] = hashlib.sha256(
         np.ascontiguousarray(sc).tobytes()).hexdigest()[:16]
     code = hashlib.sha256(b"".join(

@@ -16,6 +16,8 @@ from meshuv.asset.canonicalizer import uv_tile_violation  # noqa: E402
 from meshuv.data.schema import CORE, TARGETS  # noqa: E402
 from meshuv.density.signal import face_content_score  # noqa: E402
 from meshuv.density.allocation import chart_targets  # noqa: E402
+from meshuv.density.signal import SIGNAL_VERSION  # noqa: E402
+from meshuv.data.builder import _teacher_code_hash  # noqa: E402
 
 DATA = os.environ.get("MESHUV_DATA_ROOT", f"{ROOT}/datasets")
 DS = f"{DATA}/processed/clean_v1"
@@ -24,6 +26,7 @@ CACHE = f"{DATA}/cache/texverse_1k"
 
 def main():
     from PIL import Image
+    THASH = _teacher_code_hash()
     rows, cpo, timings = [], [], {}
     st_all = []
     for f in sorted(glob.glob(f"{DS}/objects/*/status.json")):
@@ -54,6 +57,10 @@ def main():
         uid = oid.replace("tex_", "")
         glbs = glob.glob(f"{CACHE}/{uid}*.glb")
         row = dict(object_id=oid, n_charts=man["n_charts"],
+                   teacher_stale=not (
+                       man.get("teacher") == "clean_teacher_v1"
+                       and man.get("teacher_code_hash") == THASH
+                       and man.get("signal_version") == SIGNAL_VERSION),
                    n_faces=man["n_faces"],
                    coverage=man.get("coverage_area"),
                    coverage_vs_original=man.get("coverage_vs_original"),
@@ -126,8 +133,9 @@ def main():
          if r.get("uv_cross_tile") or r.get("nouv_textured")
          or not r.get("has_v2_fields") or r.get("orig_load_error")
          or r.get("label_drift_error")] + schema_bad))
+    # relabel: PNG round-trip drift>1e-6 或 teacher 冻结字段过期(签名/哈希不符)
     relabel = [r["object_id"] for r in rows
-               if r.get("label_drift_max", 0) > 1e-4]
+               if r.get("label_drift_max", 0) > 1e-6 or r["teacher_stale"]]
     audit = dict(
         n_accepted=len(rows), yield_counts=dict(yield_cnt),
         charts=dict(total=int(cpo.sum()), p50=q(50), p90=q(90), p95=q(95),
@@ -140,7 +148,7 @@ def main():
         label_drift=dict(max=float(np.max(label_drift)) if label_drift else 0,
                          p95=float(np.percentile(label_drift, 95))
                          if label_drift else 0,
-                         n_gt_1e4=len(relabel)),
+                         n_relabel=len(relabel)),
         timings={k: dict(sum_min=round(sum(v) / 60, 1),
                          p50=round(float(np.percentile(v, 50)), 1),
                          p90=round(float(np.percentile(v, 90)), 1))
@@ -151,6 +159,11 @@ def main():
     audit["adapter_distribution"] = dict(__import__("collections").Counter(
         json.load(open(f"{d}/manifest.json")).get("source_adapter_version", "?")
         for d in acc_dirs))
+    audit["teacher_hash_current"] = THASH
+    audit["teacher_distribution"] = dict(__import__("collections").Counter(
+        "{}|{}|{}".format(m.get("teacher", "?"), m.get("teacher_code_hash", "?"),
+                          m.get("signal_version", "?"))
+        for m in (json.load(open(f"{d}/manifest.json")) for d in acc_dirs)))
     audit["schema_bad"] = schema_bad
     audit["commit"] = subprocess.run(
         ["git", "rev-parse", "HEAD"], cwd=os.path.dirname(ROOT),
@@ -168,8 +181,10 @@ def main():
           f"整图平移: {n_shift}; 跨 tile: {n_cross}",
           f"- 缺 v2 面积字段(v1 构建): "
           f"{sum(1 for r in rows if not r['has_v2_fields'])}",
-          f"- label drift(clean 重算 vs 已存): max "
-          f"{audit['label_drift']['max']:.5f}, >1e-4 共 {len(relabel)}",
+          f"- label drift(PNG 重算 vs 已存): max "
+          f"{audit['label_drift']['max']:.5f}; relabel(>1e-6 或 teacher 过期) "
+          f"共 {len(relabel)}",
+          f"- teacher 分布: {audit['teacher_distribution']}",
           f"- 需重建 UID(跨tile/有纹理无UV/v1字段/错误/schema): {len(rebuild)}",
           f"- adapter 分布: {audit['adapter_distribution']}",
           f"- audit_hash: {audit['audit_hash']}  commit: {audit['commit']}",
