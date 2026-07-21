@@ -26,7 +26,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dataset", default="processed/clean_v1")
     ap.add_argument("--n", type=int, default=8)
-    ap.add_argument("--steps", type=int, default=800)
+    ap.add_argument("--steps", type=int, default=8000)
     a = ap.parse_args()
     root = a.dataset if os.path.isabs(a.dataset) else os.path.join(DATA_ROOT,
                                                                    a.dataset)
@@ -36,8 +36,9 @@ def main():
     batch = collate(items)
     print(f"objects={len(items)} charts={len(batch['features'])} "
           f"valid={int(batch['valid'].sum())}")
-    model = StudentV0()
-    r = train(model, batch, steps=a.steps, lr=2e-3)
+    model = StudentV0(d=192)
+    dev = "cuda" if torch.cuda.is_available() else "cpu"
+    r = train(model, batch, steps=a.steps, lr=4e-3, device=dev, log_every=500)
     ratio = r["loss_last"] / max(r["loss_first"], 1e-12)
     out = dict(n_objects=len(items), n_charts=len(batch["features"]),
                loss_first=round(r["loss_first"], 6),

@@ -6,10 +6,18 @@ per-chart 特征(纯几何+原始颜色统计):
 - log(baseline UV area fraction)
 - chart 面数(log)
 - 归一化质心(3) + 法线均值(3)
-- 从 source RGB 采样的颜色均值(3)/std(3)   <- 原始颜色, 非 teacher 分数
+- 从 source RGB 采样的颜色均值(3)/std(3)
+- 每面 K=8 重心点原始亮度统计 -> chart 均值/最大(2)
+  <- 全部从原始纹理采样计算, 非 teacher 诊断数组
 """
 import numpy as np
 from PIL import Image
+
+
+def _chart_max(vals, f2c, m, nC):
+    out = np.zeros(nC)
+    np.maximum.at(out, f2c[m], vals[m])
+    return out
 
 
 def chart_features(item, tex_cache={}):
@@ -25,18 +33,25 @@ def chart_features(item, tex_cache={}):
     # baseline UV 面积(local_uv)
     luv = z["local_uv"].astype(float)
     a2f = np.abs(np.cross(luv[:, 1] - luv[:, 0], luv[:, 2] - luv[:, 0])) / 2
-    # 原始颜色采样(面质心 uv, nearest)
+    # 原始颜色采样: 面质心 + 每面 K=8 重心点(固定 seed)的原始亮度统计
     p = item["basecolor"]
     if p not in tex_cache:
         tex_cache[p] = np.asarray(Image.open(p), float)[:, :, :3] / 255.0
         if len(tex_cache) > 16:
             tex_cache.pop(next(iter(tex_cache)))
     tex = tex_cache[p]
-    suv = z["source_uv"].astype(float).mean(1)
     H, W = tex.shape[:2]
+    suv3 = z["source_uv"].astype(float)
+    suv = suv3.mean(1)
     xi = np.clip((suv[:, 0] * W).astype(int), 0, W - 1)
     yi = np.clip(((1 - suv[:, 1]) * H).astype(int), 0, H - 1)
     rgb = tex[yi, xi]
+    bary = np.random.RandomState(7).dirichlet((1.2, 1.2, 1.2), 8)
+    pk = np.einsum("kj,fjd->fkd", bary, suv3)               # (F,8,2)
+    lum = tex @ np.array([0.299, 0.587, 0.114])
+    xk = np.clip((pk[..., 0] * W).astype(int), 0, W - 1)
+    yk = np.clip(((1 - pk[..., 1]) * H).astype(int), 0, H - 1)
+    face_lum_std = lum[yk, xk].std(axis=1)                  # (F,) 原始纹理统计
 
     def agg(vals, weights=None, how="mean"):
         out = np.zeros((nC,) + vals.shape[1:])
@@ -58,6 +73,8 @@ def chart_features(item, tex_cache={}):
         np.log(np.maximum(nfc, 1))[:, None],
         ctr_n, agg(nrm), agg(rgb),
         agg((rgb - agg(rgb)[f2c]) ** 2) ** 0.5,
+        agg(face_lum_std[:, None]),
+        _chart_max(face_lum_std, f2c, m, nC)[:, None],
     ], axis=1)
     return feats.astype(np.float32)
 

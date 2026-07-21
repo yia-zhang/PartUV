@@ -4,7 +4,7 @@ object-wise mean centering 使输出与标签同分布(标签均值居中)。"""
 import torch
 import torch.nn as nn
 
-N_FEATS = 15
+N_FEATS = 17
 
 
 class StudentV0(nn.Module):

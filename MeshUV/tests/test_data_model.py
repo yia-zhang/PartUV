@@ -53,7 +53,7 @@ with tempfile.TemporaryDirectory() as td:
     ds = CleanDataset(td)
     b = collate([ds[i] for i in range(len(ds))])
     check("variable-chart collate 形状",
-          b["features"].shape == (3 + 7 + 5 + 4 + 6 + 2 + 9 + 3, 15)
+          b["features"].shape == (3 + 7 + 5 + 4 + 6 + 2 + 9 + 3, 17)
           and len(b["object_ranges"]) == 8)
     sp = object_splits(td)
     loc = {o: s for s, os_ in sp.items() for o in os_}

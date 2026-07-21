@@ -17,13 +17,14 @@ def train(model, batch, steps=400, lr=1e-3, device="cpu", log_every=50):
     y = torch.as_tensor(batch["target"], device=device)
     m = torch.as_tensor(batch["valid"], device=device)
     opt = torch.optim.Adam(model.parameters(), lr=lr)
+    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=steps)
     lossf = torch.nn.SmoothL1Loss()
     model.to(device).train()
     losses = []
     for step in range(steps):
         pred = model(X, batch["object_ranges"], m)
         loss = lossf(pred[m], y[m])
-        opt.zero_grad(); loss.backward(); opt.step()
+        opt.zero_grad(); loss.backward(); opt.step(); sched.step()
         assert torch.isfinite(loss), f"NaN@{step}"
         losses.append(float(loss))
         if log_every and step % log_every == 0:

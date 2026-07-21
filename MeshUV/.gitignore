@@ -1,0 +1,6 @@
+MeshUV/datasets/
+!MeshUV/reports/latest_gallery/*.png
+__pycache__/
+*.pyc
+*.egg-info/
+*.log
