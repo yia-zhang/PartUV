@@ -19,3 +19,4 @@ __pycache__/
 *.log
 *.ckpt
 *.pth
+MeshUV/datasets/pilot/*/objects/
