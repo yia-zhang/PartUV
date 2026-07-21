@@ -67,6 +67,15 @@ def canonicalize(path):
     atlas = np.zeros((H_tot, W_tot, 3))
     for (a, _), (cx, cy, w, h) in zip(imgs, cells):
         atlas[cy:cy + h, cx:cx + w] = a
+        # gutter: 边缘 texel 复制进 padding 环(等价 clamp 语义, 消除边界渗黑)
+        atlas[cy - 1, cx:cx + w] = a[0]
+        atlas[cy + h, cx:cx + w] = a[-1]
+        atlas[cy:cy + h, cx - 1] = a[:, 0]
+        atlas[cy:cy + h, cx + w] = a[:, -1]
+        atlas[cy - 1, cx - 1] = a[0, 0]
+        atlas[cy - 1, cx + w] = a[0, -1]
+        atlas[cy + h, cx - 1] = a[-1, 0]
+        atlas[cy + h, cx + w] = a[-1, -1]
 
     # 合并 mesh + UV 重映射(REPEAT 取小数, 跨 tile 面记 warning)
     Vs, Fs, UVs, src = [], [], [], []
