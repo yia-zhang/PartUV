@@ -284,6 +284,58 @@ def fig_model(snap):
     plt.close(fig)
 
 
+def render_examples(snap):
+    """从冻结 256 数据渲染多样对象 4 联图(basecolor/charts/signal/target),
+    并把 overfit pred-vs-target 图拷入报告目录。只读 CPU, 不用 GPU。"""
+    import shutil
+    plt = _mpl()
+    sys.path.insert(0, f"{M}/src")
+    from meshuv.data.dataset import CleanDataset
+    from meshuv.visualization import pipeline_views as VV
+    # overfit 证据图
+    ovp = f"{REP}/latest_gallery/overfit_8.png"
+    if os.path.exists(ovp):
+        shutil.copy(ovp, f"{OUT}/results_overfit.png")
+    # 挑 小/中/大 chart 数 + 一个多几何 对象
+    rows = []
+    for mp in glob.glob(f"{DS}/objects/*/manifest.json"):
+        d = os.path.dirname(mp)
+        if load(f"{d}/status.json", {}).get("status") != "ACCEPTED":
+            continue
+        man = load(mp, {})
+        rows.append((man.get("n_charts", 0), man["object_id"],
+                     (man.get("original") or {}).get("n_geometries")))
+    rows.sort()
+    if not rows:
+        return []
+    picks = [rows[len(rows) // 6][1], rows[len(rows) // 2][1], rows[-8][1]]
+    multi = [r for r in rows if r[2] and r[2] > 1]
+    if multi:
+        picks.append(multi[len(multi) // 2][1])
+    ds = CleanDataset(DS, expose_diagnostics=True)
+    id2i = {ds[i]["object_id"]: i for i in range(len(ds))}
+    made = []
+    for k, uid in enumerate(picks):
+        if uid not in id2i:
+            continue
+        it = ds[id2i[uid]]
+        fig = plt.figure(figsize=(15, 4.2))
+        VV.show_basecolor(it, fig.add_subplot(1, 4, 1))
+        VV.show_charts(it, fig.add_subplot(1, 4, 2))
+        VV.show_signal(it, fig.add_subplot(1, 4, 3))
+        VV.show_target(it, fig.add_subplot(1, 4, 4))
+        man = it["manifest"]
+        plt.suptitle(f"{uid}  |  faces={man['n_faces']:,}  charts={man['n_charts']}"
+                     f"  geoms={(man.get('original') or {}).get('n_geometries')}"
+                     f"  coverage={man['coverage_area']*100:.1f}%", fontsize=10)
+        plt.tight_layout()
+        p = f"{OUT}/results_example_{k:02d}_{uid}.png"
+        plt.savefig(p, dpi=95, bbox_inches="tight")
+        plt.close(fig)
+        made.append(os.path.basename(p))
+    return made
+
+
 def fig_dashboard(snap):
     plt = _mpl()
     d = snap["dataset"]; f = snap["funnel"]; ov = snap["overfit"]
@@ -428,8 +480,7 @@ def pend(x, fmt=lambda v: str(v)):
     return "**PENDING**" if x is None else fmt(x)
 
 
-def build_md(snap):
-    from textwrap import dedent
+def build_md(snap, examples):
     g = snap["git"]; d = snap["dataset"]; f = snap["funnel"]
     t = snap["teacher"]; ov = snap["overfit"]; gate = snap["gate"]
     yc = f["yield_counts"] or {}
@@ -460,6 +511,11 @@ def build_md(snap):
 
     sanity = snap["sanity"]; gold = snap["gold"]
     nb = snap["notebooks"]
+
+    ex_block = "\n".join(
+        f"![example]({fn})\n" for fn in examples)
+    ovfig = ("![overfit](results_overfit.png)\n"
+             if os.path.exists(f"{OUT}/results_overfit.png") else "")
 
     def nb_line(k):
         r = nb.get(k)
@@ -574,6 +630,34 @@ flowchart TD
 {gate_row('4_roundtrip_drift_le_1e6','PNG round-trip drift ≤ 1e-6')}
 {gate_row('5_zero_candidates','rebuild/relabel 候选 = 0')}
 {gate_row('6_split_disjoint_complete','split 无重叠且并集完整')}
+
+---
+
+## ★ 中间结果与当前效果（可直接给 Leader 看）
+
+> **一句话**：数据正确性已证明、Teacher 分配在真实物体上**看得出合理**（信息多→密度高）、模型**已证明能拟合**这套标签；但**泛化（sanity）与真实纹理收益（Gold）仍在跑，尚未证明**。
+
+**（1）真实物体走查：basecolor → charts → 纹理需求信号 → 目标纹理密度（Teacher 输出）**
+
+读法：最右图**红色 = 目标密度更高**（纹理繁忙区），**蓝色 = 目标密度更低**（平坦区）。可直观看到 Teacher 把预算倾斜给高信息区。（覆盖小/中/大 chart 数与多几何对象，全部取自冻结的 256 数据。）
+
+{ex_block}
+
+**（2）模型能否学会？—— Overfit（8 对象）预测 vs 目标**
+
+左：训练 loss 下降；右：预测 vs 目标 log-ratio **紧贴对角线**（Spearman **{ov['spearman_active']}**，loss ratio **{ov['loss_ratio']*100:.2f}%**）。这证明**模型有能力拟合 Teacher 的分配**——但这是"记住 8 个物体"，**不是泛化**。
+
+{ovfig}
+
+**（3）目前到什么效果（诚实口径）**
+
+| 问题 | 现状 | 证据 |
+|---|---|---|
+| 数据对得上吗？ | ✅ 正确、可复现 | round-trip drift = 0，六闸门全 PASS |
+| Teacher 分配合理吗？ | ✅ 视觉上合理 | 上方真实物体走查（红=高频区，蓝=平坦区） |
+| 模型学得会吗？ | ✅ 能拟合 | Overfit Spearman {ov['spearman_active']} |
+| 能泛化到没见过的物体吗？ | ⏳ **进行中** | sanity（held-out 192/32/32）**PENDING** |
+| UV 在固定预算下更清晰吗？ | ⏳ **进行中** | Gold 三方对比 **PENDING** |
 
 ---
 
@@ -696,22 +780,20 @@ flowchart TD
 
 
 def build_html(snap, md):
-    # 自包含 HTML: 中文文本(浏览器 CJK 字体) + 内嵌 PNG(base64)。无外部依赖。
+    # 自包含 HTML: 中文文本(浏览器 CJK 字体) + 内嵌所有 PNG(base64)。无外部依赖。
     imgs = {}
-    for n in ("pipeline_overview", "model_architecture", "metrics_dashboard"):
-        p = f"{OUT}/{n}.png"
-        if os.path.exists(p):
-            imgs[n] = f"data:image/png;base64,{b64(p)}"
+    for p in glob.glob(f"{OUT}/*.png"):
+        imgs[os.path.basename(p)] = f"data:image/png;base64,{b64(p)}"
     try:
         import markdown as _md
         body = _md.markdown(md, extensions=["tables", "fenced_code"])
         for n, uri in imgs.items():
-            body = body.replace(f'src="{n}.png"', f'src="{uri}"')
+            body = body.replace(f'src="{n}"', f'src="{uri}"')
     except Exception:
         # 无 markdown 库: 极简 <pre> 包裹 + 单独插图
         esc = md.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
         body = "<pre style='white-space:pre-wrap'>" + esc + "</pre>"
-        for n, uri in imgs.items():
+        for uri in imgs.values():
             body += f'<img src="{uri}" style="max-width:100%">'
     html = f"""<!doctype html><html lang="zh"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -739,10 +821,30 @@ def main():
     fig_pipeline(snap)
     fig_model(snap)
     fig_dashboard(snap)
+    examples = render_examples(snap)
+    snap["result_examples"] = examples
     json.dump(snap, open(f"{OUT}/metrics_snapshot.json", "w"),
               indent=1, ensure_ascii=False, default=str)
-    md = build_md(snap)
+    md = build_md(snap, examples)
     build_html(snap, md)
+    # 轻量 PDF: 全部图各一页(pipeline/model/dashboard/overfit/示例)
+    try:
+        plt = _mpl()
+        from matplotlib.backends.backend_pdf import PdfPages
+        from PIL import Image
+        pages = ["pipeline_overview.png", "model_architecture.png",
+                 "metrics_dashboard.png", "results_overfit.png"] + examples
+        with PdfPages(f"{OUT}/leader_update.pdf") as pdf:
+            for n in pages:
+                p = f"{OUT}/{n}"
+                if not os.path.exists(p):
+                    continue
+                im = Image.open(p); w, h = im.size
+                fig = plt.figure(figsize=(11.7, 11.7 * h / w))
+                ax = fig.add_axes([0, 0, 1, 1]); ax.axis("off"); ax.imshow(im)
+                pdf.savefig(fig, dpi=120); plt.close(fig)
+    except Exception as e:
+        print("PDF skip:", e)
     print("LEADER_UPDATE: DONE ->", rel(OUT))
     print("stages done:", {k: v for k, v in snap["stages"].items() if v})
     print("sanity:", "DONE" if snap["sanity"] else "PENDING",

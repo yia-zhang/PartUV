@@ -1,8 +1,8 @@
 {
  "report_date": "2026-07-22",
  "git": {
-  "head": "28b32010f7f6403540609f6da3ef1ec4abc3b342",
-  "short": "28b3201",
+  "head": "d12f92f70f81cd79535e24a4a1e0cc022ae28eba",
+  "short": "d12f92f",
   "branch": "main",
   "remote": "https://github.com/yia-zhang/PartUV",
   "audit_commit_field": "a9719a9c68fa",
@@ -284,5 +284,11 @@
   "sanity": false,
   "gold": false,
   "nb_smoke": false
- }
+ },
+ "result_examples": [
+  "results_example_00_tex_054b8851df26.png",
+  "results_example_01_tex_000f75d13987.png",
+  "results_example_02_tex_054319a7ff60.png",
+  "results_example_03_tex_004db75ea39b.png"
+ ]
 }

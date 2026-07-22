@@ -1,7 +1,7 @@
 # MeshUV 项目阶段汇报（面向 Leader）
 
 > 生成时间：**2026-07-22**，数字均来自生成时的真实磁盘状态（JSON / manifest / checkpoint / 日志 / 代码），未完成结果标记 **PENDING / IN PROGRESS**。
-> 代码版本：`main` @ `28b3201`（完整 `28b32010f7f6403540609f6da3ef1ec4abc3b342`）　Teacher 冻结哈希：`40cd6182f6981fbc`　仓库：https://github.com/yia-zhang/PartUV
+> 代码版本：`main` @ `d12f92f`（完整 `d12f92f70f81cd79535e24a4a1e0cc022ae28eba`）　Teacher 冻结哈希：`40cd6182f6981fbc`　仓库：https://github.com/yia-zhang/PartUV
 
 ## 一句话三连（30 秒）
 
@@ -106,6 +106,42 @@ flowchart TD
 | PNG round-trip drift ≤ 1e-6 | ✅ PASS | `max=0.00e+00` |
 | rebuild/relabel 候选 = 0 | ✅ PASS | `rebuild=0 relabel=0` |
 | split 无重叠且并集完整 | ✅ PASS | `overlap=0 union=256/256 sizes=[192, 32, 32]` |
+
+---
+
+## ★ 中间结果与当前效果（可直接给 Leader 看）
+
+> **一句话**：数据正确性已证明、Teacher 分配在真实物体上**看得出合理**（信息多→密度高）、模型**已证明能拟合**这套标签；但**泛化（sanity）与真实纹理收益（Gold）仍在跑，尚未证明**。
+
+**（1）真实物体走查：basecolor → charts → 纹理需求信号 → 目标纹理密度（Teacher 输出）**
+
+读法：最右图**红色 = 目标密度更高**（纹理繁忙区），**蓝色 = 目标密度更低**（平坦区）。可直观看到 Teacher 把预算倾斜给高信息区。（覆盖小/中/大 chart 数与多几何对象，全部取自冻结的 256 数据。）
+
+![example](results_example_00_tex_054b8851df26.png)
+
+![example](results_example_01_tex_000f75d13987.png)
+
+![example](results_example_02_tex_054319a7ff60.png)
+
+![example](results_example_03_tex_004db75ea39b.png)
+
+
+**（2）模型能否学会？—— Overfit（8 对象）预测 vs 目标**
+
+左：训练 loss 下降；右：预测 vs 目标 log-ratio **紧贴对角线**（Spearman **0.9946**，loss ratio **0.50%**）。这证明**模型有能力拟合 Teacher 的分配**——但这是"记住 8 个物体"，**不是泛化**。
+
+![overfit](results_overfit.png)
+
+
+**（3）目前到什么效果（诚实口径）**
+
+| 问题 | 现状 | 证据 |
+|---|---|---|
+| 数据对得上吗？ | ✅ 正确、可复现 | round-trip drift = 0，六闸门全 PASS |
+| Teacher 分配合理吗？ | ✅ 视觉上合理 | 上方真实物体走查（红=高频区，蓝=平坦区） |
+| 模型学得会吗？ | ✅ 能拟合 | Overfit Spearman 0.9946 |
+| 能泛化到没见过的物体吗？ | ⏳ **进行中** | sanity（held-out 192/32/32）**PENDING** |
+| UV 在固定预算下更清晰吗？ | ⏳ **进行中** | Gold 三方对比 **PENDING** |
 
 ---
 
@@ -221,4 +257,4 @@ flowchart TD
 
 ---
 
-*所有指标均带来源路径；measured 与 extrapolated 已明确区分；报告文件不含服务器绝对路径 / 凭证 / 个人信息；不提交数据集 / cache / quarantine / 大 checkpoint。原始数字见 `metrics_snapshot.json`。本报告描述的代码/数据状态为 `main` @ `28b3201`（Teacher `40cd6182f6981fbc`）；报告文件本身作为独立文档提交于其后，不改动代码或数据。*
+*所有指标均带来源路径；measured 与 extrapolated 已明确区分；报告文件不含服务器绝对路径 / 凭证 / 个人信息；不提交数据集 / cache / quarantine / 大 checkpoint。原始数字见 `metrics_snapshot.json`。本报告描述的代码/数据状态为 `main` @ `d12f92f`（Teacher `40cd6182f6981fbc`）；报告文件本身作为独立文档提交于其后，不改动代码或数据。*
