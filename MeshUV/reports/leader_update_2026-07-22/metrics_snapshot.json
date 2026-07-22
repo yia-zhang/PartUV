@@ -1,0 +1,288 @@
+{
+ "report_date": "2026-07-22",
+ "git": {
+  "head": "28b32010f7f6403540609f6da3ef1ec4abc3b342",
+  "short": "28b3201",
+  "branch": "main",
+  "remote": "https://github.com/yia-zhang/PartUV",
+  "audit_commit_field": "a9719a9c68fa",
+  "_source": [
+   "git rev-parse HEAD",
+   "datasets/processed/clean_v1/audit_clean_256.json"
+  ]
+ },
+ "dataset": {
+  "n_accepted": 256,
+  "schema_bad": 0,
+  "split": {
+   "train": 192,
+   "val": 32,
+   "test": 32
+  },
+  "dup_groups": 0,
+  "faces": {
+   "total": 8754485,
+   "p50": 14887,
+   "p90": 78609,
+   "max": 500000
+  },
+  "charts": {
+   "total": 191116,
+   "p50": 159.0,
+   "p90": 1774.0,
+   "p95": 3322.75,
+   "p99": 9359.299999999967,
+   "max": 20920
+  },
+  "multi_geometry": {
+   "n": 99,
+   "total": 256,
+   "pct": 38.7
+  },
+  "basecolor_atlas_top": [
+   [
+    [
+     1028,
+     1028
+    ],
+    183
+   ],
+   [
+    [
+     1028,
+     2054
+    ],
+    14
+   ],
+   [
+    [
+     1028,
+     516
+    ],
+    7
+   ],
+   [
+    [
+     1028,
+     3080
+    ],
+    6
+   ],
+   [
+    [
+     1028,
+     260
+    ],
+    3
+   ],
+   [
+    [
+     1028,
+     4106
+    ],
+    3
+   ]
+  ],
+  "special": {
+   "factor_ne_1": 12,
+   "nouv_solid": 2,
+   "nouv_textured": 0,
+   "uv_oob": 4,
+   "uv_tile_shift": 4,
+   "uv_cross_tile": 0,
+   "missing_v2_fields": 0
+  },
+  "roundtrip_drift": {
+   "max": 0.0,
+   "p95": 0.0,
+   "n_relabel": 0
+  },
+  "adapter_distribution": {
+   "canonicalizer_rgb_v2": 256
+  },
+  "teacher_distribution": {
+   "clean_teacher_v1|40cd6182f6981fbc|luminance_std_png_u8_v1": 256
+  },
+  "teacher_hash_current": "40cd6182f6981fbc",
+  "audit_hash": "54a84b563b179af2",
+  "disk": {
+   "processed": "59G",
+   "cache": "68G",
+   "quarantine": "2.6G",
+   "extras": "15M"
+  },
+  "_source": [
+   "datasets/processed/clean_v1/audit_clean_256.json",
+   "datasets/processed/clean_v1/splits.json",
+   "datasets/processed/clean_v1/objects/*/manifest.json"
+  ]
+ },
+ "funnel": {
+  "attempted": 1881,
+  "accepted_build": 258,
+  "frozen": 256,
+  "trimmed_to_extras": 2,
+  "yield_counts": {
+   "ACCEPTED": 258,
+   "COVERAGE_REJECTED": 92,
+   "TILED_UV_UNSUPPORTED": 521,
+   "TIMEOUT": 1002,
+   "PARTUV_FAILED": 2,
+   "PRECHECK_REJECTED": 6
+  },
+  "acceptance_rate": 13.7,
+  "wall_hours_field": 1.25,
+  "timings_s": {
+   "canonicalize": {
+    "sum_min": 6.3,
+    "p50": 0.3,
+    "p90": 1.2
+   },
+   "baseline_charts": {
+    "sum_min": 255.8,
+    "p50": 18.4,
+    "p90": 91.0
+   },
+   "labels": {
+    "sum_min": 0.5,
+    "p50": 0.1,
+    "p90": 0.3
+   },
+   "serialize": {
+    "sum_min": 7.5,
+    "p50": 0.5,
+    "p90": 2.4
+   },
+   "total": {
+    "sum_min": 288.3,
+    "p50": 2.6,
+    "p90": 38.5
+   }
+  },
+  "timeout_s": 600,
+  "workers": 4,
+  "_source": [
+   "datasets/processed/clean_v1/summary.json",
+   "datasets/processed/clean_v1/audit_clean_256.json",
+   "scripts/build_dataset.py (--timeout 600 --workers 4)"
+  ]
+ },
+ "teacher": {
+  "name": "clean_teacher_v1",
+  "beta": 0.25,
+  "signal_version": "luminance_std_png_u8_v1",
+  "label_semantics": "linear_texel_density_log_ratio_v1",
+  "code_hash": "40cd6182f6981fbc",
+  "roundtrip_drift_max": 0.0,
+  "provenance_diff": {
+   "verdict": "SIGNIFICANT_REPORT_FIRST",
+   "old_code_hash": "4d8ecc5d349b709c"
+  },
+  "_source": [
+   "configs/clean_teacher_v1.yaml",
+   "datasets/processed/clean_v1/audit_clean_256.json",
+   "reports/teacher_diff_report.json"
+  ]
+ },
+ "model": {
+  "name": "handcrafted_signal_baseline",
+  "params": 68225,
+  "n_feats": 17,
+  "d": 128,
+  "arch": "O(C) shared-MLP + mean/max pool + head",
+  "attention": false,
+  "_source": [
+   "src/meshuv/model/student_v0.py",
+   "src/meshuv/data/collate.py"
+  ]
+ },
+ "gate": {
+  "all_pass": true,
+  "target": 256,
+  "teacher_code_hash": "40cd6182f6981fbc",
+  "audit_hash": "54a84b563b179af2",
+  "checks": {
+   "1_256_accepted_schema_complete": {
+    "ok": true,
+    "detail": "accepted=256 schema_bad=0"
+   },
+   "2_adapter_100_v2": {
+    "ok": true,
+    "detail": "{'canonicalizer_rgb_v2': 256}"
+   },
+   "3_teacher_hash_uniform": {
+    "ok": true,
+    "detail": "expect=clean_teacher_v1|40cd6182f6981fbc|luminance_std_png_u8_v1 got={'clean_teacher_v1|40cd6182f6981fbc|luminance_std_png_u8_v1': 256}"
+   },
+   "4_roundtrip_drift_le_1e6": {
+    "ok": true,
+    "detail": "max=0.00e+00"
+   },
+   "5_zero_candidates": {
+    "ok": true,
+    "detail": "rebuild=0 relabel=0"
+   },
+   "6_split_disjoint_complete": {
+    "ok": true,
+    "detail": "overlap=0 union=256/256 sizes=[192, 32, 32]"
+   }
+  }
+ },
+ "overfit": {
+  "n_objects": 8,
+  "n_charts": 1290,
+  "loss_first": 0.037303,
+  "loss_last": 0.000188,
+  "loss_ratio": 0.00503,
+  "pass_loss": true,
+  "spearman_active": 0.9946,
+  "metrics": {
+   "micro": {
+    "mse": 0.00034763506846502423,
+    "mae": 0.010201099328696728,
+    "spearman_all": 0.9972219876952477,
+    "n_charts": 1290
+   },
+   "macro": {
+    "mse": 0.00034614944888744503,
+    "mae": 0.010173341201152653,
+    "smooth_l1": 0.0001730747098918073,
+    "spearman_median": 0.9946367462108363,
+    "spearman_p25": 0.9825967008629951,
+    "n_objects": 8,
+    "n_active_objects": 8,
+    "n_active_charts": 1289
+   }
+  },
+  "_source": [
+   "reports/overfit_8.json"
+  ]
+ },
+ "sanity": null,
+ "gold": null,
+ "notebooks": {
+  "01_data_browser": {
+   "result": "PASS",
+   "seconds": 4.7
+  },
+  "02_uv_comparison": {
+   "result": "PASS",
+   "seconds": 12.0
+  },
+  "03_sanity_checkpoint_browser": {
+   "result": "WAITING_CHECKPOINT",
+   "seconds": null
+  }
+ },
+ "stages": {
+  "audit": true,
+  "migrate": true,
+  "topup": true,
+  "audit_final": true,
+  "final_gate": true,
+  "overfit": true,
+  "sanity": false,
+  "gold": false,
+  "nb_smoke": false
+ }
+}
